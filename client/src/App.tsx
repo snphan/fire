@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
+import fire_logo from './fire_logo.png'
 import './App.css';
 import { getModeForUsageLocation } from 'typescript';
 import { REACT_APP_GOOGLE_CREDS_APPID } from './config';
@@ -21,10 +21,12 @@ function App() {
     console.log(userObject);
     setUser(userObject);
     document.getElementById("signInDiv")!.hidden = true;
+    document.getElementById("fire-logo")!.hidden = true;
   }
 
   function handleSignOut() {
     setUser(undefined);
+    document.getElementById("fire-logo")!.hidden = false;
     document.getElementById("signInDiv")!.hidden = false;
   }
 
@@ -37,34 +39,22 @@ function App() {
 
     google.accounts.id.renderButton(
       document.getElementById("signInDiv"),
-      { theme: "outline", size: "large" }
+      { theme: "filled_blue", shape: "pill", size: "large", text: "sign_in_with" }
     );
-
   }, []);
 
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <div id="signInDiv"></div>
         {user &&
-          <div>
-            <img src={user.picture} alt="" />
+          <div className="container-center">
+            <img src={user.picture} className="rounded shadow" alt="" />
             <h3>Welcome {user.name}!</h3>
             <button onClick={() => handleSignOut()}>Sign Out</button>
           </div>
         }
+        <img src={fire_logo} id="fire-logo" className="App-logo rounded shadow" alt="logo" />
+        <div id="signInDiv"></div>
       </header>
     </div>
   );
