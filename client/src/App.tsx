@@ -10,6 +10,9 @@ declare global {
   const google: any;
 }
 
+
+
+
 function App() {
 
   const [user, setUser] = useState<any>(undefined);
