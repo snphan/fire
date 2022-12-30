@@ -35,6 +35,8 @@ describe('Testing Auth', () => {
       const userData: CreateUserDto = {
         email: 'test@email.com',
         password: 'q1w2e3r4',
+        last_name: 'test',
+        first_name: 'test'
       };
 
       const createUserMutation = {
@@ -60,6 +62,8 @@ describe('Testing Auth', () => {
       const userData: CreateUserDto = {
         email: 'test@email.com',
         password: 'q1w2e3r4',
+        last_name: 'test',
+        first_name: 'test'
       };
 
       const loginUserQuery = {

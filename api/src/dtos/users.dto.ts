@@ -10,5 +10,13 @@ export class CreateUserDto implements Partial<User> {
 
   @Field()
   @IsString()
+  last_name: string;
+
+  @Field()
+  @IsString()
+  first_name: string;
+
+  @Field()
+  @IsString()
   password: string;
 }

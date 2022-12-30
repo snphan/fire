@@ -18,6 +18,16 @@ export class User extends BaseEntity {
   @Field()
   @Column()
   @IsNotEmpty()
+  last_name: string;
+
+  @Field()
+  @Column()
+  @IsNotEmpty()
+  first_name: string;
+
+  @Field()
+  @Column()
+  @IsNotEmpty()
   password: string;
 
   @Column()
