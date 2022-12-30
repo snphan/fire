@@ -20,3 +20,14 @@ export class CreateUserDto implements Partial<User> {
   @IsString()
   password: string;
 }
+
+@InputType()
+export class UserLoginDto implements Partial<User> {
+  @Field()
+  @IsEmail()
+  email: string;
+
+  @Field()
+  @IsString()
+  password: string;
+}
