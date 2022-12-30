@@ -77,7 +77,7 @@ function App() {
 
 
         {(loading || loginLoading || logoutLoading) ?
-          <div>Loading...</div> :
+          <div className="font-bold underline">Loading...</div> :
           <>
             {/* Sign Up Screen If user not Registered*/}
             {(user && !userExists) &&
@@ -89,7 +89,9 @@ function App() {
               < div className="container-center">
                 <img src={user.picture} className="rounded shadow" alt="" />
                 <h3>Welcome {user.name}!</h3>
-                <button onClick={() => endSession()}>Sign Out</button>
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full text-sm"
+                  onClick={() => endSession()}>Sign Out</button>
               </div>
             }
           </>
