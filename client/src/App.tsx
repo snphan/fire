@@ -7,7 +7,7 @@ import jwt_decode from 'jwt-decode';
 import { GET_USER_BY_EMAIL } from './queries';
 import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
 import { SignUpForm } from './components/SignUpForm';
-import { LOGIN_USER } from './mutations';
+import { LOGIN_USER, LOGOUT_USER } from './mutations';
 
 declare global {
   /* google variable is loaded from script in public/index.html */
@@ -27,6 +27,9 @@ function App() {
     loading: loginLoading,
     error: loginError,
     data: loginData }] = useMutation(LOGIN_USER);
+  const [logoutUser, {
+    loading: logoutLoading }] = useMutation(LOGOUT_USER);
+
 
   function handleCallbackResponse(res: any) {
     setUserJustRegistered(false);
@@ -43,6 +46,7 @@ function App() {
         setUserExists(true);
         const userData = { email: userObject.email, password: userObject.sub };
         loginUser({ variables: { userData: userData } });
+        console.log("Login user!");
       }), onError: (() => {
         setUserExists(false);
       })
@@ -53,6 +57,7 @@ function App() {
     setUser(undefined);
     document.getElementById("fire-logo")!.hidden = false;
     document.getElementById("signInDiv")!.hidden = false;
+    logoutUser();
   }
 
   useEffect(() => {

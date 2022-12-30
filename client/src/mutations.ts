@@ -16,3 +16,11 @@ export const LOGIN_USER = gql`mutation userLogin($userData: UserLoginDto!) {
     email
   }
 }`
+
+export const LOGOUT_USER = gql`
+mutation userLogout {
+  logout {
+    id
+  }
+}
+`
