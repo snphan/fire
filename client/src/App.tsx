@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import fire_logo from './fire_logo.png';
 import './App.css';
-import { getModeForUsageLocation } from 'typescript';
 import { REACT_APP_GOOGLE_CREDS_APPID } from './config';
 import jwt_decode from 'jwt-decode';
 import { GET_USER_BY_EMAIL } from './queries';
-import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { SignUpForm } from './components/SignUpForm';
 import { LOGIN_USER, LOGOUT_USER } from './mutations';
 
@@ -25,8 +24,7 @@ function App() {
   });
   const [loginUser, {
     loading: loginLoading,
-    error: loginError,
-    data: loginData }] = useMutation(LOGIN_USER);
+  }] = useMutation(LOGIN_USER);
   const [logoutUser, {
     loading: logoutLoading }] = useMutation(LOGOUT_USER);
 
@@ -78,7 +76,7 @@ function App() {
         <div id="signInDiv"></div>
 
 
-        {loading ?
+        {(loading || loginLoading || logoutLoading) ?
           <div>Loading...</div> :
           <>
             {/* Sign Up Screen If user not Registered*/}
