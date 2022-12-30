@@ -17,14 +17,14 @@ function App() {
 
   const [user, setUser] = useState<any>(undefined);
   const [userExists, setUserExists] = useState<boolean>(false);
-  const [userRegistered, setUserRegistered] = useState<boolean>(false);
+  const [userJustRegistered, setUserJustRegistered] = useState<boolean>(false);
 
   const [getUserByEmail, { loading, error, data, client }] = useLazyQuery(GET_USER_BY_EMAIL, {
     fetchPolicy: "no-cache"
   });
 
   function handleCallbackResponse(res: any) {
-    setUserRegistered(false);
+    setUserJustRegistered(false);
     console.log(res);
     console.log("Encoded JWT ID token: " + res.credential);
     let userObject: any = jwt_decode(res.credential);
@@ -62,7 +62,7 @@ function App() {
 
   return (
     <div className="App">
-      {userRegistered && <div>User Registered</div>}
+      {userJustRegistered && <div>User Registered</div>}
       <header className="App-header">
         {/* Sign In Screen */}
         <img src={fire_logo} id="fire-logo" className="App-logo rounded shadow" alt="logo" />
@@ -74,7 +74,7 @@ function App() {
           <>
             {/* Sign Up Screen If user not Registered*/}
             {(user && !userExists) &&
-              <SignUpForm user={user} goBackToLogin={endSession} setUserRegistered={setUserRegistered} />
+              <SignUpForm user={user} goBackToLogin={endSession} setUserJustRegistered={setUserJustRegistered} />
             }
 
             {/* User Logged In */}

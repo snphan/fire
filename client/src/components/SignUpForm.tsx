@@ -12,7 +12,7 @@ interface UserInfo {
   password2: string,
 }
 
-export function SignUpForm({ user, goBackToLogin, setUserRegistered }: any) {
+export function SignUpForm({ user, goBackToLogin, setUserJustRegistered }: any) {
 
   const [userInfo, setUserInfo] = useState<UserInfo>({
     email: user.email,
@@ -48,7 +48,7 @@ export function SignUpForm({ user, goBackToLogin, setUserRegistered }: any) {
 
     createUser({ variables: { userData: userData } });
     goBackToLogin();
-    setUserRegistered(true);
+    setUserJustRegistered(true);
   }
 
   return (
