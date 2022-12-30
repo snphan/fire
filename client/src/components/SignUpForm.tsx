@@ -9,7 +9,6 @@ interface UserInfo {
   last_name: string,
   first_name: string,
   password: string,
-  password2: string,
 }
 
 export function SignUpForm({ user, goBackToLogin, setUserJustRegistered }: any) {
@@ -19,7 +18,6 @@ export function SignUpForm({ user, goBackToLogin, setUserJustRegistered }: any) 
     last_name: user.family_name,
     first_name: user.given_name,
     password: "",
-    password2: ""
   })
   const [createUser, { loading, error, data }] = useMutation(CREATE_USER);
 
@@ -33,20 +31,12 @@ export function SignUpForm({ user, goBackToLogin, setUserJustRegistered }: any) 
 
   const handleRegister = () => {
 
-    if (userInfo.password != userInfo.password2) {
-      console.log("Passwords don't match!");
-      return
-    }
+    /* Singup using only the unique information from google */
+    userInfo.password = user.sub;
 
-    if (!userInfo.password || !userInfo.password) {
-      console.log("please enter a password");
-      return
-    }
+    console.log(userInfo);
 
-    const { password2, ...userData } = userInfo;
-    console.log(userData);
-
-    createUser({ variables: { userData: userData } });
+    createUser({ variables: { userData: userInfo } });
     goBackToLogin();
     setUserJustRegistered(true);
   }
@@ -67,22 +57,6 @@ export function SignUpForm({ user, goBackToLogin, setUserJustRegistered }: any) 
       <div>
         <label htmlFor="first-name">First Name</label>
         <input type="text" name="" id="first-name" value={userInfo.first_name} onChange={(e) => setUserInfo(({ ...userInfo, first_name: e.target.value }))} />
-      </div>
-
-      {(userInfo.password != userInfo.password2) &&
-        <div>
-          Passwords don't match
-        </div>
-      }
-
-      <div>
-        <label htmlFor="password">Password</label>
-        <input type="password" name="" id="password" onChange={(e) => setUserInfo(({ ...userInfo, password: e.target.value }))} />
-      </div>
-
-      <div>
-        <label htmlFor="password2">Enter Again</label>
-        <input type="password" name="" id="password2" onChange={(e) => setUserInfo(({ ...userInfo, password2: e.target.value }))} />
       </div>
 
       <div>
