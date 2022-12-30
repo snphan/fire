@@ -55,7 +55,7 @@ class App {
       this.app.use(helmet());
     }
 
-    this.app.use(cors({ origin: ['https://studio.apollographql.com', 'http://localhost:3000'], credentials: CREDENTIALS }));
+    this.app.use(cors({ origin: ['https://studio.apollographql.com', 'http://localhost:8000', 'http://localhost:3000'], credentials: CREDENTIALS }));
     this.app.use(compression());
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
