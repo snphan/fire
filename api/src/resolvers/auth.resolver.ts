@@ -2,6 +2,7 @@ import { Authorized, Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 import { CreateUserDto, UserLoginDto } from '@dtos/users.dto';
 import AuthRepository from '@repositories/auth.repository';
 import { User } from '@entities/users.entity';
+import { NODE_ENV } from '@/config';
 
 @Resolver()
 export class authResolver extends AuthRepository {
@@ -19,12 +20,12 @@ export class authResolver extends AuthRepository {
   async login(@Arg('userData') userData: UserLoginDto, @Ctx() ctx: any): Promise<User> {
     const { tokenData, findUser } = await this.userLogIn(userData);
 
-    // On login set the cookie to some have some maxAge.
+    /* On login set the cookie */
     ctx.res.cookie("Authorization", tokenData.token, {
       httpOnly: true,
-      secure: true,
+      secure: NODE_ENV === "development" ? false : true,
       sameSite: "None",
-      maxAge: 60 * 60,
+      maxAge: 60 * 30 * 1000,
     });
 
     return findUser;
