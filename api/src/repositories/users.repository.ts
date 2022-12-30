@@ -22,6 +22,15 @@ export default class UserRepository {
     return user;
   }
 
+  public async userFindByEmail(userEmail: string): Promise<User> {
+    if (isEmpty(userEmail)) throw new HttpException(400, "UserId is empty");
+
+    const user: User = await User.findOne({ where: { email: userEmail } });
+    if (!user) throw new HttpException(409, "User doesn't exist");
+
+    return user;
+  }
+
   public async userCreate(userData: CreateUserDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, "userData is empty");
 
