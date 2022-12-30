@@ -10,6 +10,8 @@ let userId: number;
 const userData: CreateUserDto = {
   email: 'test@email.com',
   password: 'q1w2e3r4',
+  last_name: 'test',
+  first_name: 'test'
 }
 
 beforeAll(async () => {
@@ -89,9 +91,11 @@ describe('Testing User', () => {
   describe('[POST] /graphql', () => {
     it('response statusCode 200 / updateUser', async () => {
 
-      const newUserData = {
+      const newUserData: CreateUserDto = {
         email: "newemail1234@gmail.com",
-        password: userData.password // typ. provide the password when changing the data.
+        password: userData.password, // typ. provide the password when changing the data.
+        last_name: 'test',
+        first_name: 'test'
       }
 
       const updateUserMutation = {
