@@ -16,9 +16,15 @@ declare global {
 function App() {
 
   const [user, setUser] = useState<any>(undefined);
-  const [getUserByEmail, { loading, error, data: userExists }] = useLazyQuery(GET_USER_BY_EMAIL);
+  const [userExists, setUserExists] = useState<boolean>(false);
+  const [userRegistered, setUserRegistered] = useState<boolean>(false);
+
+  const [getUserByEmail, { loading, error, data, client }] = useLazyQuery(GET_USER_BY_EMAIL, {
+    fetchPolicy: "no-cache"
+  });
 
   function handleCallbackResponse(res: any) {
+    setUserRegistered(false);
     console.log(res);
     console.log("Encoded JWT ID token: " + res.credential);
     let userObject: any = jwt_decode(res.credential);
@@ -27,8 +33,10 @@ function App() {
     document.getElementById("signInDiv")!.hidden = true;
     document.getElementById("fire-logo")!.hidden = true;
     getUserByEmail({
-      variables: { email: userObject.email }, onCompleted: ((newData) => {
-        console.log("This is the data: ", newData);
+      variables: { email: userObject.email }, onCompleted: (() => {
+        setUserExists(true);
+      }), onError: (() => {
+        setUserExists(false);
       })
     })
   }
@@ -54,23 +62,30 @@ function App() {
 
   return (
     <div className="App">
+      {userRegistered && <div>User Registered</div>}
       <header className="App-header">
         {/* Sign In Screen */}
         <img src={fire_logo} id="fire-logo" className="App-logo rounded shadow" alt="logo" />
         <div id="signInDiv"></div>
 
-        {/* Sign Up Screen If user not Registered*/}
-        {(user && !userExists) &&
-          <SignUpForm user={user} goBackToLogin={endSession} />
-        }
 
-        {/* User Logged In */}
-        {(user && userExists) &&
-          < div className="container-center">
-            <img src={user.picture} className="rounded shadow" alt="" />
-            <h3>Welcome {user.name}!</h3>
-            <button onClick={() => endSession()}>Sign Out</button>
-          </div>
+        {loading ?
+          <div>Loading...</div> :
+          <>
+            {/* Sign Up Screen If user not Registered*/}
+            {(user && !userExists) &&
+              <SignUpForm user={user} goBackToLogin={endSession} setUserRegistered={setUserRegistered} />
+            }
+
+            {/* User Logged In */}
+            {(user && userExists) &&
+              < div className="container-center">
+                <img src={user.picture} className="rounded shadow" alt="" />
+                <h3>Welcome {user.name}!</h3>
+                <button onClick={() => endSession()}>Sign Out</button>
+              </div>
+            }
+          </>
         }
       </header >
     </div >

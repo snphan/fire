@@ -1,33 +1,54 @@
 import React from "react";
 import { useState } from "react";
 import "../App.css";
+import { useMutation } from '@apollo/client';
+import { CREATE_USER } from "../mutations";
 
 interface UserInfo {
   email: string,
   last_name: string,
   first_name: string,
-  password1: string,
+  password: string,
   password2: string,
 }
 
-export function SignUpForm({ user, goBackToLogin }: any) {
+export function SignUpForm({ user, goBackToLogin, setUserRegistered }: any) {
 
   const [userInfo, setUserInfo] = useState<UserInfo>({
     email: user.email,
     last_name: user.family_name,
     first_name: user.given_name,
-    password1: "",
+    password: "",
     password2: ""
   })
+  const [createUser, { loading, error, data }] = useMutation(CREATE_USER);
+
+  if (loading) return <p>Submitting...</p>;
+  if (error) return (
+    <div>
+      <p>Submission error! {error.message} {JSON.stringify(data)}</p>
+      <button onClick={() => goBackToLogin()}>Back</button>
+    </div>
+  );
 
   const handleRegister = () => {
 
-    if (userInfo.password1 != userInfo.password2) {
+    if (userInfo.password != userInfo.password2) {
       console.log("Passwords don't match!");
       return
     }
 
-    console.log("Registered!");
+    if (!userInfo.password || !userInfo.password) {
+      console.log("please enter a password");
+      return
+    }
+
+    const { password2, ...userData } = userInfo;
+    console.log(userData);
+
+    createUser({ variables: { userData: userData } });
+    goBackToLogin();
+    setUserRegistered(true);
   }
 
   return (
@@ -48,15 +69,15 @@ export function SignUpForm({ user, goBackToLogin }: any) {
         <input type="text" name="" id="first-name" value={userInfo.first_name} onChange={(e) => setUserInfo(({ ...userInfo, first_name: e.target.value }))} />
       </div>
 
-      {(userInfo.password1 != userInfo.password2) &&
+      {(userInfo.password != userInfo.password2) &&
         <div>
           Passwords don't match
         </div>
       }
 
       <div>
-        <label htmlFor="password1">Password</label>
-        <input type="password" name="" id="password1" onChange={(e) => setUserInfo(({ ...userInfo, password1: e.target.value }))} />
+        <label htmlFor="password">Password</label>
+        <input type="password" name="" id="password" onChange={(e) => setUserInfo(({ ...userInfo, password: e.target.value }))} />
       </div>
 
       <div>
