@@ -16,7 +16,7 @@ export default class AuthRepository {
     const findUser: User = await User.findOne({ where: { email: userData.email } });
     if (findUser) throw new HttpException(409, `This email ${userData.email} already exists`);
 
-    const hashedPassword = await hash(userData.password, 10);
+    const hashedPassword = await hash(userData.password, 12);
     const createUserData: User = await User.create({ ...userData, password: hashedPassword }).save();
 
     return createUserData;
