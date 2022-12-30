@@ -9,3 +9,10 @@ export const CREATE_USER = gql`
   }
 
 `
+
+export const LOGIN_USER = gql`mutation userLogin($userData: UserLoginDto!) {
+  login(userData: $userData) {
+    id
+    email
+  }
+}`

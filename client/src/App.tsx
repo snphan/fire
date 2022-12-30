@@ -5,8 +5,9 @@ import { getModeForUsageLocation } from 'typescript';
 import { REACT_APP_GOOGLE_CREDS_APPID } from './config';
 import jwt_decode from 'jwt-decode';
 import { GET_USER_BY_EMAIL } from './queries';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
 import { SignUpForm } from './components/SignUpForm';
+import { LOGIN_USER } from './mutations';
 
 declare global {
   /* google variable is loaded from script in public/index.html */
@@ -19,9 +20,13 @@ function App() {
   const [userExists, setUserExists] = useState<boolean>(false);
   const [userJustRegistered, setUserJustRegistered] = useState<boolean>(false);
 
-  const [getUserByEmail, { loading, error, data, client }] = useLazyQuery(GET_USER_BY_EMAIL, {
+  const [getUserByEmail, { loading }] = useLazyQuery(GET_USER_BY_EMAIL, {
     fetchPolicy: "no-cache"
   });
+  const [loginUser, {
+    loading: loginLoading,
+    error: loginError,
+    data: loginData }] = useMutation(LOGIN_USER);
 
   function handleCallbackResponse(res: any) {
     setUserJustRegistered(false);
@@ -32,9 +37,12 @@ function App() {
     setUser(userObject);
     document.getElementById("signInDiv")!.hidden = true;
     document.getElementById("fire-logo")!.hidden = true;
+
     getUserByEmail({
       variables: { email: userObject.email }, onCompleted: (() => {
         setUserExists(true);
+        const userData = { email: userObject.email, password: userObject.sub };
+        loginUser({ variables: { userData: userData } });
       }), onError: (() => {
         setUserExists(false);
       })
