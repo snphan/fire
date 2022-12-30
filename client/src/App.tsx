@@ -1,33 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import fire_logo from './fire_logo.png'
+import fire_logo from './fire_logo.png';
 import './App.css';
 import { getModeForUsageLocation } from 'typescript';
 import { REACT_APP_GOOGLE_CREDS_APPID } from './config';
 import jwt_decode from 'jwt-decode';
+import { GET_USER_BY_EMAIL } from './queries';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { SignUpForm } from './components/SignUpForm';
 
 declare global {
   /* google variable is loaded from script in public/index.html */
   const google: any;
 }
 
-
-
-
 function App() {
 
   const [user, setUser] = useState<any>(undefined);
+  const [getUserByEmail, { loading, error, data: userExists }] = useLazyQuery(GET_USER_BY_EMAIL);
 
   function handleCallbackResponse(res: any) {
     console.log(res);
     console.log("Encoded JWT ID token: " + res.credential);
-    let userObject = jwt_decode(res.credential);
+    let userObject: any = jwt_decode(res.credential);
     console.log(userObject);
     setUser(userObject);
     document.getElementById("signInDiv")!.hidden = true;
     document.getElementById("fire-logo")!.hidden = true;
+    getUserByEmail({
+      variables: { email: userObject.email }, onCompleted: ((newData) => {
+        console.log("This is the data: ", newData);
+      })
+    })
   }
 
-  function handleSignOut() {
+  const endSession = () => {
     setUser(undefined);
     document.getElementById("fire-logo")!.hidden = false;
     document.getElementById("signInDiv")!.hidden = false;
@@ -49,17 +55,25 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {user &&
-          <div className="container-center">
-            <img src={user.picture} className="rounded shadow" alt="" />
-            <h3>Welcome {user.name}!</h3>
-            <button onClick={() => handleSignOut()}>Sign Out</button>
-          </div>
-        }
+        {/* Sign In Screen */}
         <img src={fire_logo} id="fire-logo" className="App-logo rounded shadow" alt="logo" />
         <div id="signInDiv"></div>
-      </header>
-    </div>
+
+        {/* Sign Up Screen If user not Registered*/}
+        {(user && !userExists) &&
+          <SignUpForm user={user} goBackToLogin={endSession} />
+        }
+
+        {/* User Logged In */}
+        {(user && userExists) &&
+          < div className="container-center">
+            <img src={user.picture} className="rounded shadow" alt="" />
+            <h3>Welcome {user.name}!</h3>
+            <button onClick={() => endSession()}>Sign Out</button>
+          </div>
+        }
+      </header >
+    </div >
   );
 }
 
