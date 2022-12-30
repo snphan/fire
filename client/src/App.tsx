@@ -32,15 +32,9 @@ function App() {
 
 
   function handleCallbackResponse(res: any) {
-    setUserJustRegistered(false);
-    console.log(res);
-    console.log("Encoded JWT ID token: " + res.credential);
     let userObject: any = jwt_decode(res.credential);
-    console.log(userObject);
+    setUserJustRegistered(false);
     setUser(userObject);
-    document.getElementById("signInDiv")!.hidden = true;
-    document.getElementById("fire-logo")!.hidden = true;
-
     getUserByEmail({
       variables: { email: userObject.email }, onCompleted: (() => {
         setUserExists(true);
@@ -50,7 +44,9 @@ function App() {
       }), onError: (() => {
         setUserExists(false);
       })
-    })
+    });
+    document.getElementById("signInDiv")!.hidden = true;
+    document.getElementById("fire-logo")!.hidden = true;
   }
 
   const endSession = () => {
