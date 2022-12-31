@@ -1,8 +1,8 @@
 import React from "react";
 import { useState } from "react";
-import "../App.css";
+import "@/App.css";
 import { useMutation } from '@apollo/client';
-import { CREATE_USER } from "../mutations";
+import { CREATE_USER } from "@/mutations";
 
 interface UserInfo {
   email: string,

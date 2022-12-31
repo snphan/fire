@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import './App.css';
+import '@/App.css';
 import { useMutation } from '@apollo/client';
 import { SignUpForm } from './pages/SignUp';
-import { LOGIN_USER, LOGOUT_USER } from './mutations';
-import { Auth } from './pages/Auth';
-import { RealEstateTracker } from 'pages/RealEstateTracker';
-import { Dashboard } from 'pages/Dashboard';
+import { LOGIN_USER, LOGOUT_USER } from '@/mutations';
+import { Auth } from '@/pages/Auth';
+import { RealEstateTracker } from '@/pages/RealEstateTracker';
+import { Dashboard } from '@/pages/Dashboard';
 
 declare global {
   /* google variable is loaded from script in public/index.html */
@@ -43,9 +43,9 @@ function App() {
           setUserInfo(undefined);
         }} />);
       case "dashboard":
-        return (<Dashboard />);
+        return (<Dashboard setAppState={setAppState} />);
       case "real-estate-tracker":
-        return (<RealEstateTracker />);
+        return (<RealEstateTracker setAppState={setAppState} />);
       default:
         return <></>
     }
