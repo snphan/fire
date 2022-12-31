@@ -11,6 +11,7 @@ services:
     restart: 'unless-stopped'
     networks:
       - backend
+
   server:
     build:
       context: server
@@ -29,6 +30,7 @@ services:
       - pg
     depends_on:
       - pg
+
   pg:
     image: bitnami/postgresql:11-debian-9
     container_name: pg
@@ -53,6 +55,19 @@ services:
       - '8000:8000'
     volumes:
       - ./client:/app
+      - /app/node_modules
+    restart: 'unless-stopped'
+
+  upload:
+    build:
+      context: upload
+      target: development-build-stage
+      dockerfile: Dockerfile
+    container_name: upload
+    ports:
+      - '4000:4000'
+    volumes:
+      - ./upload:/app
       - /app/node_modules
     restart: 'unless-stopped'
 
