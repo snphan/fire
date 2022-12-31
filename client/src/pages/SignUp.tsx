@@ -11,7 +11,7 @@ interface UserInfo {
   password: string,
 }
 
-export function SignUpForm({ user, goBackToLogin, setUserJustRegistered }: any) {
+export function SignUpForm({ user, goBackToLogin }: any) {
 
   const [userInfo, setUserInfo] = useState<UserInfo>({
     email: user.email,
@@ -30,15 +30,11 @@ export function SignUpForm({ user, goBackToLogin, setUserJustRegistered }: any) 
   );
 
   const handleRegister = () => {
-
     /* Singup using only the unique information from google */
     userInfo.password = user.sub;
 
-    console.log(userInfo);
-
     createUser({ variables: { userData: userInfo } });
     goBackToLogin();
-    setUserJustRegistered(true);
   }
 
   return (

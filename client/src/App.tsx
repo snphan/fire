@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import fire_logo from './fire_logo.png';
 import './App.css';
-import { REACT_APP_GOOGLE_CREDS_APPID } from './config';
-import jwt_decode from 'jwt-decode';
-import { GET_USER_BY_EMAIL } from './queries';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { SignUpForm } from './components/SignUpForm';
+import { useMutation } from '@apollo/client';
+import { SignUpForm } from './pages/SignUp';
 import { LOGIN_USER, LOGOUT_USER } from './mutations';
+import { Auth } from './pages/Auth';
+import { RealEstateTracker } from 'pages/RealEstateTracker';
+import { Dashboard } from 'pages/Dashboard';
 
 declare global {
   /* google variable is loaded from script in public/index.html */
@@ -15,88 +14,46 @@ declare global {
 
 function App() {
 
-  const [user, setUser] = useState<any>(undefined);
-  const [userExists, setUserExists] = useState<boolean>(false);
-  const [userJustRegistered, setUserJustRegistered] = useState<boolean>(false);
+  /* appState manages which "page" to show */
+  const [appState, setAppState] = useState<string>("auth");
 
-  const [getUserByEmail, { loading }] = useLazyQuery(GET_USER_BY_EMAIL, {
-    fetchPolicy: "no-cache"
-  });
+  /* Auth Methods */
   const [loginUser, {
     loading: loginLoading,
   }] = useMutation(LOGIN_USER);
   const [logoutUser, {
     loading: logoutLoading }] = useMutation(LOGOUT_USER);
 
-
-  function handleCallbackResponse(res: any) {
-    let userObject: any = jwt_decode(res.credential);
-    setUserJustRegistered(false);
-    setUser(userObject);
-    getUserByEmail({
-      variables: { email: userObject.email }, onCompleted: (() => {
-        setUserExists(true);
-        const userData = { email: userObject.email, password: userObject.sub };
-        loginUser({ variables: { userData: userData } });
-        console.log("Login user!");
-      }), onError: (() => {
-        setUserExists(false);
-      })
-    });
-    document.getElementById("signInDiv")!.hidden = true;
-    document.getElementById("fire-logo")!.hidden = true;
-  }
+  /* Google Profile To Be Used During Signup */
+  const [userInfo, setUserInfo] = useState<any>(undefined);
 
   const endSession = () => {
-    setUser(undefined);
-    document.getElementById("fire-logo")!.hidden = false;
-    document.getElementById("signInDiv")!.hidden = false;
     logoutUser();
+    setUserInfo(undefined);
+    setAppState("auth");
   }
 
-  useEffect(() => {
-    /* Google Authentication */
-    google.accounts.id.initialize({
-      client_id: REACT_APP_GOOGLE_CREDS_APPID,
-      callback: handleCallbackResponse
-    });
-
-    google.accounts.id.renderButton(
-      document.getElementById("signInDiv"),
-      { theme: "filled_blue", shape: "pill", size: "large", text: "sign_in_with" }
-    );
-  }, []);
+  const renderState = (appState: string) => {
+    switch (appState) {
+      case "auth":
+        return (<Auth setUserInfo={setUserInfo} loginUser={loginUser} setAppState={setAppState} />);
+      case "signup":
+        return (<SignUpForm user={userInfo} setUserInfo={setUserInfo} goBackToLogin={() => {
+          setAppState("auth");
+          setUserInfo(undefined);
+        }} />);
+      case "dashboard":
+        return (<Dashboard />);
+      case "real-estate-tracker":
+        return (<RealEstateTracker />);
+      default:
+        return <></>
+    }
+  }
 
   return (
-    <div className="App">
-      {userJustRegistered && <div>User Registered</div>}
-      <header className="App-header">
-        {/* Sign In Screen */}
-        <img src={fire_logo} id="fire-logo" className="App-logo rounded shadow" alt="logo" />
-        <div id="signInDiv"></div>
-
-
-        {(loading || loginLoading || logoutLoading) ?
-          <div className="font-bold underline">Loading...</div> :
-          <>
-            {/* Sign Up Screen If user not Registered*/}
-            {(user && !userExists) &&
-              <SignUpForm user={user} goBackToLogin={endSession} setUserJustRegistered={setUserJustRegistered} />
-            }
-
-            {/* User Logged In */}
-            {(user && userExists) &&
-              < div className="container-center">
-                <img src={user.picture} className="rounded shadow" alt="" />
-                <h3>Welcome {user.name}!</h3>
-                <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-full text-sm"
-                  onClick={() => endSession()}>Sign Out</button>
-              </div>
-            }
-          </>
-        }
-      </header >
+    <div className="App App-header">
+      {renderState(appState)}
     </div >
   );
 }
