@@ -65,7 +65,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: api/package-lock.json
+        cache-dependency-path: client/package-lock.json
     
     - name: Clean and Install
       working-directory: ./client
