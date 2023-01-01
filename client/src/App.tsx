@@ -6,6 +6,7 @@ import { LOGIN_USER, LOGOUT_USER } from '@/mutations';
 import { Auth } from '@/pages/Auth';
 import { RealEstateTracker } from '@/pages/RealEstateTracker';
 import { Dashboard } from '@/pages/Dashboard';
+import { NavBar } from './components/NavBar';
 
 declare global {
   /* google variable is loaded from script in public/index.html */
@@ -43,16 +44,26 @@ function App() {
           setUserInfo(undefined);
         }} />);
       case "dashboard":
-        return (<Dashboard setAppState={setAppState} />);
+        return (
+          <>
+            <NavBar setAppState={setAppState} endSession={endSession} />
+            <Dashboard setAppState={setAppState} />
+          </>
+        );
       case "real-estate-tracker":
-        return (<RealEstateTracker setAppState={setAppState} />);
+        return (
+          <>
+            <NavBar setAppState={setAppState} endSession={endSession} />
+            <RealEstateTracker setAppState={setAppState} />
+          </>
+        );
       default:
         return <></>
     }
   }
 
   return (
-    <div className="App App-header">
+    <div className="App App-header bg-zinc-900">
       {renderState(appState)}
     </div >
   );
