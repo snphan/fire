@@ -84,7 +84,9 @@ class App {
         }
       },
       formatResponse: (response, request) => {
-        responseLogger(request);
+        if (this.env != "test") {
+          responseLogger(request);
+        }
 
         return response;
       },
