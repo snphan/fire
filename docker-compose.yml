@@ -31,6 +31,18 @@ services:
     depends_on:
       - pg
 
+  pg-test:
+    image: bitnami/postgresql:11-debian-9
+    container_name: pg-test
+    environment:
+      POSTGRESQL_USERNAME: root
+      POSTGRESQL_PASSWORD: password
+      POSTGRESQL_DATABASE: test
+    ports:
+      - '5433:5432'
+    networks:
+      - backend
+
   pg:
     image: bitnami/postgresql:11-debian-9
     container_name: pg
