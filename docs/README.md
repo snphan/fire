@@ -11,8 +11,7 @@ The core components of the application are shown below
 
 ### Bank Financials
 
-
-### Real Estate Portfolio Information
+### Real Estate Portfolio Information![FIRE App Planning-Server API](https://user-images.githubusercontent.com/59156097/210192954-6d329d17-da62-42b8-aef4-37e7f46fa05f.jpg)
 
 
 ## Picture Uploading Service
