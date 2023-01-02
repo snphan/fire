@@ -91,7 +91,9 @@ class App {
         return response;
       },
       formatError: error => {
-        errorLogger(error);
+        if (this.env != "test") {
+          errorLogger(error);
+        }
 
         return error;
       },
