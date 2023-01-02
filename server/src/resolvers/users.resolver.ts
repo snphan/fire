@@ -21,6 +21,14 @@ export class userResolver extends UserRepository {
     return user;
   }
 
+  @Query(() => User, {
+    description: 'User find by email',
+  })
+  async getUserByEmail(@Arg('userEmail') userEmail: string): Promise<User> {
+    const user: User = await this.userFindByEmail(userEmail);
+    return user;
+  }
+
   @Mutation(() => User, {
     description: 'User create',
   })

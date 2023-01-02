@@ -2,7 +2,7 @@ import { hash, compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { EntityRepository } from 'typeorm';
 import { SECRET_KEY } from '@config';
-import { CreateUserDto } from '@dtos/users.dto';
+import { CreateUserDto, UserLoginDto } from '@dtos/users.dto';
 import { User } from '@entities/users.entity';
 import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken, TokenData } from '@interfaces/auth.interface';
@@ -16,13 +16,13 @@ export default class AuthRepository {
     const findUser: User = await User.findOne({ where: { email: userData.email } });
     if (findUser) throw new HttpException(409, `This email ${userData.email} already exists`);
 
-    const hashedPassword = await hash(userData.password, 10);
+    const hashedPassword = await hash(userData.password, 12);
     const createUserData: User = await User.create({ ...userData, password: hashedPassword }).save();
 
     return createUserData;
   }
 
-  public async userLogIn(userData: CreateUserDto): Promise<{ tokenData: TokenData; findUser: User }> {
+  public async userLogIn(userData: UserLoginDto): Promise<{ tokenData: TokenData; findUser: User }> {
     if (isEmpty(userData)) throw new HttpException(400, "userData is empty");
 
     const findUser: User = await User.findOne({ where: { email: userData.email } });

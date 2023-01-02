@@ -1,6 +1,6 @@
 import request from 'supertest';
 import App from '@/app';
-import { CreateUserDto } from '@dtos/users.dto';
+import { CreateUserDto, UserLoginDto } from '@dtos/users.dto';
 import { authResolver } from '@/resolvers/auth.resolver';
 import { userResolver } from '@/resolvers/users.resolver';
 import { getConnection } from 'typeorm';
@@ -35,6 +35,8 @@ describe('Testing Auth', () => {
       const userData: CreateUserDto = {
         email: 'test@email.com',
         password: 'q1w2e3r4',
+        last_name: 'test',
+        first_name: 'test'
       };
 
       const createUserMutation = {
@@ -57,13 +59,13 @@ describe('Testing Auth', () => {
 
   describe('[POST] /graphql', () => {
     it('response should have the Set-Cookie header with the Authorization token', async () => {
-      const userData: CreateUserDto = {
+      const userData: UserLoginDto = {
         email: 'test@email.com',
         password: 'q1w2e3r4',
       };
 
       const loginUserQuery = {
-        query: `mutation userLogin($userData: CreateUserDto!) {
+        query: `mutation userLogin($userData: UserLoginDto!) {
             login(userData: $userData) {
               email
           }

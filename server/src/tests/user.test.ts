@@ -10,6 +10,8 @@ let userId: number;
 const userData: CreateUserDto = {
   email: 'test@email.com',
   password: 'q1w2e3r4',
+  last_name: 'test',
+  first_name: 'test'
 }
 
 beforeAll(async () => {
@@ -87,11 +89,47 @@ describe('Testing User', () => {
   })
 
   describe('[POST] /graphql', () => {
+    it('response statusCode 200 / findByEmail', async () => {
+      const findUserByEmailQuery = {
+        query: `query userByEmail($email: String!) {
+          getUserByEmail(userEmail: $email) {
+            id
+            email
+          }
+        }`,
+        variables: { email: userData.email }
+      }
+
+      /* Query that expects nothing to be returned */
+      const findUserByEmailQueryNaN = {
+        query: `query userByEmail($email: String!) {
+          getUserByEmail(userEmail: $email) {
+            id
+            email
+          }
+        }`,
+        variables: { email: 'somerandomemail@gmail.com' }
+      }
+
+      const response = await request(app.getServer()).post('/graphql').send(findUserByEmailQuery);
+      expect(response.statusCode).toBe(200);
+      const responseUser = response.body.data.getUserByEmail;
+      expect(response.error).toBeFalsy();
+      expect(responseUser.id).toBe(userId);
+
+      const responseNaN = await request(app.getServer()).post('/graphql').send(findUserByEmailQueryNaN);
+      expect(responseNaN.text).toMatch(/"status":409/);
+    })
+  })
+
+  describe('[POST] /graphql', () => {
     it('response statusCode 200 / updateUser', async () => {
 
-      const newUserData = {
+      const newUserData: CreateUserDto = {
         email: "newemail1234@gmail.com",
-        password: userData.password // typ. provide the password when changing the data.
+        password: userData.password, // typ. provide the password when changing the data.
+        last_name: 'test',
+        first_name: 'test'
       }
 
       const updateUserMutation = {
