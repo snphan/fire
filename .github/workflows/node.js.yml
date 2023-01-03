@@ -54,7 +54,7 @@ jobs:
       working-directory: ./server
       env:
         PORT: 3003
-        DB_HOST: postgres 
+        DB_HOST: localhost 
         DB_PORT:  5432
         DB_USER: root
         DB_PASSWORD: password
