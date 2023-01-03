@@ -18,7 +18,7 @@ export class REAsset extends BaseEntity {
   re_receipts: REReceipt[];
 
   @Field((type) => User)
-  @ManyToOne((type) => User, user => user.re_asset, {
+  @ManyToOne((type) => User, user => user.reAssetConnection, {
     onDelete: "SET NULL"
   })
   user: User;

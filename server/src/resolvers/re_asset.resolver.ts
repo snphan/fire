@@ -12,7 +12,7 @@ export class REAssetResolver extends REAssetRepository {
     description: 'Create REAsset',
   })
   async createREAsset(@Arg('REAssetData') REAssetData: CreateREAssetDto): Promise<REAsset> {
-    const rEAsset: REAsset = await this.REAssetCreate(REAssetData);
-    return rEAsset;
+    const reAsset: REAsset = await this.REAssetCreate(REAssetData);
+    return reAsset;
   }
 }

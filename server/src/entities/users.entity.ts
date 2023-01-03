@@ -1,6 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { Field, ObjectType } from 'type-graphql';
+import { Ctx, Field, ObjectType } from 'type-graphql';
 import { REAsset } from './re_asset.entity';
 
 @ObjectType()
@@ -40,7 +40,13 @@ export class User extends BaseEntity {
   updatedAt: Date;
 
   @OneToMany((type) => REAsset, re_asset => re_asset.user, {
-    onDelete: "CASCADE" /* Delete all user data */
+    onDelete: "CASCADE", /* Delete all user data */
+    cascade: true
   })
-  re_asset: REAsset;
+  reAssetConnection: Promise<REAsset[]>
+
+  @Field((type) => [REAsset], { nullable: true })
+  async re_asset(@Ctx() { REAssetLoader }): Promise<REAsset[]> {
+    return REAssetLoader.load(this.id);
+  }
 }
