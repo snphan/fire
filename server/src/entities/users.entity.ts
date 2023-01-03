@@ -1,6 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { Field, ObjectType } from 'type-graphql';
+import { REAsset } from './re_asset.entity';
 
 @ObjectType()
 @Entity()
@@ -37,4 +38,9 @@ export class User extends BaseEntity {
   @Column()
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany((type) => REAsset, re_asset => re_asset.user, {
+    onDelete: "CASCADE" /* Delete all user data */
+  })
+  re_asset: REAsset;
 }

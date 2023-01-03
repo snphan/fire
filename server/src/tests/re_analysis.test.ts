@@ -5,13 +5,14 @@ import { authResolver } from '@/resolvers/auth.resolver';
 import { userResolver } from '@/resolvers/users.resolver';
 import { getConnection } from 'typeorm';
 import { CreateREAssetDto } from '@/dtos/re_asset.dto';
+import { REAssetResolver } from '@/resolvers/re_asset.resolver';
 
 let app: App;
 let userId: number;
 let authCookie: string;
 
 beforeAll(async () => {
-  app = new App([authResolver, userResolver]);
+  app = new App([authResolver, userResolver, REAssetResolver]);
 
   /* 
     No Entity error occurs because the App doesn't have enough time to 
@@ -71,7 +72,7 @@ describe('Testing Real Estate Asset Analysis', () => {
         province: "some province",
         country: "some country",
         picture_links: ["123_img.png", "3454_img.png"],
-        purchase_date: Date(),
+        purchase_date: new Date(),
         hold_length: 10,
         favorite: true,
         tracking: true
@@ -80,7 +81,9 @@ describe('Testing Real Estate Asset Analysis', () => {
       const createREAssetData = {
         query: `mutation createREAsset($REAssetData: CreateREAssetDto!) {
                   createREAsset(REAssetData: $REAssetData) {
-                    user
+                    user {
+                      id
+                    }
                     purchase_price
                     address
                     postal_code
@@ -91,7 +94,7 @@ describe('Testing Real Estate Asset Analysis', () => {
 
       const response = await request(app.getServer()).post('/graphql').send(createREAssetData);
       expect(response.error).toBeFalsy();
-      expect(response.body.data.createREAsset.user).toBe(REAssetData.userId);
+      expect(response.body.data.createREAsset.user.id).toBe(REAssetData.userId);
       expect(response.body.data.createREAsset.address).toBe(REAssetData.address);
       expect(response.body.data.createREAsset.purchase_price).toBe(REAssetData.purchase_price);
     });
