@@ -14,6 +14,8 @@ import { dbConnection } from '@databases';
 import { authMiddleware, authChecker } from '@middlewares/auth.middleware';
 import errorMiddleware from '@middlewares/error.middleware';
 import { logger, responseLogger, errorLogger } from '@utils/logger';
+import { createREAssetLoader } from '@utils/REAssetLoader';
+import { createREReceiptLoader } from './utils/REReceiptLoader';
 
 class App {
   public app: express.Application;
@@ -78,18 +80,27 @@ class App {
       context: async ({ req, res }) => {
         try {
           const user = await authMiddleware(req);
-          return { user, res };
+          return {
+            user,
+            res,
+            REAssetLoader: createREAssetLoader(),
+            REReceiptLoader: createREReceiptLoader()
+          };
         } catch (error) {
           throw new Error(error);
         }
       },
       formatResponse: (response, request) => {
-        responseLogger(request);
+        if (this.env != "test") {
+          responseLogger(request);
+        }
 
         return response;
       },
       formatError: error => {
-        errorLogger(error);
+        if (this.env != "test") {
+          errorLogger(error);
+        }
 
         return error;
       },

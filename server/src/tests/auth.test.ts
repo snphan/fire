@@ -24,7 +24,7 @@ afterAll(async () => {
   const entities = getConnection().entityMetadatas;
   entities.forEach(async entity => {
     const repository = getConnection().getRepository(entity.name);
-    await repository.clear();
+    await repository.delete({});
   })
   await new Promise<void>(resolve => setTimeout(() => resolve(), 500));
 });
