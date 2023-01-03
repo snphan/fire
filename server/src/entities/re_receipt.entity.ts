@@ -10,8 +10,10 @@ export class REReceipt extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => REAsset, re_asset => re_asset.re_receipts, {
-    onDelete: "SET NULL"
+  @Field((type) => REAsset)
+  @ManyToOne((type) => REAsset, re_asset => re_asset.reReceiptConnection, {
+    onDelete: "SET NULL",
+    eager: true /* Allows us to get the parent (FK referenced) */
   })
   re_asset: REAsset;
 

@@ -5,6 +5,8 @@ import { User } from '@entities/users.entity';
 import REAssetRepository from '@/repositories/re_asset.repository';
 import { REAsset } from '@/entities/re_asset.entity';
 import { CreateREAssetDto } from '@/dtos/re_asset.dto';
+import { REReceipt } from '@/entities/re_receipt.entity';
+import { CreateREReceiptDto } from '@/dtos/re_receipt.dto';
 
 @Resolver()
 export class REAssetResolver extends REAssetRepository {
@@ -14,5 +16,13 @@ export class REAssetResolver extends REAssetRepository {
   async createREAsset(@Arg('REAssetData') REAssetData: CreateREAssetDto): Promise<REAsset> {
     const reAsset: REAsset = await this.REAssetCreate(REAssetData);
     return reAsset;
+  }
+
+  @Mutation(() => REReceipt, {
+    description: 'Create REReceipt',
+  })
+  async createREReceipt(@Arg('REReceiptData') REReceiptData: CreateREReceiptDto): Promise<REReceipt> {
+    const reReceipt: REReceipt = await this.REReceiptCreate(REReceiptData);
+    return reReceipt;
   }
 }

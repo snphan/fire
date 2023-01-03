@@ -1,6 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, PrimaryColumnCannotBeNullableError } from 'typeorm';
-import { Field, ObjectType } from 'type-graphql';
+import { Ctx, Field, ObjectType } from 'type-graphql';
 import { REReceipt } from './re_receipt.entity';
 import { User } from './users.entity';
 
@@ -11,15 +11,20 @@ export class REAsset extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field((type) => [REReceipt])
   @OneToMany((type) => REReceipt, re_receipt => re_receipt.re_asset, {
     onDelete: "SET NULL"
   })
-  re_receipts: REReceipt[];
+  reReceiptConnection: REReceipt[];
+
+  @Field((type) => [REReceipt])
+  async re_receipt(@Ctx() { REReceiptLoader }): Promise<REReceipt[]> {
+    return REReceiptLoader.load(this.id);
+  }
 
   @Field((type) => User)
   @ManyToOne((type) => User, user => user.reAssetConnection, {
-    onDelete: "SET NULL"
+    onDelete: "SET NULL",
+    eager: true
   })
   user: User;
 
