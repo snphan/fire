@@ -5,7 +5,7 @@ import { authResolver } from '@/resolvers/auth.resolver';
 import { userResolver } from '@/resolvers/users.resolver';
 import { getConnection } from 'typeorm';
 import { CreateREAssetDto } from '@/dtos/re_asset.dto';
-import { REAssetResolver } from '@/resolvers/re_asset.resolver';
+import { REAssetResolver } from '@/resolvers/re_analysis.resolver';
 import { CreateREReceiptDto } from '@/dtos/re_receipt.dto';
 
 let app: App;
@@ -80,7 +80,7 @@ describe('Testing Real Estate Asset Analysis', () => {
         tracking: true
       };
 
-      const createREAssetData = {
+      const createREAssetMutation = {
         query: `mutation createREAsset($REAssetData: CreateREAssetDto!) {
                   createREAsset(REAssetData: $REAssetData) {
                     id
@@ -95,7 +95,7 @@ describe('Testing Real Estate Asset Analysis', () => {
         variables: { REAssetData: REAssetData }
       }
 
-      const response = await request(app.getServer()).post('/graphql').send(createREAssetData);
+      const response = await request(app.getServer()).post('/graphql').send(createREAssetMutation);
       expect(response.error).toBeFalsy();
       expect(response.body.data.createREAsset.user.id).toBe(REAssetData.userId);
       expect(response.body.data.createREAsset.address).toBe(REAssetData.address);
@@ -132,7 +132,7 @@ describe('Testing Real Estate Asset Analysis', () => {
 
 
 
-      const createREReceiptData = {
+      const createREReceiptMutation = {
         query: `mutation createREReceipt($REReceiptData: CreateREReceiptDto!) {
                   createREReceipt(REReceiptData: $REReceiptData) {
                     re_asset {
@@ -144,7 +144,7 @@ describe('Testing Real Estate Asset Analysis', () => {
         variables: { REReceiptData: REReceiptData }
       }
 
-      const response = await request(app.getServer()).post('/graphql').send(createREReceiptData);
+      const response = await request(app.getServer()).post('/graphql').send(createREReceiptMutation);
       expect(response.error).toBeFalsy();
       expect(response.body.data.createREReceipt.re_asset.id).toBe(reAssetId);
       expect(response.body.data.createREReceipt.type).toBe(REReceiptData.type);
@@ -205,5 +205,27 @@ describe('Testing Real Estate Asset Analysis', () => {
     });
   });
 
+  describe('[POST] query user by id and get RE analysis info /graphql', () => {
+    it('should return RE Asset data and RE Receipt data and parent ids', async () => {
+      const createREAssumptionsMutation = {
+        query: `mutation createREAssumptions($REAssumptionsData: CreateREAssumptionsDto!) {
+          createREAssumptions(REAssumptionsData: $REAssumptionsData) {
+            id
+            rent_inc
+            property_inc
+            re_asset {
+              id
+            }
+          }
+        }`,
+        variables: { REAssumptionsData: { reAssetId: reAssetId } }
+      }
 
+      const response = await request(app.getServer()).post('/graphql').send(createREAssumptionsMutation);
+      expect(response.error).toBeFalsy();
+      expect(response.body.data.createREAssumptions.re_asset.id).toBe(reAssetId);
+      expect(response.body.data.createREAssumptions.rent_inc).toBe(3); /* Default value */
+      expect(response.body.data.createREAssumptions.property_inc).toBe(3); /* Default value */
+    });
+  });
 })
