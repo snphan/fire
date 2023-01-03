@@ -3,7 +3,7 @@ import validateEnv from '@utils/validateEnv';
 
 import { authResolver } from '@resolvers/auth.resolver';
 import { userResolver } from '@resolvers/users.resolver';
-import { REAssetResolver } from './resolvers/re_asset.resolver';
+import { REAssetResolver } from './resolvers/re_analysis.resolver';
 
 validateEnv();
 

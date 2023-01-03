@@ -1,8 +1,9 @@
 import { IsNotEmpty } from 'class-validator';
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, PrimaryColumnCannotBeNullableError } from 'typeorm';
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, PrimaryColumnCannotBeNullableError, OneToOne, JoinColumn } from 'typeorm';
 import { Ctx, Field, ObjectType } from 'type-graphql';
 import { REReceipt } from './re_receipt.entity';
 import { User } from './users.entity';
+import { REAssumptions } from './re_assumption.entity';
 
 @ObjectType()
 @Entity()
@@ -27,6 +28,15 @@ export class REAsset extends BaseEntity {
     eager: true
   })
   user: User;
+
+  @OneToOne((type) => REAssumptions, {
+    onDelete: "CASCADE",
+    eager: true,
+    nullable: true
+  })
+  @JoinColumn()
+  re_assumptions: REAssumptions
+
 
   @Field()
   @Column()

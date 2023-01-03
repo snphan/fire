@@ -6,6 +6,8 @@ import { CreateREAssetDto } from '@/dtos/re_asset.dto';
 import { REAsset } from '@/entities/re_asset.entity';
 import { CreateREReceiptDto } from '@/dtos/re_receipt.dto';
 import { REReceipt } from '@/entities/re_receipt.entity';
+import { CreateREAssumptionsDto } from '@/dtos/re_assumptions.dto';
+import { REAssumptions } from '@/entities/re_assumption.entity';
 
 
 @EntityRepository()
@@ -22,5 +24,12 @@ export default class REAssetRepository {
     const findREAsset: REAsset = await REAsset.findOne({ where: { id: reAssetId } });
     const createREReceiptData: REReceipt = await REReceipt.create({ re_asset: findREAsset, ...REReceiptInfo }).save();
     return createREReceiptData;
+  }
+
+  public async REAssumptionsCreate(REAssumptionsData: CreateREAssumptionsDto): Promise<REAssumptions> {
+    const { reAssetId, ...REAssumptionsInfo } = REAssumptionsData;
+    const findREAsset: REAsset = await REAsset.findOne({ where: { id: reAssetId } });
+    const createREAssumptionsData: REAssumptions = await REAssumptions.create({ re_asset: findREAsset, ...REAssumptionsData }).save();
+    return createREAssumptionsData;
   }
 }
