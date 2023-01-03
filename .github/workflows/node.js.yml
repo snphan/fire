@@ -10,8 +10,9 @@ on:
     branches: [ "main" ]
 
 jobs:
-  container-job:
-    # Containers must run in Linux based operating systems
+
+  test-server:
+
     runs-on: ubuntu-latest
     # Docker Hub image that `container-job` executes in
     container: pg-test
@@ -33,11 +34,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
-  test-server:
-
-    runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [14.x, 16.x, 18.x]
