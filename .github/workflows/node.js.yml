@@ -14,23 +14,26 @@ jobs:
   test-server:
 
     runs-on: ubuntu-latest
-    # Docker Hub image that `container-job` executes in
+    strategy:
+      matrix:
+        node-version: [16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     services:
       # Label used to access the service container
       postgres: 
         # Docker Hub image
-        image: bitnami/postgresql:11-debian-9
+        image: postgres
         # Provide the password for postgres
         env:
           POSTGRESQL_USERNAME: root
           POSTGRESQL_PASSWORD: password
           POSTGRESQL_DATABASE: test
-
-    strategy:
-      matrix:
-        node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
     - uses: actions/checkout@v3
