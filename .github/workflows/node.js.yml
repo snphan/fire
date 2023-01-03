@@ -26,9 +26,9 @@ jobs:
         image: postgres
         # Provide the password for postgres
         env:
-          POSTGRESQL_USERNAME: root
-          POSTGRESQL_PASSWORD: password
-          POSTGRESQL_DATABASE: test
+          POSTGRES_USERNAME: root
+          POSTGRES_PASSWORD: password
+          POSTGRES_DATABASE: test
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
