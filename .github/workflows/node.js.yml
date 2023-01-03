@@ -25,6 +25,8 @@ jobs:
           POSTGRESQL_USERNAME: root
           POSTGRESQL_PASSWORD: password
           POSTGRESQL_DATABASE: test
+        options: >-
+          --health-cmd pg_isready
 
     strategy:
       matrix:
