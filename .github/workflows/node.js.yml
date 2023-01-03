@@ -28,12 +28,10 @@ jobs:
           POSTGRESQL_USERNAME: root
           POSTGRESQL_PASSWORD: password
           POSTGRESQL_DATABASE: test
-        options: >-
-          --health-cmd pg_isready
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
