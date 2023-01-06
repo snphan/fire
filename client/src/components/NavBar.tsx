@@ -3,7 +3,7 @@ import home from '@/icons/home.svg';
 import '../App.css';
 import { Tooltip, Button } from '@material-tailwind/react';
 
-export function NavBar({ setAppState, endSession }: any) {
+export function NavBar({ setAppState, endSession, currState }: any) {
 
   return (
     <nav className="bg-zinc-800 drop-shadow-strong w-20 h-screen fixed top-0 left-0">
@@ -14,7 +14,7 @@ export function NavBar({ setAppState, endSession }: any) {
         ]).map((icon) => (
 
           <Tooltip content={icon.state.replaceAll("-", " ")} className="capitalize bg-zinc-900 p-2">
-            <li key={icon.name} onClick={() => setAppState(icon.state)} className="cursor-pointer hover:bg-zinc-600 rounded-lg flex flex-col justify-center items-center w-14 h-14 m-3">
+            <li key={icon.name} onClick={() => setAppState(icon.state)} className={((currState === icon.state) ? "bg-sky-500 " : "") + ("cursor-pointer hover:bg-zinc-600 rounded-lg flex flex-col justify-center items-center w-14 h-14 m-3")}>
               <span className="text-3xl material-icons material-symbols-outlined">{icon.name}</span>
             </li>
           </Tooltip>

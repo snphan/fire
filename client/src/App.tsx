@@ -46,14 +46,14 @@ function App() {
       case "dashboard":
         return (
           <>
-            <NavBar setAppState={setAppState} endSession={endSession} />
+            <NavBar setAppState={setAppState} endSession={endSession} currState={appState} />
             <Dashboard setAppState={setAppState} />
           </>
         );
       case "real-estate-tracker":
         return (
           <>
-            <NavBar setAppState={setAppState} endSession={endSession} />
+            <NavBar setAppState={setAppState} endSession={endSession} currState={appState} />
             <RealEstateTracker setAppState={setAppState} />
           </>
         );
