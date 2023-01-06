@@ -58,7 +58,7 @@ function App() {
         return (
           <>
             <NavBar setAppState={setAppState} endSession={endSession} currState={appState} />
-            <RealEstateTracker setAppState={setAppState} />
+            <RealEstateTracker setAppState={setAppState} userID={userID} />
           </>
         );
       default:
@@ -67,7 +67,7 @@ function App() {
   }
 
   return (
-    <div className="App App-header bg-zinc-900">
+    <div className="ml-20 App bg-zinc-900">
       {renderState(appState)}
     </div >
   );
