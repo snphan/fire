@@ -11,7 +11,7 @@ interface UserInfo {
   password: string,
 }
 
-export function SignUpForm({ user, goBackToLogin }: any) {
+export function SignUpForm({ user, goToDashboard, loginUser, setUserID }: any) {
 
   const [userInfo, setUserInfo] = useState<UserInfo>({
     email: user.email,
@@ -25,7 +25,7 @@ export function SignUpForm({ user, goBackToLogin }: any) {
   if (error) return (
     <div>
       <p>Submission error! {error.message} {JSON.stringify(data)}</p>
-      <button onClick={() => goBackToLogin()}>Back</button>
+      <button onClick={() => goToDashboard()}>Back</button>
     </div>
   );
 
@@ -33,8 +33,17 @@ export function SignUpForm({ user, goBackToLogin }: any) {
     /* Singup using only the unique information from google */
     userInfo.password = user.sub;
 
-    createUser({ variables: { userData: userInfo } });
-    goBackToLogin();
+    createUser({
+      variables: { userData: userInfo }, onCompleted: () => {
+        loginUser({
+          variables: { userData: { email: user.email, password: user.sub } },
+          onCompleted: (res: any) => {
+            setUserID(res.login.id);
+          }
+        });
+      }
+    });
+    goToDashboard();
   }
 
   return (
@@ -63,7 +72,7 @@ export function SignUpForm({ user, goBackToLogin }: any) {
 
       <div>
         <button className="w-32 bg-transparent border-blue-500 border hover:bg-blue-500 m-5 text-white text-lg font-bold py-2 px-4 rounded-full"
-          onClick={() => goBackToLogin()}>Back</button>
+          onClick={() => goToDashboard()}>Back</button>
         <button className="w-32 bg-blue-500 hover:bg-blue-700 m-5 text-white text-lg font-bold py-2 px-4 rounded-full"
           onClick={() => handleRegister()}>Register</button>
       </div>

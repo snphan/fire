@@ -18,6 +18,9 @@ function App() {
   /* appState manages which "page" to show */
   const [appState, setAppState] = useState<string>("auth");
 
+  /* userID to be set after login */
+  const [userID, setUserID] = useState<number | undefined>(undefined);
+
   /* Auth Methods */
   const [loginUser, {
     loading: loginLoading,
@@ -30,6 +33,7 @@ function App() {
 
   const endSession = () => {
     logoutUser();
+    setUserID(undefined);
     setUserInfo(undefined);
     setAppState("auth");
   }
@@ -37,10 +41,10 @@ function App() {
   const renderState = (appState: string) => {
     switch (appState) {
       case "auth":
-        return (<Auth setUserInfo={setUserInfo} loginUser={loginUser} setAppState={setAppState} />);
+        return (<Auth setUserInfo={setUserInfo} loginUser={loginUser} setAppState={setAppState} setUserID={setUserID} />);
       case "signup":
-        return (<SignUpForm user={userInfo} setUserInfo={setUserInfo} goBackToLogin={() => {
-          setAppState("auth");
+        return (<SignUpForm user={userInfo} setUserInfo={setUserInfo} loginUser={loginUser} setUserID={setUserID} goToDashboard={() => {
+          setAppState("dashboard");
           setUserInfo(undefined);
         }} />);
       case "dashboard":

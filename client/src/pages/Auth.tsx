@@ -5,7 +5,7 @@ import jwt_decode from 'jwt-decode';
 import { REACT_APP_GOOGLE_CREDS_APPID } from '@/config';
 import fire_logo from "../fire_logo.png";
 
-export function Auth({ setAppState, loginUser, setUserInfo }: any) {
+export function Auth({ setAppState, loginUser, setUserInfo, setUserID }: any) {
 
 
   const [getUserByEmail, { loading }] = useLazyQuery(GET_USER_BY_EMAIL, {
@@ -18,7 +18,11 @@ export function Auth({ setAppState, loginUser, setUserInfo }: any) {
     getUserByEmail({
       variables: { email: userObject.email }, onCompleted: (() => {
         const userData = { email: userObject.email, password: userObject.sub };
-        loginUser({ variables: { userData: userData } });
+        loginUser({
+          variables: { userData: userData }, onCompleted: (res: any) => {
+            setUserID(res.login.id)
+          }
+        });
         setAppState("dashboard");
       }), onError: (() => {
         setUserInfo(userObject);

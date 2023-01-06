@@ -13,8 +13,8 @@ export function NavBar({ setAppState, endSession, currState }: any) {
           { name: "insights", state: "real-estate-tracker" }
         ]).map((icon) => (
 
-          <Tooltip content={icon.state.replaceAll("-", " ")} className="capitalize bg-zinc-900 p-2">
-            <li key={icon.name} onClick={() => setAppState(icon.state)} className={((currState === icon.state) ? "bg-sky-500 " : "") + ("cursor-pointer hover:bg-zinc-600 rounded-lg flex flex-col justify-center items-center w-14 h-14 m-3")}>
+          <Tooltip key={icon.name} content={icon.state.replaceAll("-", " ")} className="capitalize bg-zinc-900 p-2">
+            <li onClick={() => setAppState(icon.state)} className={((currState === icon.state) ? "bg-sky-500 " : "") + ("cursor-pointer hover:bg-zinc-600 rounded-lg flex flex-col justify-center items-center w-14 h-14 m-3")}>
               <span className="text-3xl material-icons material-symbols-outlined">{icon.name}</span>
             </li>
           </Tooltip>
