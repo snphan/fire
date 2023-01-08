@@ -15,15 +15,15 @@ export function RealEstateTracker({ userID }: any) {
   if (error) return <p>{`Error! ${error}`}</p>;
 
   return (
-    <>
-      <div className="title w-full flex m-2">
+    <div className="ml-24 min-h-screen">
+      <div className="flex ml-2">
         <h1>Real Estate Tracker</h1>
         <div className="grow"></div>
       </div>
       {REAssetData?.getUserById.re_asset.map((item: any) => {
         console.log(item);
-        return (<p>{JSON.stringify(item)}</p>);
+        return (<p className="ml-10 m-5">{JSON.stringify(item)}</p>);
       })}
-    </>
+    </div>
   )
 }

@@ -45,12 +45,10 @@ export function Auth({ setAppState, loginUser, setUserInfo, setUserID }: any) {
   }, []);
 
   return (
-    <>
-      <p className="grow"></p>
+    <div className="min-h-screen text-center flex flex-col items-center justify-center">
       <img src={fire_logo} id="fire-logo" className="App-logo rounded shadow" alt="logo" />
       <div id="signInDiv"></div>
-      <p className="grow"></p>
-    </>
+    </div>
   )
 
 }

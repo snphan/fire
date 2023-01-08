@@ -46,6 +46,9 @@ function App() {
         return (<SignUpForm user={userInfo} setUserInfo={setUserInfo} loginUser={loginUser} setUserID={setUserID} goToDashboard={() => {
           setAppState("dashboard");
           setUserInfo(undefined);
+        }} goToSignIn={() => {
+          setAppState("auth");
+          setUserInfo(undefined);
         }} />);
       case "dashboard":
         return (
@@ -67,9 +70,9 @@ function App() {
   }
 
   return (
-    <div className="ml-20 App bg-zinc-900">
+    <div className="text-slate-200 bg-zinc-900">
       {renderState(appState)}
-    </div >
+    </div>
   );
 }
 
