@@ -7,6 +7,7 @@ import { Auth } from '@/pages/Auth';
 import { RealEstateTracker } from '@/pages/RealEstateTracker';
 import { Dashboard } from '@/pages/Dashboard';
 import { NavBar } from './components/NavBar';
+import { ThemeProvider } from '@material-tailwind/react';
 
 declare global {
   /* google variable is loaded from script in public/index.html */
@@ -70,7 +71,7 @@ function App() {
   }
 
   return (
-    <div className="text-slate-200 bg-zinc-900">
+    <div className="text-gray-200 bg-gray-900">
       {renderState(appState)}
     </div>
   );

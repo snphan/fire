@@ -9,9 +9,9 @@ import {
 
 export function AddREAssetForm({ open, handleOpen }: any) {
   return (
-    <Dialog open={open} handler={handleOpen} className="bg-slate-100 h-44 w-1/2">
+    <Dialog open={open} handler={handleOpen}>
       <DialogHeader>Its a simple dialog.</DialogHeader>
-      <DialogBody>
+      <DialogBody divider>
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusamus ad
         reprehenderit omnis perspiciatis aut odit! Unde architecto
         perspiciatis, dolorum dolorem iure quia saepe autem accusamus eum

@@ -26,8 +26,8 @@ export function RealEstateTracker({ userID }: any) {
         <div className="flex items-center ml-2">
           <h1>Real Estate Tracker</h1>
           <div className="grow"></div>
-          <Tooltip content={"Add"} className="capitalize bg-zinc-900 p-2">
-            <span onClick={handleOpenAddREAsset} className="m-4 text-zinc-600 hover:text-zinc-200 cursor-pointer text-5xl material-icons material-symbols-outlined">add</span>
+          <Tooltip content={"Add"} className="capitalize bg-gray-900 p-2">
+            <span onClick={handleOpenAddREAsset} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer text-5xl material-icons material-symbols-outlined">add</span>
           </Tooltip>
         </div>
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
