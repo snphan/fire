@@ -22,4 +22,13 @@ code {
         @apply font-bold;
         @apply m-5;
     }
+    h3 {
+        @apply text-3xl;
+        @apply font-bold;
+        @apply m-2
+    }
+    h4 {
+        @apply text-xl;
+        @apply m-1;
+    }
 }

@@ -18,6 +18,8 @@ export const GET_USER_BY_ID = gql`
         address
         purchase_price
         picture_links
+        city
+        province
       }
     }
   }

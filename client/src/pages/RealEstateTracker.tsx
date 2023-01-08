@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { GET_USER_BY_ID } from '@/queries';
 import { useLazyQuery, useQuery } from '@apollo/client';
+import { REListItem } from '@/components/REListItem';
 
 
 export function RealEstateTracker({ userID }: any) {
@@ -20,10 +21,11 @@ export function RealEstateTracker({ userID }: any) {
         <h1>Real Estate Tracker</h1>
         <div className="grow"></div>
       </div>
-      {REAssetData?.getUserById.re_asset.map((item: any) => {
-        console.log(item);
-        return (<p className="ml-10 m-5">{JSON.stringify(item)}</p>);
-      })}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
+        {REAssetData?.getUserById.re_asset.map((item: any) => {
+          return (<REListItem REInfo={item} />);
+        })}
+      </div>
     </div>
   )
 }
