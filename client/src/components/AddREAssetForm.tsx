@@ -7,6 +7,8 @@ import {
   DialogBody,
   DialogFooter,
 } from "@material-tailwind/react";
+import { REACT_APP_MEDIA_HOST } from '@/config';
+import axios from 'axios';
 
 interface REAsset {
   userId: number;
@@ -41,6 +43,20 @@ export function AddREAssetForm({ open, handleOpen, userId }: any) {
     tracking: false
   }
 
+  const uploadFiles = (files: FileList) => {
+    console.log("Sending Files");
+    let formData = new FormData();
+    Array.from(files).forEach((file) => {
+      formData.append("file", file);
+    })
+    console.log(formData);
+    return axios.post(`${REACT_APP_MEDIA_HOST}/upload`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
+
   const [REAssetInfo, setREAssetInfo] = useState<REAsset>(JSON.parse(JSON.stringify(defaultREAsset)));
 
   return (
@@ -51,10 +67,21 @@ export function AddREAssetForm({ open, handleOpen, userId }: any) {
         <div className="flex flex-wrap flex-col mx-3 mb-6">
           <div className="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
           >Pictures</div>
-          <label htmlFor="Pictures" className="w-24 h-24 bg-gray-600 flex items-center justify-center rounded-xl"><span className="material-icons">photo_camera</span></label>
+          <div className="flex flex-wrap">
+            <label htmlFor="Pictures" className="m-1 cursor-pointer hover:scale-105 hover:bg-gray-400 w-24 h-24 bg-gray-600 flex items-center justify-center rounded-xl"><span className="material-icons">photo_camera</span></label>
+            {REAssetInfo.picture_links.map((link: string) => {
+              return <img key={link} className='m-1 rounded-xl w-24 h-24' src={`${REACT_APP_MEDIA_HOST}/media/${link}`} alt="" />
+            })}
+          </div>
           <input className="hidden"
-            type="file" multiple name="" id="Pictures" onChange={(e) => {
-              console.log(e.target.files);
+            type="file" multiple name="" id="Pictures" onChange={async (e) => {
+              if (e.target.files) {
+                const { picture_links } = REAssetInfo;
+                uploadFiles(e.target.files!).then((res) => {
+                  setREAssetInfo({ ...REAssetInfo, picture_links: [...picture_links, ...res.data.filenames] });
+                }
+                );
+              }
             }} />
         </div>
 
