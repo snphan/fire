@@ -46,7 +46,7 @@ export function Auth({ setAppState, loginUser, setUserInfo, setUserID }: any) {
 
   return (
     <div className="min-h-screen text-center flex flex-col items-center justify-center">
-      <img src={fire_logo} id="fire-logo" className="App-logo rounded shadow" alt="logo" />
+      <img src={fire_logo} id="fire-logo" className="m-5 w-48 h-48 rounded shadow" alt="logo" />
       <div id="signInDiv"></div>
     </div>
   )
