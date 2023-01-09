@@ -9,6 +9,9 @@ import {
 } from "@material-tailwind/react";
 import { REACT_APP_MEDIA_HOST } from '@/config';
 import axios from 'axios';
+import { useMutation } from '@apollo/client';
+import { CREATE_REASSET } from '@/mutations';
+import { GET_USER_BY_ID } from '@/queries';
 
 interface REAsset {
   userId: number;
@@ -26,10 +29,16 @@ interface REAsset {
 }
 
 
-export function AddREAssetForm({ open, handleOpen, userId }: any) {
+export function AddREAssetForm({ open, handleOpen, userID }: any) {
+
+  const [createREAsset, { loading: createREAssetLoading }] = useMutation(CREATE_REASSET, {
+    refetchQueries: [
+      { query: GET_USER_BY_ID, variables: { userID: userID } }
+    ]
+  });
 
   const defaultREAsset: REAsset = {
-    userId: userId,
+    userId: userID,
     purchase_price: 0,
     address: "",
     postal_code: "",
@@ -169,7 +178,9 @@ export function AddREAssetForm({ open, handleOpen, userId }: any) {
           <span>Cancel</span>
         </Button>
         <Button variant="gradient" color="green" onClick={() => {
-          handleOpen()
+          createREAsset({ variables: { reAssetData: REAssetInfo } });
+          setREAssetInfo(JSON.parse(JSON.stringify(defaultREAsset)));
+          handleOpen();
         }}>
           <span>Confirm</span>
         </Button>

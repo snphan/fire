@@ -24,3 +24,11 @@ mutation userLogout {
   }
 }
 `
+
+export const CREATE_REASSET = gql`
+mutation createREAsset($reAssetData: CreateREAssetDto!) {
+  createREAsset(REAssetData: $reAssetData) {
+    id
+  }
+}
+`
