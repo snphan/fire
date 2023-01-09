@@ -4,7 +4,7 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { REListItem } from '@/components/REListItem';
 import { Tooltip } from '@material-tailwind/react';
 import { AddREAssetForm } from '@/components/AddREAssetForm';
-
+import { Loading } from '@/components/Loading';
 
 export function RealEstateTracker({ userID }: any) {
 
@@ -17,7 +17,6 @@ export function RealEstateTracker({ userID }: any) {
     refetchData({ userID: userID });
   }, [userID])
 
-  if (loading) return <p>Loading!</p>;
   if (error) return <p>{`Error! ${error}`}</p>;
 
   return (
@@ -30,13 +29,16 @@ export function RealEstateTracker({ userID }: any) {
             <span onClick={handleOpenAddREAsset} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer text-5xl material-icons material-symbols-outlined">add</span>
           </Tooltip>
         </div>
+        {loading &&
+          <Loading />
+        }
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
           {REAssetData?.getUserById.re_asset.map((item: any) => {
             return (<REListItem REInfo={item} />);
           })}
         </div>
       </div>
-      <AddREAssetForm open={openAddREAsset} handleOpen={handleOpenAddREAsset} />
+      <AddREAssetForm open={openAddREAsset} handleOpen={handleOpenAddREAsset} userID={userID} />
     </>
   )
 }
