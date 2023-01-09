@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+  Checkbox,
   Button,
   Dialog,
   DialogHeader,
@@ -7,26 +8,142 @@ import {
   DialogFooter,
 } from "@material-tailwind/react";
 
-export function AddREAssetForm({ open, handleOpen }: any) {
+interface REAsset {
+  userId: number;
+  purchase_price: number;
+  address: string;
+  postal_code: string;
+  city: string;
+  province: string;
+  country: string;
+  picture_links: string[];
+  purchase_date: Date;
+  hold_length: number;
+  favorite: boolean;
+  tracking: boolean;
+}
+
+
+export function AddREAssetForm({ open, handleOpen, userId }: any) {
+
+  const defaultREAsset: REAsset = {
+    userId: userId,
+    purchase_price: 0,
+    address: "",
+    postal_code: "",
+    city: "",
+    province: "",
+    country: "",
+    picture_links: [],
+    purchase_date: new Date(),
+    hold_length: 10,
+    favorite: false,
+    tracking: false
+  }
+
+  const [REAssetInfo, setREAssetInfo] = useState<REAsset>(JSON.parse(JSON.stringify(defaultREAsset)));
+
   return (
-    <Dialog open={open} handler={handleOpen}>
-      <DialogHeader>Its a simple dialog.</DialogHeader>
-      <DialogBody divider>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusamus ad
-        reprehenderit omnis perspiciatis aut odit! Unde architecto
-        perspiciatis, dolorum dolorem iure quia saepe autem accusamus eum
-        praesentium magni corrupti explicabo!
+    <Dialog size="xl" open={open} handler={handleOpen} className="bg-gray-800 max-h-screen overflow-auto">
+      <DialogHeader className="text-gray-100">Add a Property</DialogHeader>
+      <DialogBody className="text-gray-200 flex flex-col">
+
+        <div className="flex flex-wrap flex-col mx-3 mb-6">
+          <div className="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
+          >Pictures</div>
+          <label htmlFor="Pictures" className="w-24 h-24 bg-gray-600 flex items-center justify-center rounded-xl"><span className="material-icons">photo_camera</span></label>
+          <input className="hidden"
+            type="file" multiple name="" id="Pictures" onChange={(e) => {
+              console.log(e.target.files);
+            }} />
+        </div>
+
+        <div className="flex flex-wrap mx-3 mb-6">
+          <label className="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
+            htmlFor="Address">Address</label>
+          <input className="appearance-none block w-full text-lg bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            type="text" name="" id="Address" value={REAssetInfo.address} onChange={(e) => setREAssetInfo(({ ...REAssetInfo, address: e.target.value }))} />
+        </div>
+
+        <div className="flex flex-wrap mx-3 mb-6">
+          <label className="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
+            htmlFor="Purchase Price">Purchase Price</label>
+          <input className="appearance-none block w-full text-lg bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            type="text" name="" id="Purchase Price" value={REAssetInfo.purchase_price} onChange={(e) => setREAssetInfo(({ ...REAssetInfo, purchase_price: e.target.value ? parseInt(e.target.value) : 0 }))} />
+        </div>
+
+        <div className="flex">
+          <div className="flex flex-wrap mx-3 mb-6">
+            <label className="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
+              htmlFor="City">City</label>
+            <input className="appearance-none block w-full text-lg bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              type="text" name="" id="City" value={REAssetInfo.city} onChange={(e) => setREAssetInfo(({ ...REAssetInfo, city: e.target.value }))} />
+          </div>
+
+          <div className="flex flex-wrap mx-3 mb-6">
+            <label className="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
+              htmlFor="Province">Province</label>
+            <input className="appearance-none block w-full text-lg bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              type="text" name="" id="Province" value={REAssetInfo.province} onChange={(e) => setREAssetInfo(({ ...REAssetInfo, province: e.target.value }))} />
+          </div>
+
+          <div className="flex flex-wrap mx-3 mb-6">
+            <label className="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
+              htmlFor="Country">Country</label>
+            <input className="appearance-none block w-full text-lg bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              type="text" name="" id="Country" value={REAssetInfo.country} onChange={(e) => setREAssetInfo(({ ...REAssetInfo, country: e.target.value }))} />
+          </div>
+        </div>
+
+        <div className="flex">
+          <div className="flex flex-wrap mx-3 mb-6">
+            <label className="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
+              htmlFor="hold_length">Hold Length</label>
+            <input className="appearance-none block w-full text-lg bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              type="text" name="" id="hold_length" value={REAssetInfo.hold_length} onChange={(e) => setREAssetInfo(({ ...REAssetInfo, hold_length: e.target.value ? parseInt(e.target.value) : 0 }))} />
+          </div>
+
+          <div className="flex flex-wrap mx-3 mb-6">
+            <label className="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
+              htmlFor="purchase_date">Purchase Date</label>
+            <input className="appearance-none block w-full text-lg bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              type="date" name="" defaultValue={REAssetInfo.purchase_date.toString().substring(0, 10)} id="purchase_date" onChange={(e) => {
+                setREAssetInfo({ ...REAssetInfo, purchase_date: new Date(e.target.value) });
+              }} />
+          </div>
+        </div>
+
+        <div className="flex mx-3 mb-6">
+          <div className="flex flex-col mx-3">
+            <label className="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
+              htmlFor="favorite">favorite</label>
+            <input className="w-5 h-5 m-2"
+              type="checkbox" name="" checked={REAssetInfo.favorite} id="favorite" onChange={(e) => { setREAssetInfo({ ...REAssetInfo, favorite: e.target.checked }) }} />
+          </div>
+          <div className="flex flex-col mx-3">
+            <label className="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
+              htmlFor="tracking">tracking</label>
+            <input className="w-5 h-5 m-2"
+              type="checkbox" name="" checked={REAssetInfo.tracking} id="tracking" onChange={(e) => setREAssetInfo(({ ...REAssetInfo, tracking: e.target.checked }))} />
+          </div>
+        </div>
+
       </DialogBody>
       <DialogFooter>
         <Button
           variant="text"
           color="red"
-          onClick={handleOpen}
+          onClick={() => {
+            setREAssetInfo(JSON.parse(JSON.stringify(defaultREAsset)));
+            handleOpen();
+          }}
           className="mr-1"
         >
           <span>Cancel</span>
         </Button>
-        <Button variant="gradient" color="green" onClick={handleOpen}>
+        <Button variant="gradient" color="green" onClick={() => {
+          handleOpen()
+        }}>
           <span>Confirm</span>
         </Button>
       </DialogFooter>
