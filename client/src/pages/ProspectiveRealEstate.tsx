@@ -6,7 +6,7 @@ import { Tooltip } from '@material-tailwind/react';
 import { AddREAssetForm } from '@/components/AddREAssetForm';
 import { Loading } from '@/components/Loading';
 
-export function RealEstateTracker({ userID }: any) {
+export function ProspectiveRealEstate({ userID }: any) {
 
   const { data: REAssetData, loading, error, refetch: refetchData } = useQuery(GET_USER_BY_ID);
   const [openAddREAsset, setOpenAddREAsset] = useState<boolean>(false);

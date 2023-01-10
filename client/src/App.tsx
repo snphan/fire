@@ -4,7 +4,7 @@ import { useMutation } from '@apollo/client';
 import { SignUpForm } from './pages/SignUp';
 import { LOGIN_USER, LOGOUT_USER } from '@/mutations';
 import { Auth } from '@/pages/Auth';
-import { RealEstateTracker } from '@/pages/RealEstateTracker';
+import { ProspectiveRealEstate } from '@/pages/ProspectiveRealEstate';
 import { Dashboard } from '@/pages/Dashboard';
 import { NavBar } from './components/NavBar';
 import { ThemeProvider } from '@material-tailwind/react';
@@ -58,11 +58,11 @@ function App() {
             <Dashboard setAppState={setAppState} />
           </>
         );
-      case "real-estate-tracker":
+      case "prospective-real-estate":
         return (
           <>
             <NavBar setAppState={setAppState} endSession={endSession} currState={appState} />
-            <RealEstateTracker setAppState={setAppState} userID={userID} />
+            <ProspectiveRealEstate setAppState={setAppState} userID={userID} />
           </>
         );
       default:

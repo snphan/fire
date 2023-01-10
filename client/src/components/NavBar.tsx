@@ -10,7 +10,7 @@ export function NavBar({ setAppState, endSession, currState }: any) {
       <ul className="flex items-center justify-start flex-col h-full">
         {([
           { name: "space_dashboard", state: "dashboard" },
-          { name: "insights", state: "real-estate-tracker" }
+          { name: "real_estate_agent", state: "prospective-real-estate" }
         ]).map((icon) => (
 
           <Tooltip key={icon.name} content={icon.state.replaceAll("-", " ")} className="capitalize bg-gray-900 p-2">
