@@ -52,5 +52,10 @@
     "tailwindcss": "^3.2.4",
     "tsconfig-paths": "^4.1.1"
   },
-  "cracoConfig": "craco.config.js"
+  "cracoConfig": "craco.config.js",
+  "jest": {
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(axios|react-day-picker)/)"
+    ]
+  }
 }
