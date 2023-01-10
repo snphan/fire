@@ -21,7 +21,8 @@
     "jsx": "react-jsx",
     "baseUrl": "src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["*"],
+      "axios": ["../node_modules/axios/dist/node/axios.cjs"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.json", ".env"],

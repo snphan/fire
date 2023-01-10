@@ -1,9 +1,11 @@
 import React from 'react';
 import { REACT_APP_MEDIA_HOST } from '@/config';
 
-export function REListItem({ REInfo }: any) {
+export function REListItem({ REInfo, onClick, disabled }: any) {
   return (
-    <div className="hover:scale-105 cursor-pointer flex items-center p-5 rounded-xl mx-5 my-5 min-h-36 bg-gray-800 shadow-2xl">
+    <div className={(disabled ? "" : "hover:scale-105 cursor-pointer") + " flex items-center p-5 rounded-xl mx-5 my-5 min-h-36 bg-gray-800 shadow-2xl"}
+      onClick={onClick}
+    >
       <img className="rounded-xl w-28 h-28" src={`${REACT_APP_MEDIA_HOST}/media/${REInfo.picture_links.length ? REInfo.picture_links[0] : "a04e34f6-85fa-447a-b316-89363851e9c6-fire logo.png"}`} alt="" />
       <div className="m-2 flex flex-col justify-start">
         <h3>${REInfo.purchase_price}</h3>
