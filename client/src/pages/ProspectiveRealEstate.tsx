@@ -50,20 +50,23 @@ export function ProspectiveRealEstate({ userID }: any) {
           :
           /* Property Analysis SubPage */
           <div className="flex flex-col ml-2">
-            <div className="flex items-start">
-              <div className="flex items-center">
-                <Tooltip content={"Back"} className="capitalize bg-gray-900 p-2">
-                  <div className="mx-2 hover:bg-gray-700 hover:scale-105  rounded-full cursor-pointer w-12 h-12 flex justify-center items-center"
-                    onClick={() => { /* Go Back to list view */ setAssetID(null); }} >
-                    <span className="material-icons text-4xl">arrow_back</span>
+            <div className="flex">
+              <div className="flex flex-col">
+                <div className="flex items-start">
+                  <div className="flex items-center">
+                    <Tooltip content={"Back"} className="capitalize bg-gray-900 p-2">
+                      <div className="mx-2 hover:bg-gray-700 hover:scale-105  rounded-full cursor-pointer w-12 h-12 flex justify-center items-center"
+                        onClick={() => { /* Go Back to list view */ setAssetID(null); }} >
+                        <span className="material-icons text-4xl">arrow_back</span>
+                      </div>
+                    </Tooltip>
+                    <h1>Property Analysis</h1>
                   </div>
-                </Tooltip>
-                <h1>Property Analysis</h1>
+                </div>
+                <REListItem REInfo={REAssetData?.getUserById.re_asset.filter((item: any) => (item.id === assetID))?.at(0)} disabled />
               </div>
               <div className="grow"></div>
-              {assetID &&
-                <REListItem REInfo={REAssetData?.getUserById.re_asset.filter((item: any) => (item.id === assetID))?.at(0)} disabled />
-              }
+              <div className="m-5 rounded-xl w-2/5 shadow-2xl bg-gray-800 flex justify-center items-center"><span className="text-5xl material-icons text-gray-600">photo_camera</span></div>
             </div>
           </div>
         }
