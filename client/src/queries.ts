@@ -17,6 +17,8 @@ export const GET_USER_BY_ID = gql`
         id
         address
         purchase_price
+        bedrooms
+        bathrooms
         picture_links
         city
         province
