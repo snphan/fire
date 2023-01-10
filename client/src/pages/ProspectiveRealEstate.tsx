@@ -23,7 +23,7 @@ export function ProspectiveRealEstate({ userID }: any) {
     <>
       <div className="ml-24 min-h-screen">
         <div className="flex items-center ml-2">
-          <h1>Real Estate Tracker</h1>
+          <h1>Prospective Real Estate</h1>
           <div className="grow"></div>
           <Tooltip content={"Add"} className="capitalize bg-gray-900 p-2">
             <span onClick={handleOpenAddREAsset} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer text-5xl material-icons material-symbols-outlined">add</span>
