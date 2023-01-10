@@ -30,6 +30,12 @@ export class CreateREAssetDto implements Partial<REAsset> {
   picture_links: string[];
 
   @Field()
+  bedrooms: number
+
+  @Field()
+  bathrooms: number
+
+  @Field()
   purchase_date: Date
 
   @Field()

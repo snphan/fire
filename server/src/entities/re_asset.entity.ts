@@ -62,6 +62,14 @@ export class REAsset extends BaseEntity {
   @Column()
   country: string
 
+  @Field()
+  @Column({ default: 1 })
+  bedrooms: number
+
+  @Field()
+  @Column({ default: 1 })
+  bathrooms: number
+
   @Field(type => [String])
   @Column("text", { array: true })
   picture_links: string[]
