@@ -41,7 +41,7 @@ function Carousel(props: any) {
         {
           ([...Array(itemCnt).keys()]).map((item) => {
             return (
-              <div className={((item === itemIndex) ? "bg-gray-300" : "bg-gray-700") + " w-2 h-2 mx-1 rounded-full drop-shadow-strong"}></div>
+              <div onClick={() => setItemIndex(item)} className={((item === itemIndex) ? "bg-gray-300" : "bg-gray-700") + " cursor-pointer hover:scale-110 w-2 h-2 mx-1 rounded-full drop-shadow-strong"}></div>
             )
           })
         }
