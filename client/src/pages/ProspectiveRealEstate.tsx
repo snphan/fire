@@ -5,6 +5,8 @@ import { REListItem } from '@/components/REListItem';
 import { Tooltip } from '@material-tailwind/react';
 import { AddREAssetForm } from '@/components/AddREAssetForm';
 import { Loading } from '@/components/Loading';
+import Carousel from '@/components/Carousel';
+import { REACT_APP_MEDIA_HOST } from '@/config';
 
 export function ProspectiveRealEstate({ userID }: any) {
 
@@ -40,34 +42,40 @@ export function ProspectiveRealEstate({ userID }: any) {
               {REAssetData?.getUserById.re_asset.map((item: any) => {
                 const { id } = item;
                 return (<REListItem key={item.id} REInfo={item} onClick={() => {
-                  console.log("REasset Selected: ", id);
                   setAssetID(id);
-                  console.log(REAssetData);
                 }} />);
               })}
             </div>
           </>
           :
           /* Property Analysis SubPage */
-          <div className="flex flex-col ml-2">
-            <div className="flex">
-              <div className="flex flex-col">
-                <div className="flex items-start">
-                  <div className="flex items-center">
-                    <Tooltip content={"Back"} className="capitalize bg-gray-900 p-2">
-                      <div className="mx-2 hover:bg-gray-700 hover:scale-105  rounded-full cursor-pointer w-12 h-12 flex justify-center items-center"
-                        onClick={() => { /* Go Back to list view */ setAssetID(null); }} >
-                        <span className="material-icons text-4xl">arrow_back</span>
-                      </div>
-                    </Tooltip>
-                    <h1>Property Analysis</h1>
-                  </div>
+          <div className="flex flex-col w-128">
+
+
+
+            <div className="flex items-center">
+              <Tooltip content={"Back"} className="capitalize bg-gray-900 p-2">
+                <div className="mx-2 hover:bg-gray-700 hover:scale-105  rounded-full cursor-pointer w-12 h-12 flex justify-center items-center"
+                  onClick={() => { /* Go Back to list view */ setAssetID(null); }} >
+                  <span className="material-icons text-4xl">arrow_back</span>
                 </div>
-                <REListItem REInfo={REAssetData?.getUserById.re_asset.filter((item: any) => (item.id === assetID))?.at(0)} disabled />
-              </div>
-              <div className="grow"></div>
-              <div className="m-5 rounded-xl w-2/5 shadow-2xl bg-gray-800 flex justify-center items-center"><span className="text-5xl material-icons text-gray-600">photo_camera</span></div>
+              </Tooltip>
+              <h1>Property Analysis</h1>
             </div>
+
+
+            <Carousel className="bg-gray-800 mx-5 rounded-xl p-2 h-96">
+              {
+                REAssetData?.getUserById.re_asset.filter((item: any) => (item.id === assetID))?.at(0)?.picture_links.map((link: string, index: number) => {
+                  return (<Carousel.Item key={index} imgSrc={`${REACT_APP_MEDIA_HOST}/media/${link}`}>
+                  </Carousel.Item>)
+                })
+              }
+            </Carousel>
+
+            <REListItem REInfo={REAssetData?.getUserById.re_asset.filter((item: any) => (item.id === assetID))?.at(0)} disabled />
+
+
           </div>
         }
       </div>
