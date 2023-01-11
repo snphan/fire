@@ -55,7 +55,7 @@ function CarouselItem(props: any) {
     <div className='flex h-full rounded-xl justify-center items-center overflow-hidden'>
       {props.children}
       {props.imgSrc &&
-        <img className="max-w-lg h-full w-full rounded-xl " src={props.imgSrc} alt="" />
+        <img className="max-w-lg h-full w-full rounded-xl object-cover" src={props.imgSrc} alt="" />
       }
     </div>
   )

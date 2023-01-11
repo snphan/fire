@@ -51,8 +51,6 @@ export function ProspectiveRealEstate({ userID }: any) {
           /* Property Analysis SubPage */
           <div className="flex flex-col w-128">
 
-
-
             <div className="flex items-center">
               <Tooltip content={"Back"} className="capitalize bg-gray-900 p-2">
                 <div className="mx-2 hover:bg-gray-700 hover:scale-105  rounded-full cursor-pointer w-12 h-12 flex justify-center items-center"
@@ -62,7 +60,6 @@ export function ProspectiveRealEstate({ userID }: any) {
               </Tooltip>
               <h1>Property Analysis</h1>
             </div>
-
 
             <Carousel className="bg-gray-800 mx-5 rounded-xl p-2 h-96">
               {
@@ -74,7 +71,6 @@ export function ProspectiveRealEstate({ userID }: any) {
             </Carousel>
 
             <REListItem REInfo={REAssetData?.getUserById.re_asset.filter((item: any) => (item.id === assetID))?.at(0)} disabled />
-
 
           </div>
         }
