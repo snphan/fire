@@ -25,7 +25,7 @@ export function AddREAssumptionsForm({ currentAsset, setCurrentAsset, assumption
       <div className="flex justify-between">
         <h4 className='font-bold m-2'>Assumptions</h4>
         <Tooltip content={"Save to Database"} className="capitalize bg-gray-900 p-2">
-          <Button className="m-2 p-2 px-4" color="blue"><span className="material-icons text-gray-300 text-3xl">save</span></Button>
+          <Button className="m-2 p-2 px-4" color="blue" variant="gradient"><span className="material-icons text-gray-300 text-3xl">save</span></Button>
         </Tooltip>
       </div>
 
@@ -33,7 +33,7 @@ export function AddREAssumptionsForm({ currentAsset, setCurrentAsset, assumption
 
       <div className="flex mx-4 my-2 w-full gap-3">
         <input id="holdlength" className="w-1/4" onChange={(e) => setNewAssumptions({ ...newAssumptions, hold_length: parseInt(e.target.value) })} value={newAssumptions.hold_length} type="range" min="1" max="100" step="1" />
-        <label htmlFor="holdlength">{newAssumptions.hold_length} {(newAssumptions.hold_length === 1) ? "Year" : "Years"}</label>
+        <label className="text-blue-gray-400" htmlFor="holdlength">{newAssumptions.hold_length} {(newAssumptions.hold_length === 1) ? "Year" : "Years"}</label>
       </div>
 
       <div className="ml-4">Up-Front Costs</div>
