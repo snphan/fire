@@ -77,7 +77,6 @@ describe('Testing Real Estate Asset Analysis', () => {
         country: "some country",
         picture_links: ["123_img.png", "3454_img.png"],
         purchase_date: new Date(),
-        hold_length: 10,
         favorite: true,
         tracking: true
       };
@@ -129,7 +128,6 @@ describe('Testing Real Estate Asset Analysis', () => {
         country: "some country",
         picture_links: ["123_img.png", "3454_img.png"],
         purchase_date: new Date(),
-        hold_length: 10,
         favorite: true,
         tracking: true
       };

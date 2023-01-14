@@ -71,4 +71,8 @@ export class REAssumptions extends BaseEntity {
   @Field()
   @Column("float", { default: 5 })
   interest_rate: number;
+
+  @Field()
+  @Column("int", { default: 10 })
+  hold_length: number;
 }

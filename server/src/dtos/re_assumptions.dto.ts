@@ -50,4 +50,6 @@ export class CreateREAssumptionsDto implements Partial<REAssumptions> {
   @Field({ nullable: true })
   interest_rate?: number;
 
+  @Field({ nullable: true })
+  hold_length?: number;
 }

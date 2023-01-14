@@ -25,6 +25,13 @@ export function AddREAssumptionsForm({ assumptions }: any) {
         </Tooltip>
       </div>
 
+      <div className="ml-4">Hold Length</div>
+
+      <div className="flex mx-4 my-2 w-full gap-3">
+        <input id="holdlength" className="w-1/4" onChange={(e) => setNewAssumptions({ ...newAssumptions, hold_length: parseInt(e.target.value) })} value={newAssumptions.hold_length} type="range" min="1" max="100" step="1" />
+        <label htmlFor="holdlength">{newAssumptions.hold_length} {(newAssumptions.hold_length === 1) ? "Year" : "Years"}</label>
+      </div>
+
       <div className="ml-4">Up-Front Costs</div>
       <div className="grid grid-cols-3 gap-4 p-4">
         <Input onChange={(e) => setNewAssumptions({ ...newAssumptions, closing_cost: e.target.value })} value={newAssumptions.closing_cost} type="number" variant="outlined" label="Closing Costs" className="!text-gray-300" ></Input>

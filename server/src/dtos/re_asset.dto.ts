@@ -39,9 +39,6 @@ export class CreateREAssetDto implements Partial<REAsset> {
   purchase_date: Date
 
   @Field()
-  hold_length: number
-
-  @Field()
   favorite: boolean
 
   @Field()

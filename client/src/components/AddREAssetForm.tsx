@@ -23,7 +23,6 @@ interface REAsset {
   country: string;
   picture_links: string[];
   purchase_date: Date;
-  hold_length: number;
   favorite: boolean;
   tracking: boolean;
   bedrooms: number;
@@ -49,7 +48,6 @@ export function AddREAssetForm({ open, handleOpen, userID }: any) {
     country: "",
     picture_links: [],
     purchase_date: new Date(),
-    hold_length: 10,
     favorite: false,
     tracking: false,
     bedrooms: 0,
@@ -151,12 +149,6 @@ export function AddREAssetForm({ open, handleOpen, userID }: any) {
         </div>
 
         <div className="flex">
-          <div className="flex flex-wrap mx-3 mb-6">
-            <label className="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
-              htmlFor="hold_length">Hold Length</label>
-            <input className="appearance-none block w-full text-lg bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-              type="number" name="" id="hold_length" value={REAssetInfo.hold_length} onChange={(e) => setREAssetInfo(({ ...REAssetInfo, hold_length: e.target.value ? parseInt(e.target.value) : 0 }))} />
-          </div>
           <div className="flex flex-wrap mx-3 mb-6">
             <label className="block uppercase tracking-wide text-gray-500 text-xs font-bold mb-2"
               htmlFor="purchase_date">Purchase Date</label>

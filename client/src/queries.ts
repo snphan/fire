@@ -37,6 +37,7 @@ export const GET_USER_BY_ID = gql`
           closing_cost
           down_percent
           interest_rate
+          hold_length
         }
       }
     }

@@ -82,10 +82,6 @@ export class REAsset extends BaseEntity {
 
   @Field()
   @Column()
-  hold_length: number;
-
-  @Field()
-  @Column()
   favorite: boolean;
 
   @Field()
