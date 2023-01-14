@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 
 function Carousel(props: any) {
-  console.log(props.children)
-
   const itemCnt = props.children.length;
   const [itemIndex, setItemIndex] = useState<number>(0);
 
