@@ -7,10 +7,12 @@ import { getConnection } from 'typeorm';
 import { CreateREAssetDto } from '@/dtos/re_asset.dto';
 import { REAssetResolver } from '@/resolvers/re_analysis.resolver';
 import { CreateREReceiptDto } from '@/dtos/re_receipt.dto';
+import { CreateREAssumptionsDto } from '@/dtos/re_assumptions.dto';
 
 let app: App;
 let userId: number;
 let reAssetId: number;
+let reAssumptionsId: number;
 let authCookie: string;
 
 beforeAll(async () => {
@@ -228,6 +230,45 @@ describe('Testing Real Estate Asset Analysis', () => {
       expect(response.body.data.createREAssumptions.re_asset.id).toBe(reAssetId);
       expect(response.body.data.createREAssumptions.rent_inc).toBe(3); /* Default value */
       expect(response.body.data.createREAssumptions.property_inc).toBe(3); /* Default value */
+      reAssumptionsId = response.body.data.createREAssumptions.id;
     });
   });
+
+  describe('[POST] re_assumptions dto ', () => {
+    it('should update the re_assumption and return id and new closing cost', async () => {
+      const newAssumptionsData: CreateREAssumptionsDto = {
+        reAssetId: reAssetId,
+        rent_inc: 3,
+        property_inc: 3,
+        inflation: 5,
+        rent: 500,
+        maintenance_fee: 500,
+        repairs: 10,
+        property_tax: 3000,
+        utilities: 300,
+        insurance: 5,
+        management_fee: 60,
+        other_expenses: [1, 23],
+        closing_cost: 500000,
+        down_percent: 20,
+        interest_rate: 5,
+        hold_length: 20
+      }
+      const updateREAssumptionsMutation = {
+        query: `mutation updateREAssumptions($assumptionId: Float!, $REAssumptionsData: CreateREAssumptionsDto!) {
+          updateREAssumptions(assumptionId: $assumptionId, REAssumptionsData: $REAssumptionsData) {
+            id
+            closing_cost
+          }
+        }`,
+        variables: { REAssumptionsData: newAssumptionsData, assumptionId: reAssumptionsId }
+      }
+
+
+      const response = await request(app.getServer()).post('/graphql').send(updateREAssumptionsMutation);
+      expect(response.error).toBeFalsy();
+      expect(response.body.data.updateREAssumptions.closing_cost).toBe(newAssumptionsData.closing_cost); /* Default value */
+    });
+  });
+
 })
