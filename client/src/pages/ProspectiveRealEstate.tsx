@@ -4,6 +4,7 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { REListItem } from '@/components/REListItem';
 import { Tooltip } from '@material-tailwind/react';
 import { AddREAssetForm } from '@/components/AddREAssetForm';
+import { AddREAssumptionsForm } from '@/components/AddREAssumptionsForm';
 import { Loading } from '@/components/Loading';
 import Carousel from '@/components/Carousel';
 import { REACT_APP_MEDIA_HOST } from '@/config';
@@ -92,7 +93,7 @@ export function ProspectiveRealEstate({ userID }: any) {
 
 
             <div className="rounded-xl grow mx-5 mb-5 bg-gray-800 drop-shadow-strong">
-              <div className='font-bold m-2'>Assumptions</div>
+              <AddREAssumptionsForm></AddREAssumptionsForm>
             </div>
           </div>
         }
