@@ -16,7 +16,10 @@ export default class REAssetRepository {
     const { userId, ...REAssetInfo } = REAssetData;
     const findUser: User = await User.findOne({ where: { id: userId } });
     const createREAssetData: REAsset = await REAsset.create({ user: findUser, ...REAssetInfo }).save();
-    return createREAssetData;
+    // Initialize assumptions with default values
+    await this.REAssumptionsCreate({ reAssetId: createREAssetData.id });
+    const findREAsset: REAsset = await REAsset.findOne({ where: { id: createREAssetData.id } })
+    return findREAsset;
   }
 
   public async REReceiptCreate(REReceiptData: CreateREReceiptDto): Promise<REReceipt> {
@@ -29,6 +32,8 @@ export default class REAssetRepository {
   public async REAssumptionsCreate(REAssumptionsData: CreateREAssumptionsDto): Promise<REAssumptions> {
     const { reAssetId, ...REAssumptionsInfo } = REAssumptionsData;
     const findREAsset: REAsset = await REAsset.findOne({ where: { id: reAssetId } });
+    if (findREAsset.re_assumptions) throw new HttpException(409, "Assumption already Exists");
+
     const createREAssumptionsData: REAssumptions = await REAssumptions.create({ re_asset: findREAsset, ...REAssumptionsData }).save();
     return createREAssumptionsData;
   }

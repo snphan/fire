@@ -93,6 +93,9 @@ describe('Testing Real Estate Asset Analysis', () => {
                     purchase_price
                     address
                     postal_code
+                    re_assumptions {
+                      id
+                    }
                   }
                 }`,
         variables: { REAssetData: REAssetData }
@@ -103,7 +106,9 @@ describe('Testing Real Estate Asset Analysis', () => {
       expect(response.body.data.createREAsset.user.id).toBe(REAssetData.userId);
       expect(response.body.data.createREAsset.address).toBe(REAssetData.address);
       expect(response.body.data.createREAsset.purchase_price).toBe(REAssetData.purchase_price);
+      expect(response.body.data.createREAsset.re_assumptions.id).not.toBeNull();
       reAssetId = response.body.data.createREAsset.id;
+      reAssumptionsId = response.body.data.createREAsset.re_assumptions.id;
     });
   });
 
@@ -118,23 +123,6 @@ describe('Testing Real Estate Asset Analysis', () => {
         receipt_link: ["receipt_1.png", "receipt_2.png"],
         notes: "I travelled to the property back and forth!"
       };
-      const REAssetData: CreateREAssetDto = {
-        userId: userId,
-        purchase_price: 1000,
-        address: "Some Fake Address",
-        bathrooms: 1,
-        bedrooms: 1,
-        postal_code: "123-2456",
-        city: "some city",
-        province: "some province",
-        country: "some country",
-        picture_links: ["123_img.png", "3454_img.png"],
-        purchase_date: new Date(),
-        favorite: true,
-        tracking: true
-      };
-
-
 
       const createREReceiptMutation = {
         query: `mutation createREReceipt($REReceiptData: CreateREReceiptDto!) {
@@ -209,8 +197,8 @@ describe('Testing Real Estate Asset Analysis', () => {
     });
   });
 
-  describe('[POST] query user by id and get RE analysis info /graphql', () => {
-    it('should return RE Asset data and RE Receipt data and parent ids', async () => {
+  describe('[POST] create REAssumptions', () => {
+    it('should return error because alredy exists', async () => {
       const createREAssumptionsMutation = {
         query: `mutation createREAssumptions($REAssumptionsData: CreateREAssumptionsDto!) {
           createREAssumptions(REAssumptionsData: $REAssumptionsData) {
@@ -227,10 +215,7 @@ describe('Testing Real Estate Asset Analysis', () => {
 
       const response = await request(app.getServer()).post('/graphql').send(createREAssumptionsMutation);
       expect(response.error).toBeFalsy();
-      expect(response.body.data.createREAssumptions.re_asset.id).toBe(reAssetId);
-      expect(response.body.data.createREAssumptions.rent_inc).toBe(3); /* Default value */
-      expect(response.body.data.createREAssumptions.property_inc).toBe(3); /* Default value */
-      reAssumptionsId = response.body.data.createREAssumptions.id;
+      expect(response.body.errors[0].extensions.exception.status).toBe(409);
     });
   });
 
