@@ -10,7 +10,7 @@ const batchREAsset = async (userIds: number[]) => {
     }
   })
 
-  return [findREAsset];
+  return [findREAsset.sort((a, b) => a.id - b.id)];
 }
 
 
