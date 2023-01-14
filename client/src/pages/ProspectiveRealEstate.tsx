@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { GET_USER_BY_ID } from '@/queries';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { REListItem } from '@/components/REListItem';
-import { Tooltip } from '@material-tailwind/react';
+import { Button, Tooltip } from '@material-tailwind/react';
 import { AddREAssetForm } from '@/components/AddREAssetForm';
 import { AddREAssumptionsForm } from '@/components/AddREAssumptionsForm';
 import { Loading } from '@/components/Loading';
@@ -92,9 +92,16 @@ export function ProspectiveRealEstate({ userID }: any) {
             </div>
 
 
-            <div className="rounded-xl grow mx-5 mb-5 bg-gray-800 drop-shadow-strong">
-              <AddREAssumptionsForm currentAsset={currentAsset} setCurrentAsset={setCurrentAsset} assumptions={currentAsset.re_assumptions}></AddREAssumptionsForm>
-            </div>
+            {currentAsset.re_assumptions ?
+              <div className="rounded-xl grow mx-5 mb-5 bg-gray-800 drop-shadow-strong">
+                <AddREAssumptionsForm currentAsset={currentAsset} setCurrentAsset={setCurrentAsset} assumptions={currentAsset.re_assumptions}></AddREAssumptionsForm>
+              </div>
+              :
+              // If server crashes when asset is being created, this is a fall back
+              <div className="rounded-xl grow mx-5 mb-5 flex justify-center items-center bg-gray-800 drop-shadow-strong">
+                <Button>Create Assumptions</Button>
+              </div>
+            }
           </div>
         }
       </div>
