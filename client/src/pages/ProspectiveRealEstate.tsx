@@ -59,8 +59,7 @@ export function ProspectiveRealEstate({ userID }: any) {
           </>
           :
           /* Property Analysis SubPage */
-          <div className="flex flex-col w-128 min-h-screen">
-
+          <div className="flex flex-col min-h-screen">
             <div className="flex items-center">
               <Tooltip content={"Back"} className="capitalize bg-gray-900 p-2">
                 <div className="mx-2 hover:bg-gray-700 hover:scale-105  rounded-full cursor-pointer w-12 h-12 flex justify-center items-center"
@@ -71,21 +70,30 @@ export function ProspectiveRealEstate({ userID }: any) {
               <h1>Property Analysis</h1>
             </div>
 
-            <Carousel className="bg-gray-800 mx-5 rounded-xl p-2 h-96">
-              {
-                currentAsset?.picture_links.map((link: string, index: number) => {
-                  return (<Carousel.Item key={index} imgSrc={`${REACT_APP_MEDIA_HOST}/media/${link}`}>
-                  </Carousel.Item>)
-                })
-              }
-            </Carousel>
+            <div className='flex'>
+              <div className="flex w-2/5 flex-col">
+                <Carousel className="bg-gray-800 mx-5 rounded-xl p-2 h-96">
+                  {
+                    currentAsset?.picture_links.map((link: string, index: number) => {
+                      return (<Carousel.Item key={index} imgSrc={`${REACT_APP_MEDIA_HOST}/media/${link}`}>
+                      </Carousel.Item>)
+                    })
+                  }
+                </Carousel>
+                <REListItem
+                  className="items-center"
+                  REInfo={currentAsset} disabled
+                />
+              </div>
+              <div className="grow bg-gray-800 mr-5 mb-5 rounded-xl drop-shadow-strong">
+                <div className='font-bold m-2'>Projection</div>
+              </div>
+            </div>
 
-            <REListItem
-              className="items-center"
-              REInfo={currentAsset} disabled
-            />
 
-
+            <div className="rounded-xl grow mx-5 mb-5 bg-gray-800 drop-shadow-strong">
+              <div className='font-bold m-2'>Assumptions</div>
+            </div>
           </div>
         }
       </div>
