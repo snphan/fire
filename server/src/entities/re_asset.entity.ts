@@ -35,58 +35,60 @@ export class REAsset extends BaseEntity {
     nullable: true
   })
   @JoinColumn()
-  re_assumptions: REAssumptions
-
-
-  @Field()
-  @Column()
-  purchase_price: number
+  @Field((type) => REAssumptions, {
+    nullable: true
+  })
+  re_assumptions: REAssumptions;
 
   @Field()
   @Column()
-  address: string
+  purchase_price: number;
 
   @Field()
   @Column()
-  postal_code: string
+  address: string;
 
   @Field()
   @Column()
-  city: string
+  postal_code: string;
 
   @Field()
   @Column()
-  province: string
+  city: string;
 
   @Field()
   @Column()
-  country: string
+  province: string;
+
+  @Field()
+  @Column()
+  country: string;
 
   @Field()
   @Column({ default: 1 })
-  bedrooms: number
+  bedrooms: number;
 
   @Field()
   @Column({ default: 1 })
-  bathrooms: number
+  bathrooms: number;
 
   @Field(type => [String])
   @Column("text", { array: true })
-  picture_links: string[]
+  picture_links: string[];
 
   @Field()
   @Column()
-  purchase_date: Date
+  purchase_date: Date;
 
   @Field()
   @Column()
-  hold_length: number
+  hold_length: number;
 
   @Field()
   @Column()
-  favorite: boolean
+  favorite: boolean;
 
   @Field()
   @Column()
-  tracking: boolean /* When the asset is purchased, it is moved to the tracking page */
+  tracking: boolean; /* When the asset is purchased, it is moved to the tracking page */
 }

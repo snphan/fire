@@ -25,7 +25,7 @@ export function ProspectiveRealEstate({ userID }: any) {
   return (
     <>
       <div className="ml-24 min-h-screen">
-        {!assetID ?
+        {!assetID ? // List View occurs if no assetID is selected.
           /* List view for Prospective Real Estate */
           <>
             <div className="flex items-center ml-2">

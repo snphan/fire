@@ -22,6 +22,9 @@ export const GET_USER_BY_ID = gql`
         picture_links
         city
         province
+        re_assumptions {
+          id
+        }
       }
     }
   }
