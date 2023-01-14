@@ -12,7 +12,7 @@ export class REAssumptions extends BaseEntity {
 
   @Field(() => REAsset)
   @OneToOne(() => REAsset, re_asset => re_asset.re_assumptions, {
-    onDelete: "SET NULL",
+    onDelete: "CASCADE",
   })
   re_asset: REAsset;
 

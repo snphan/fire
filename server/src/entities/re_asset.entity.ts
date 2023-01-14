@@ -30,7 +30,7 @@ export class REAsset extends BaseEntity {
   user: User;
 
   @OneToOne((type) => REAssumptions, {
-    onDelete: "CASCADE",
+    onDelete: "SET NULL",
     eager: true,
     nullable: true
   })
