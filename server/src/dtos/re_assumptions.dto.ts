@@ -30,7 +30,7 @@ export class CreateREAssumptionsDto implements Partial<REAssumptions> {
   property_tax?: number; /* per year */
 
   @Field({ nullable: true })
-  utilties?: number; /* per month */
+  utilities?: number; /* per month */
 
   @Field({ nullable: true })
   insurance?: number; /* per month */

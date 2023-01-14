@@ -46,7 +46,7 @@ export class REAssumptions extends BaseEntity {
 
   @Field()
   @Column("float", { default: 300 })
-  utilties: number; /* per month */
+  utilities: number; /* per month */
 
   @Field()
   @Column("float", { default: 50 })
