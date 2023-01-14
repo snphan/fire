@@ -7,7 +7,7 @@ import {
 import { REACT_APP_MEDIA_HOST } from '@/config';
 import axios from 'axios';
 import { useMutation } from '@apollo/client';
-import { CREATE_REASSET } from '@/mutations';
+import { CREATE_REASSET, UPDATE_REASSUMPTION } from '@/mutations';
 import { GET_USER_BY_ID } from '@/queries';
 
 
@@ -15,6 +15,7 @@ export function AddREAssumptionsForm({ currentAsset, setCurrentAsset, assumption
 
   const [newAssumptions, setNewAssumptions] = useState(JSON.parse(JSON.stringify(assumptions))); // create a state so that we can directly update assumptions.
   const otherExpensePlaceholder = JSON.parse(JSON.stringify(newAssumptions.other_expenses));
+  const [updateREAssumption, { loading: updateLoading }] = useMutation(UPDATE_REASSUMPTION)
 
   useEffect(() => {
     setCurrentAsset({ ...currentAsset, re_assumptions: newAssumptions })
@@ -25,7 +26,19 @@ export function AddREAssumptionsForm({ currentAsset, setCurrentAsset, assumption
       <div className="flex justify-between">
         <h4 className='font-bold m-2'>Assumptions</h4>
         <Tooltip content={"Save to Database"} className="capitalize bg-gray-900 p-2">
-          <Button className="m-2 p-2 px-4" color="blue" variant="gradient"><span className="material-icons text-gray-300 text-3xl">save</span></Button>
+          <Button className="m-2 p-2 px-4" color="blue" variant="gradient"
+            onClick={() => {
+              const { id, __typename, ...assumptionData } = newAssumptions
+              updateREAssumption({
+                variables: {
+                  assumptionId: id,
+                  updateReAssumptionsData: { ...assumptionData, reAssetId: currentAsset.id }
+                }
+              });
+            }}
+          >
+            <span className="material-icons text-gray-300 text-3xl">save</span>
+          </Button>
         </Tooltip>
       </div>
 

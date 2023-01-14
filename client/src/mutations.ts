@@ -40,3 +40,12 @@ mutation createREAssumptions($reAssumptionsData: CreateREAssumptionsDto!) {
   }
 } 
 `
+
+export const UPDATE_REASSUMPTION = gql`
+mutation updateREAssumptions($updateReAssumptionsData: CreateREAssumptionsDto!, $assumptionId: Float!) {
+  updateREAssumptions(REAssumptionsData: $updateReAssumptionsData, assumptionId: $assumptionId) {
+    id
+    closing_cost
+  }
+}
+`

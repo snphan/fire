@@ -23,6 +23,7 @@ export const GET_USER_BY_ID = gql`
         city
         province
         re_assumptions {
+          id
           rent_inc
           property_inc
           inflation
