@@ -93,7 +93,7 @@ export function ProspectiveRealEstate({ userID }: any) {
 
 
             <div className="rounded-xl grow mx-5 mb-5 bg-gray-800 drop-shadow-strong">
-              <AddREAssumptionsForm></AddREAssumptionsForm>
+              <AddREAssumptionsForm assumptions={currentAsset.re_assumptions}></AddREAssumptionsForm>
             </div>
           </div>
         }
