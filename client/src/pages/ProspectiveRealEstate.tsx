@@ -13,6 +13,7 @@ export function ProspectiveRealEstate({ userID }: any) {
   const { data: REAssetData, loading, error, refetch: refetchData } = useQuery(GET_USER_BY_ID);
   const [openAddREAsset, setOpenAddREAsset] = useState<boolean>(false);
   const [assetID, setAssetID] = useState<number | null>(null);
+  const [currentAsset, setCurrentAsset] = useState<any>(null);
 
   const handleOpenAddREAsset = () => setOpenAddREAsset(!openAddREAsset);
 
@@ -20,12 +21,18 @@ export function ProspectiveRealEstate({ userID }: any) {
     refetchData({ userID: userID });
   }, [userID])
 
+  useEffect(() => {
+    if (assetID) {
+      setCurrentAsset(REAssetData?.getUserById.re_asset.filter((item: any) => (item.id === assetID))?.at(0));
+    }
+  }, [assetID])
+
   if (error) return <p>{`Error! ${error}`}</p>;
 
   return (
     <>
       <div className="ml-24 min-h-screen">
-        {!assetID ? // List View occurs if no assetID is selected.
+        {!currentAsset ? // List View occurs if no REAsset is selected
           /* List view for Prospective Real Estate */
           <>
             <div className="flex items-center ml-2">
@@ -41,20 +48,23 @@ export function ProspectiveRealEstate({ userID }: any) {
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
               {REAssetData?.getUserById.re_asset.map((item: any) => {
                 const { id } = item;
-                return (<REListItem key={item.id} REInfo={item} onClick={() => {
-                  setAssetID(id);
-                }} />);
+                return (<REListItem
+                  className="items-center"
+                  key={item.id}
+                  REInfo={item} onClick={() => {
+                    setAssetID(id);
+                  }} />);
               })}
             </div>
           </>
           :
           /* Property Analysis SubPage */
-          <div className="flex flex-col w-128">
+          <div className="flex flex-col w-128 min-h-screen">
 
             <div className="flex items-center">
               <Tooltip content={"Back"} className="capitalize bg-gray-900 p-2">
                 <div className="mx-2 hover:bg-gray-700 hover:scale-105  rounded-full cursor-pointer w-12 h-12 flex justify-center items-center"
-                  onClick={() => { /* Go Back to list view */ setAssetID(null); }} >
+                  onClick={() => { /* Go Back to list view */ setAssetID(null); setCurrentAsset(null); }} >
                   <span className="material-icons text-4xl">arrow_back</span>
                 </div>
               </Tooltip>
@@ -63,14 +73,18 @@ export function ProspectiveRealEstate({ userID }: any) {
 
             <Carousel className="bg-gray-800 mx-5 rounded-xl p-2 h-96">
               {
-                REAssetData?.getUserById.re_asset.filter((item: any) => (item.id === assetID))?.at(0)?.picture_links.map((link: string, index: number) => {
+                currentAsset?.picture_links.map((link: string, index: number) => {
                   return (<Carousel.Item key={index} imgSrc={`${REACT_APP_MEDIA_HOST}/media/${link}`}>
                   </Carousel.Item>)
                 })
               }
             </Carousel>
 
-            <REListItem REInfo={REAssetData?.getUserById.re_asset.filter((item: any) => (item.id === assetID))?.at(0)} disabled />
+            <REListItem
+              className="items-center"
+              REInfo={currentAsset} disabled
+            />
+
 
           </div>
         }
