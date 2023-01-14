@@ -29,10 +29,18 @@ export class REAssetResolver extends REAssetRepository {
   }
 
   @Mutation(() => REAssumptions, {
-    description: 'Create REReceipt',
+    description: 'Create REAssumptions',
   })
   async createREAssumptions(@Arg('REAssumptionsData') REAssumptionsData: CreateREAssumptionsDto): Promise<REAssumptions> {
     const reAssumptions: REAssumptions = await this.REAssumptionsCreate(REAssumptionsData);
+    return reAssumptions;
+  }
+
+  @Mutation(() => REAssumptions, {
+    description: 'Update REAssumptions'
+  })
+  async updateREAssumptions(@Arg('assumptionId') assumptionId: number, @Arg('REAssumptionsData') REAssumptionsData: CreateREAssumptionsDto): Promise<REAssumptions> {
+    const reAssumptions: REAssumptions = await this.REAssumptionsUpdate(assumptionId, REAssumptionsData);
     return reAssumptions;
   }
 }

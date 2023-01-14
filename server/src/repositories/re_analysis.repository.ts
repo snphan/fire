@@ -32,4 +32,14 @@ export default class REAssetRepository {
     const createREAssumptionsData: REAssumptions = await REAssumptions.create({ re_asset: findREAsset, ...REAssumptionsData }).save();
     return createREAssumptionsData;
   }
+
+  public async REAssumptionsUpdate(assumptionId: number, REAssumptionsData: CreateREAssumptionsDto): Promise<REAssumptions> {
+    const { reAssetId, ...REAssumptionsInfo } = REAssumptionsData;
+    const findREAssumption: REAssumptions = await REAssumptions.findOne({ where: { id: assumptionId } })
+    if (!findREAssumption) throw new HttpException(409, "RE Assumption doesn't exist");
+    await REAssumptions.update(assumptionId, REAssumptionsInfo);
+
+    const updateREAssumption: REAssumptions = await REAssumptions.findOne({ where: { id: assumptionId } });
+    return updateREAssumption;
+  }
 }
