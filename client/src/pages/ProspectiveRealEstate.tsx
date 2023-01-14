@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { GET_USER_BY_ID } from '@/queries';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { REListItem } from '@/components/REListItem';
 import { Button, Tooltip } from '@material-tailwind/react';
 import { AddREAssetForm } from '@/components/AddREAssetForm';
@@ -8,10 +8,12 @@ import { AddREAssumptionsForm } from '@/components/AddREAssumptionsForm';
 import { Loading } from '@/components/Loading';
 import Carousel from '@/components/Carousel';
 import { REACT_APP_MEDIA_HOST } from '@/config';
+import { CREATE_REASSUMPTION } from '@/mutations';
 
 export function ProspectiveRealEstate({ userID }: any) {
 
   const { data: REAssetData, loading, error, refetch: refetchData } = useQuery(GET_USER_BY_ID);
+  const [createREAssumption, { loading: REAssumptionLoading }] = useMutation(CREATE_REASSUMPTION);
   const [openAddREAsset, setOpenAddREAsset] = useState<boolean>(false);
   const [assetID, setAssetID] = useState<number | null>(null);
   const [currentAsset, setCurrentAsset] = useState<any>(null);
@@ -99,7 +101,14 @@ export function ProspectiveRealEstate({ userID }: any) {
               :
               // If server crashes when asset is being created, this is a fall back
               <div className="rounded-xl grow mx-5 mb-5 flex justify-center items-center bg-gray-800 drop-shadow-strong">
-                <Button>Create Assumptions</Button>
+                <Button onClick={() => createREAssumption({
+                  variables: { reAssumptionsData: { reAssetId: assetID } },
+                  onCompleted: () => {
+                    refetchData({ userID: userID }).then((data: any) => {
+                      setCurrentAsset(data?.data.getUserById.re_asset.filter((item: any) => (item.id === assetID))?.at(0));
+                    });
+                  }
+                })}>Create Assumptions</Button>
               </div>
             }
           </div>

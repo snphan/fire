@@ -32,3 +32,11 @@ mutation createREAsset($reAssetData: CreateREAssetDto!) {
   }
 }
 `
+export const CREATE_REASSUMPTION = gql`
+mutation createREAssumptions($reAssumptionsData: CreateREAssumptionsDto!) {
+  createREAssumptions(REAssumptionsData: $reAssumptionsData) {
+    id
+    closing_cost
+  }
+} 
+`
