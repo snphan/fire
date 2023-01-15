@@ -51,5 +51,8 @@ export class CreateREAssumptionsDto implements Partial<REAssumptions> {
   interest_rate?: number;
 
   @Field({ nullable: true })
+  mortgage_length?: number;
+
+  @Field({ nullable: true })
   hold_length?: number;
 }

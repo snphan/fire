@@ -237,7 +237,8 @@ describe('Testing Real Estate Asset Analysis', () => {
         closing_cost: 500000,
         down_percent: 20,
         interest_rate: 5,
-        hold_length: 20
+        hold_length: 20,
+        mortgage_length: 30
       }
       const updateREAssumptionsMutation = {
         query: `mutation updateREAssumptions($assumptionId: Float!, $REAssumptionsData: CreateREAssumptionsDto!) {
