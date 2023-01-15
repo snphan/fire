@@ -46,6 +46,21 @@ mutation updateREAssumptions($updateReAssumptionsData: CreateREAssumptionsDto!, 
   updateREAssumptions(REAssumptionsData: $updateReAssumptionsData, assumptionId: $assumptionId) {
     id
     closing_cost
+    rent_inc
+    property_inc
+    inflation
+    rent
+    maintenance_fee
+    repairs
+    property_tax
+    utilities
+    insurance
+    management_fee
+    other_expenses
+    down_percent
+    interest_rate
+    hold_length
+    mortgage_length
   }
 }
 `
