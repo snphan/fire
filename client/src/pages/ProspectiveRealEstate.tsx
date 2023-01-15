@@ -28,23 +28,33 @@ export function ProspectiveRealEstate({ userID }: any) {
   const projectionOptions = {
     xAxis: {
       type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      data: [...Array(currentAsset.re_assumptions.hold_length + 1).keys()].map((item) => {
+        let date = new Date();
+        date.setFullYear(date.getFullYear() + item);
+        return date.toISOString().split('T')[0];
+      }),
+      name: "Date",
+      nameGap: 30,
+      nameLocation: "center"
     },
     yAxis: {
       type: 'value',
+      name: 'Dollars ($)'
     },
     legend: {
       data: ['Stocks (8%)', 'RE Cashflow']
     },
     series: [
       {
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        data: [...Array(currentAsset.re_assumptions.hold_length + 1).keys()],
         type: 'line',
         smooth: true,
         name: 'Stocks (8%)'
       },
       {
-        data: [200, 390, 102, 503, 1101, 100, 200],
+        data: [...Array(currentAsset.re_assumptions.hold_length + 1).keys()].map((item) => {
+          return item * 2;
+        }),
         type: 'line',
         smooth: true,
         name: 'RE Cashflow'
