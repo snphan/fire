@@ -10,6 +10,10 @@ import Carousel from '@/components/Carousel';
 import { REACT_APP_MEDIA_HOST } from '@/config';
 import { CREATE_REASSUMPTION } from '@/mutations';
 import ReactECharts from 'echarts-for-react';
+import * as echarts from 'echarts/core';
+import { fireTheme } from '@/config/echart.config';
+
+echarts.registerTheme('my_theme', fireTheme);
 
 export function ProspectiveRealEstate({ userID }: any) {
 
@@ -21,7 +25,7 @@ export function ProspectiveRealEstate({ userID }: any) {
 
   const handleOpenAddREAsset = () => setOpenAddREAsset(!openAddREAsset);
 
-  const options = {
+  const projectionOptions = {
     xAxis: {
       type: 'category',
       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -111,7 +115,7 @@ export function ProspectiveRealEstate({ userID }: any) {
               </div>
               <div className="w-3/5 bg-gray-800 mr-5 mb-5 rounded-xl drop-shadow-strong">
                 <h4 className='font-bold m-2'>Projection</h4>
-                <ReactECharts className="" option={options} />
+                <ReactECharts theme="my_theme" className="" option={projectionOptions} />
               </div>
             </div>
 
