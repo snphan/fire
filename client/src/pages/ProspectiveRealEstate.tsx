@@ -9,6 +9,7 @@ import { Loading } from '@/components/Loading';
 import Carousel from '@/components/Carousel';
 import { REACT_APP_MEDIA_HOST } from '@/config';
 import { CREATE_REASSUMPTION } from '@/mutations';
+import ReactECharts from 'echarts-for-react';
 
 export function ProspectiveRealEstate({ userID }: any) {
 
@@ -19,6 +20,27 @@ export function ProspectiveRealEstate({ userID }: any) {
   const [currentAsset, setCurrentAsset] = useState<any>(null);
 
   const handleOpenAddREAsset = () => setOpenAddREAsset(!openAddREAsset);
+
+  const options = {
+    grid: { top: 8, right: 8, bottom: 24, left: 36 },
+    xAxis: {
+      type: 'category',
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    },
+    yAxis: {
+      type: 'value',
+    },
+    series: [
+      {
+        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        type: 'line',
+        smooth: true,
+      },
+    ],
+    tooltip: {
+      trigger: 'axis',
+    },
+  };
 
   useEffect(() => {
     refetchData({ userID: userID });
@@ -89,7 +111,8 @@ export function ProspectiveRealEstate({ userID }: any) {
                 />
               </div>
               <div className="grow bg-gray-800 mr-5 mb-5 rounded-xl drop-shadow-strong">
-                <div className='font-bold m-2'>Projection</div>
+                <h4 className='font-bold m-2'>Projection</h4>
+                <ReactECharts className="m-4" option={options} />
               </div>
             </div>
 
