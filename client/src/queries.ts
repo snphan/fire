@@ -39,6 +39,7 @@ export const GET_USER_BY_ID = gql`
           down_percent
           interest_rate
           hold_length
+          mortgage_length
         }
       }
     }

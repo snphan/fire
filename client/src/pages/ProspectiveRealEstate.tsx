@@ -148,25 +148,49 @@ export function ProspectiveRealEstate({ userID }: any) {
                   {currentAsset?.re_assumptions &&
                     <>
                       <ReactECharts theme="my_theme" style={{ height: "65%" }} option={projectionOptions} />
-                      <div id='quickstats' className="m-4 flex justify-between">
+                      <div id='quickstats' className="m-4 flex flex-wrap justify-between">
                         <Tooltip content={"Total Out of Pocket"} className="capitalize bg-gray-900 p-2">
-                          <div className="p-5 flex flex-col justify-center items-center h-20 shadow-xl rounded-xl border border-red-500 text-red-500">
+                          <div className="p-2 flex flex-col justify-center items-center h-20 shadow-xl rounded-xl border border-red-500 text-red-500">
                             <div><span className="material-icons material-symbols-outlined">point_of_sale</span></div>
                             <div className="font-bold">{"-" + CADFormatter.format(reAnalyzer.totalOutOfPocket)}</div>
                           </div>
                         </Tooltip>
+                        <div className="w-1 border border-gray-200 rounded-xl"></div>
                         <Tooltip content={"Mortgage Payment (Month)"} className="capitalize bg-gray-900 p-2">
-                          <div className="p-5 flex flex-col justify-center items-center h-20 shadow-xl rounded-xl border border-red-500 text-red-500">
+                          <div className="p-2 flex flex-col justify-center items-center h-20 shadow-xl rounded-xl border border-red-500 text-red-500">
                             <div><span className="material-icons material-symbols-outlined">house</span></div>
                             <div className="font-bold">{"-" + CADFormatter.format(reAnalyzer.mortgagePayment)}</div>
                           </div>
                         </Tooltip>
+                        <Tooltip content={"Average Total Operating Expense"} className="capitalize bg-gray-900 p-2">
+                          <div className="p-2 flex flex-col justify-center items-center h-20 shadow-xl rounded-xl border border-red-500 text-red-500">
+                            <div><span className="material-icons material-symbols-outlined">lightbulb</span></div>
+                            <div className="font-bold">{"-" + CADFormatter.format(reAnalyzer.avgTotalOpExpense)}</div>
+                          </div>
+                        </Tooltip>
                         <Tooltip content={"Average Rent (Month)"} className="capitalize bg-gray-900 p-2">
-                          <div className="p-5 flex flex-col justify-center items-center h-20 shadow-xl rounded-xl border border-lime-300 text-lime-300">
+                          <div className="p-2 flex flex-col justify-center items-center h-20 shadow-xl rounded-xl border border-lime-300 text-lime-300">
                             <div><span className="material-icons material-symbols-outlined">attach_money</span></div>
                             <div className="font-bold">{"+" + CADFormatter.format(reAnalyzer.avgRent)}</div>
                           </div>
                         </Tooltip>
+                        <div className="w-1 border border-gray-200 rounded-xl"></div>
+                        {(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + reAnalyzer.mortgagePayment) >= 0) ?
+
+                          <Tooltip content={"Profit"} className="capitalize bg-gray-900 p-2">
+                            <div className="p-2 flex flex-col justify-center items-center h-20 shadow-xl rounded-xl border border-lime-300 text-lime-300">
+                              <div><span className="material-icons material-symbols-outlined">payment</span></div>
+                              <div className="font-bold">{"+" + CADFormatter.format(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + reAnalyzer.mortgagePayment))}</div>
+                            </div>
+                          </Tooltip>
+                          :
+                          <Tooltip content={"Loss"} className="capitalize bg-gray-900 p-2">
+                            <div className="p-2 flex flex-col justify-center items-center h-20 shadow-xl rounded-xl border border-red-500 text-red-500">
+                              <div><span className="material-icons material-symbols-outlined">payment</span></div>
+                              <div className="font-bold">{"-" + CADFormatter.format(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + reAnalyzer.mortgagePayment))}</div>
+                            </div>
+                          </Tooltip>
+                        }
                       </div>
                     </>
                   }

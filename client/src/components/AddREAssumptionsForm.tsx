@@ -49,10 +49,11 @@ export function AddREAssumptionsForm({ currentAsset, setCurrentAsset, assumption
         <label className="text-blue-gray-400" htmlFor="holdlength">{newAssumptions.hold_length} {(newAssumptions.hold_length === 1) ? "Year" : "Years"}</label>
       </div>
 
-      <div className="ml-4">Up-Front Costs</div>
+      <div className="ml-4">Up-Front</div>
       <div className="grid grid-cols-3 gap-4 p-4">
         <Input onChange={(e) => setNewAssumptions({ ...newAssumptions, closing_cost: parseFloat(e.target.value) })} value={newAssumptions.closing_cost} type="number" variant="outlined" label="Closing Costs" className="!text-gray-300" ></Input>
         <Input onChange={(e) => setNewAssumptions({ ...newAssumptions, down_percent: parseFloat(e.target.value) })} value={newAssumptions.down_percent} type="number" variant="outlined" label="Down Percent" className="!text-gray-300" ></Input>
+        <Input onChange={(e) => setNewAssumptions({ ...newAssumptions, mortgage_length: parseFloat(e.target.value) })} value={newAssumptions.mortgage_length} type="number" variant="outlined" label="Mortgage Length" className="!text-gray-300" ></Input>
       </div>
 
       <div className="ml-4">Market Forces</div>
