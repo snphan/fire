@@ -6,6 +6,9 @@ module.exports = withMT({
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
+    fontFamily: {
+      ubuntu: ["Ubuntu"]
+    },
     extend: {
       dropShadow: {
         'strong': '0 4px 4px rgba(0, 0, 0, 0.5)',

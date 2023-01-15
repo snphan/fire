@@ -2,7 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { GET_USER_BY_ID } from '@/queries';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { REListItem } from '@/components/REListItem';
-import { Button, Tooltip, Chip } from '@material-tailwind/react';
+import {
+  Button,
+  Tooltip,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter
+} from '@material-tailwind/react';
 import { AddREAssetForm } from '@/components/AddREAssetForm';
 import { AddREAssumptionsForm } from '@/components/AddREAssumptionsForm';
 import { Loading } from '@/components/Loading';
@@ -25,10 +32,12 @@ export function ProspectiveRealEstate({ userID }: any) {
   const { data: REAssetData, loading, error, refetch: refetchData } = useQuery(GET_USER_BY_ID);
   const [createREAssumption, { loading: REAssumptionLoading }] = useMutation(CREATE_REASSUMPTION);
   const [openAddREAsset, setOpenAddREAsset] = useState<boolean>(false);
+  const [openConfirmDelete, setOpenConfirmDelete] = useState<boolean>(false);
   const [assetID, setAssetID] = useState<number | null>(null);
   const [currentAsset, setCurrentAsset] = useState<any>(null);
 
   const handleOpenAddREAsset = () => setOpenAddREAsset(!openAddREAsset);
+  const handleOpenConfirmDelete = () => setOpenConfirmDelete(!openConfirmDelete);
 
   const reAnalyzer = currentAsset?.re_assumptions && new REAnalyzer(currentAsset);
 
@@ -133,10 +142,8 @@ export function ProspectiveRealEstate({ userID }: any) {
               <Tooltip content={"Delete"} className="capitalize bg-gray-900 p-2">
                 <div className="transition-all mr-5 hover:bg-gradient-to-tr hover:from-pink-800 hover:to-pink-500 hover:bg-red-700 hover:shadow-pink-300/20 hover:scale-105 rounded-full cursor-pointer w-12 h-12 flex justify-center items-center"
                   onClick={() => {
-
+                    handleOpenConfirmDelete();
                     /* Go Back to list view */
-                    setAssetID(null);
-                    setCurrentAsset(null);
                   }} >
                   <span className="material-icons text-4xl">delete</span>
                 </div>
@@ -234,6 +241,29 @@ export function ProspectiveRealEstate({ userID }: any) {
         }
       </div>
       <AddREAssetForm open={openAddREAsset} handleOpen={handleOpenAddREAsset} userID={userID} />
+
+      <Dialog size="xs" className="bg-zinc-900" open={openConfirmDelete} handler={handleOpenConfirmDelete}>
+        <DialogHeader className="text-zinc-300 font-ubuntu">Confirm Delete</DialogHeader>
+        <DialogBody className="text-zinc-400 font-ubuntu">
+          Are you sure you want to delete this Asset?
+        </DialogBody>
+        <DialogFooter>
+          <Button
+            variant="text"
+            color="gray"
+            onClick={handleOpenConfirmDelete}
+            className="mr-2"
+          >
+            <span>Back</span>
+          </Button>
+          <Button variant="gradient" color="red" onClick={() => {
+            console.log("deleteing!")
+          }
+          }>
+            <span>Confirm</span>
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </>
   )
 }
