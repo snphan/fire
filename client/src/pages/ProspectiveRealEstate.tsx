@@ -33,11 +33,21 @@ export function ProspectiveRealEstate({ userID }: any) {
     yAxis: {
       type: 'value',
     },
+    legend: {
+      data: ['Stocks (8%)', 'RE Cashflow']
+    },
     series: [
       {
         data: [820, 932, 901, 934, 1290, 1330, 1320],
         type: 'line',
         smooth: true,
+        name: 'Stocks (8%)'
+      },
+      {
+        data: [200, 390, 102, 503, 1101, 100, 200],
+        type: 'line',
+        smooth: true,
+        name: 'RE Cashflow'
       },
     ],
     tooltip: {
@@ -115,7 +125,7 @@ export function ProspectiveRealEstate({ userID }: any) {
               </div>
               <div className="w-3/5 bg-gray-800 mr-5 mb-5 rounded-xl drop-shadow-strong">
                 <h4 className='font-bold m-2'>Projection</h4>
-                <ReactECharts theme="my_theme" className="" option={projectionOptions} />
+                <ReactECharts theme="my_theme" style={{ height: "75%" }} option={projectionOptions} />
               </div>
             </div>
 
