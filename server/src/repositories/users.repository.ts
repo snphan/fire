@@ -57,7 +57,7 @@ export default class UserRepository {
   }
 
   public async userDelete(userId: number): Promise<User> {
-    if (isEmpty(userId)) throw new HttpException(400, "User doesn't existId");
+    if (isEmpty(userId)) throw new HttpException(400, "UserId is empty");
 
     const findUser: User = await User.findOne({ where: { id: userId } });
     if (!findUser) throw new HttpException(409, "User doesn't exist");
