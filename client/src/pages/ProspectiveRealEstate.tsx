@@ -49,7 +49,7 @@ export function ProspectiveRealEstate({ userID }: any) {
       name: 'Dollars ($)'
     },
     legend: {
-      data: ['Stocks (8%)', 'RE Cashflow']
+      data: ['Stocks (8%)', 'RE Cumulative Cashflow', 'RE Cashflow']
     },
     series: [
       {
@@ -61,9 +61,13 @@ export function ProspectiveRealEstate({ userID }: any) {
         name: 'Stocks (8%)'
       },
       {
-        data: [...Array(currentAsset.re_assumptions.hold_length + 1).keys()].map((item) => {
-          return item * 2;
-        }),
+        data: reAnalyzer.cashFlowCumulative,
+        type: 'line',
+        smooth: true,
+        name: 'RE Cumulative Cashflow'
+      },
+      {
+        data: [...[0], ...reAnalyzer.cashFlow],
         type: 'line',
         smooth: true,
         name: 'RE Cashflow'
