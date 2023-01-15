@@ -17,7 +17,7 @@ import { REAnalyzer } from '@/utils/re_analysis';
 echarts.registerTheme('my_theme', fireTheme);
 const CADFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
-  currency: 'CAD'
+  currency: 'USD'
 })
 
 export function ProspectiveRealEstate({ userID }: any) {
@@ -133,7 +133,7 @@ export function ProspectiveRealEstate({ userID }: any) {
 
             <div className='flex'>
               <div className="flex w-2/5 flex-col">
-                <Carousel className="bg-gray-800 mx-5 rounded-xl p-2 h-96">
+                <Carousel className="bg-zinc-900 mx-5 rounded-xl p-2 h-96">
                   {
                     currentAsset?.picture_links.map((link: string, index: number) => {
                       return (<Carousel.Item key={index} imgSrc={`${REACT_APP_MEDIA_HOST}/media/${link}`}>
@@ -146,7 +146,7 @@ export function ProspectiveRealEstate({ userID }: any) {
                   REInfo={currentAsset} disabled
                 />
               </div>
-              <div className="w-3/5 bg-gray-800 mr-5 mb-5 rounded-xl drop-shadow-strong">
+              <div className="w-3/5 bg-zinc-900 mr-5 mb-5 rounded-xl drop-shadow-strong">
                 <div className="flex flex-col justify-between h-full">
                   <h4 className='font-bold m-2'>Projection</h4>
                   {currentAsset?.re_assumptions &&
@@ -154,42 +154,42 @@ export function ProspectiveRealEstate({ userID }: any) {
                       <ReactECharts theme="my_theme" style={{ height: "65%" }} option={projectionOptions} />
                       <div id='quickstats' className="m-4 flex flex-wrap justify-between">
                         <Tooltip content={"Total Out of Pocket"} className="capitalize bg-gray-900 p-2">
-                          <div className="p-2 flex flex-col justify-center items-center h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-600 to-pink-300 text-gray-100">
+                          <div className="p-2 flex flex-col justify-center items-center h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-800 to-pink-500 text-gray-200">
                             <div><span className="material-icons material-symbols-outlined">point_of_sale</span></div>
                             <div className="font-bold">{"-" + CADFormatter.format(reAnalyzer.totalOutOfPocket)}</div>
                           </div>
                         </Tooltip>
-                        <div className="w-1 border border-gray-200 rounded-xl"></div>
+                        <div className="w-1 bg-zinc-400 rounded-xl"></div>
                         <Tooltip content={"Mortgage Payment (Month)"} className="capitalize bg-gray-900 p-2">
-                          <div className="p-2 flex flex-col justify-center items-center h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-600 to-pink-300 text-gray-100">
+                          <div className="p-2 flex flex-col justify-center items-center h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-800 to-pink-500 text-gray-200">
                             <div><span className="material-icons material-symbols-outlined">house</span></div>
                             <div className="font-bold">{"-" + CADFormatter.format(reAnalyzer.mortgagePayment)}</div>
                           </div>
                         </Tooltip>
                         <Tooltip content={"Average Total Operating Expense"} className="capitalize bg-gray-900 p-2">
-                          <div className="p-2 flex flex-col justify-center items-center h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-600 to-pink-300 text-gray-100">
+                          <div className="p-2 flex flex-col justify-center items-center h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-800 to-pink-500 text-gray-200">
                             <div><span className="material-icons material-symbols-outlined">lightbulb</span></div>
                             <div className="font-bold">{"-" + CADFormatter.format(reAnalyzer.avgTotalOpExpense)}</div>
                           </div>
                         </Tooltip>
                         <Tooltip content={"Average Rent (Month)"} className="capitalize bg-gray-900 p-2">
-                          <div className="p-2 flex flex-col justify-center items-center h-20 rounded-xl shadow-light-green-300/20 shadow-md hover:shadow-lg hover:shadow-light-green-300/20 bg-gradient-to-tr from-light-green-600 to-light-green-300 text-gray-100">
+                          <div className="p-2 flex flex-col justify-center items-center h-20 rounded-xl shadow-light-green-300/20 shadow-md hover:shadow-lg hover:shadow-light-green-300/20 bg-gradient-to-tr from-light-green-800 to-light-green-500 text-gray-200">
                             <div><span className="material-icons material-symbols-outlined">attach_money</span></div>
                             <div className="font-bold">{"+" + CADFormatter.format(reAnalyzer.avgRent)}</div>
                           </div>
                         </Tooltip>
-                        <div className="w-1 border border-gray-200 rounded-xl"></div>
+                        <div className="w-1 bg-zinc-400 rounded-xl"></div>
                         {(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + reAnalyzer.mortgagePayment) >= 0) ?
 
                           <Tooltip content={"Profit"} className="capitalize bg-gray-900 p-2">
-                            <div className="p-2 flex flex-col justify-center items-center h-20 rounded-xl shadow-light-green-300/20 shadow-md hover:shadow-lg hover:shadow-light-green-300/20 bg-gradient-to-tr from-light-green-600 to-light-green-300 text-gray-100">
+                            <div className="p-2 flex flex-col justify-center items-center h-20 rounded-xl shadow-light-green-300/20 shadow-md hover:shadow-lg hover:shadow-light-green-300/20 bg-gradient-to-tr from-light-green-800 to-light-green-500 text-gray-200">
                               <div><span className="material-icons material-symbols-outlined">payment</span></div>
                               <div className="font-bold">{"+" + CADFormatter.format(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + reAnalyzer.mortgagePayment))}</div>
                             </div>
                           </Tooltip>
                           :
                           <Tooltip content={"Loss"} className="capitalize bg-gray-900 p-2">
-                            <div className="p-2 flex flex-col justify-center items-center h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-600 to-pink-300 text-gray-100">
+                            <div className="p-2 flex flex-col justify-center items-center h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-800 to-pink-500 text-gray-200">
                               <div><span className="material-icons material-symbols-outlined">payment</span></div>
                               <div className="font-bold">{"-" + CADFormatter.format(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + reAnalyzer.mortgagePayment))}</div>
                             </div>
@@ -204,7 +204,7 @@ export function ProspectiveRealEstate({ userID }: any) {
 
 
             {currentAsset?.re_assumptions ?
-              <div className="rounded-xl grow mx-5 mb-5 bg-gray-800 drop-shadow-strong">
+              <div className="rounded-xl grow mx-5 mb-5 bg-zinc-900 drop-shadow-strong">
                 <AddREAssumptionsForm currentAsset={currentAsset} setCurrentAsset={setCurrentAsset} assumptions={currentAsset.re_assumptions}></AddREAssumptionsForm>
               </div>
               :

@@ -1,5 +1,5 @@
 
-var contrastColor = '#eeeeee';
+var contrastColor = '#d4d4d8';
 var backgroundColor = 'transparent';
 var axisCommon = function () {
   return {

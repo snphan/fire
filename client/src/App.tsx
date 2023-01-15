@@ -71,7 +71,7 @@ function App() {
   }
 
   return (
-    <div className="text-gray-200 bg-gray-900">
+    <div className="text-gray-200 bg-zinc-800">
       {renderState(appState)}
     </div>
   );
