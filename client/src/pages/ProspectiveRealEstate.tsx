@@ -12,6 +12,7 @@ import { CREATE_REASSUMPTION } from '@/mutations';
 import ReactECharts from 'echarts-for-react';
 import * as echarts from 'echarts/core';
 import { fireTheme } from '@/config/echart.config';
+import { REAnalyzer } from '@/utils/re_analysis';
 
 echarts.registerTheme('my_theme', fireTheme);
 
@@ -25,7 +26,9 @@ export function ProspectiveRealEstate({ userID }: any) {
 
   const handleOpenAddREAsset = () => setOpenAddREAsset(!openAddREAsset);
 
-  const projectionOptions = {
+  const reAnalyzer = currentAsset && new REAnalyzer(currentAsset);
+
+  const projectionOptions = currentAsset && {
     xAxis: {
       type: 'category',
       data: [...Array(currentAsset.re_assumptions.hold_length + 1).keys()].map((item) => {
@@ -46,7 +49,9 @@ export function ProspectiveRealEstate({ userID }: any) {
     },
     series: [
       {
-        data: [...Array(currentAsset.re_assumptions.hold_length + 1).keys()],
+        data: [...Array(currentAsset.re_assumptions.hold_length + 1).keys()].map((item) => {
+          return Math.round(reAnalyzer.totalOutOfPocket * Math.pow(1.08, item));
+        }),
         type: 'line',
         smooth: true,
         name: 'Stocks (8%)'
