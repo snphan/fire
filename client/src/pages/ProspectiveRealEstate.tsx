@@ -92,7 +92,7 @@ export function ProspectiveRealEstate({ userID }: any) {
 
   return (
     <>
-      <div className="ml-24 min-h-screen">
+      <div className="ml-24 min-h-screen max-w-screen overflow-hidden">
         {!currentAsset ? // List View occurs if no REAsset is selected
           /* List view for Prospective Real Estate */
           <>
