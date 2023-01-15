@@ -13,6 +13,7 @@ let app: App;
 let userId: number;
 let reAssetId: number;
 let reAssumptionsId: number;
+let reReceiptId: number;
 let authCookie: string;
 
 beforeAll(async () => {
@@ -127,6 +128,7 @@ describe('Testing Real Estate Asset Analysis', () => {
       const createREReceiptMutation = {
         query: `mutation createREReceipt($REReceiptData: CreateREReceiptDto!) {
                   createREReceipt(REReceiptData: $REReceiptData) {
+                    id
                     re_asset {
                       id
                     }
@@ -140,14 +142,13 @@ describe('Testing Real Estate Asset Analysis', () => {
       expect(response.error).toBeFalsy();
       expect(response.body.data.createREReceipt.re_asset.id).toBe(reAssetId);
       expect(response.body.data.createREReceipt.type).toBe(REReceiptData.type);
+      reReceiptId = response.body.data.createREReceipt.id;
     });
   });
 
 
   describe('[POST] query user by id and get RE analysis info /graphql', () => {
     it('should return RE Asset data and RE Receipt data and parent ids', async () => {
-
-
       const REReceiptData: CreateREReceiptDto = {
         reAssetId: reAssetId,
         timestamp: 109889080,
@@ -253,8 +254,64 @@ describe('Testing Real Estate Asset Analysis', () => {
 
       const response = await request(app.getServer()).post('/graphql').send(updateREAssumptionsMutation);
       expect(response.error).toBeFalsy();
-      expect(response.body.data.updateREAssumptions.closing_cost).toBe(newAssumptionsData.closing_cost); /* Default value */
+      expect(response.body.data.updateREAssumptions.closing_cost).toBe(newAssumptionsData.closing_cost);
     });
   });
 
+  describe('[POST] delete asset', () => {
+    it('should delete the asset', async () => {
+      const deleteREAssetMutation = {
+        query: `mutation deleteREAsset($reAssetId: Float!) {
+          deleteREAsset(reAssetId: $reAssetId) {
+            id
+            re_assumptions {
+              id
+            }
+            re_receipt {
+              id
+            }
+          }
+        }`,
+        variables: { reAssetId: reAssetId }
+      }
+      let response = await request(app.getServer()).post('/graphql').send(deleteREAssetMutation);
+      expect(response.error).toBeFalsy();
+      expect(response.body.data.deleteREAsset.id).toBe(reAssetId);
+
+      /* Delete again but should return 409 */
+      response = await request(app.getServer()).post('/graphql').send(deleteREAssetMutation);
+      expect(response.error).toBeFalsy();
+      expect(response.body.errors[0].extensions.exception.status).toBe(409);
+
+    });
+    it('should delete the assumption', async () => {
+
+      const getREAssumptionsById = {
+        query: `query getREAssumptionsById($reAssumptionsId: Float!) {
+          getREAssumptionsById(reAssumptionsId: $reAssumptionsId) {
+            id
+          }
+        }`,
+        variables: { reAssumptionsId: reAssumptionsId }
+      }
+
+      const response = await request(app.getServer()).post('/graphql').send(getREAssumptionsById);
+      expect(response.error).toBeFalsy();
+      expect(response.body.errors[0].extensions.exception.status).toBe(409);
+    });
+    it('should NOT delete the receipts', async () => {
+      const getREReceiptById = {
+        query: `query getREReceiptById($reReceiptId: Float!) {
+          getREReceiptById(reReceiptId: $reReceiptId) {
+            id
+          }
+        }`,
+        variables: { reReceiptId: reReceiptId }
+      }
+
+      const response = await request(app.getServer()).post('/graphql').send(getREReceiptById);
+      expect(response.error).toBeFalsy();
+      expect(response.body.data.getREReceiptById.id).toBe(reReceiptId);
+    });
+  });
 })

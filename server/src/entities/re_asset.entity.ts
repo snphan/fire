@@ -13,7 +13,7 @@ export class REAsset extends BaseEntity {
   id: number;
 
   @OneToMany((type) => REReceipt, re_receipt => re_receipt.re_asset, {
-    onDelete: "SET NULL"
+    onDelete: "SET NULL",
   })
   reReceiptConnection: REReceipt[];
 
