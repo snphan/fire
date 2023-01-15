@@ -20,6 +20,14 @@ export class REAssetResolver extends REAssetRepository {
     return reAsset;
   }
 
+  @Mutation(() => REAsset, {
+    description: 'Delete REAsset'
+  })
+  async deleteREAsset(@Arg('reAssetId') reAssetId: number): Promise<REAsset> {
+    const reAsset: REAsset = await this.REAssetDelete(reAssetId);
+    return reAsset;
+  }
+
   @Mutation(() => REReceipt, {
     description: 'Create REReceipt',
   })
@@ -28,11 +36,36 @@ export class REAssetResolver extends REAssetRepository {
     return reReceipt;
   }
 
+  @Query(() => REReceipt, {
+    description: 'Get REReceipt by id'
+  })
+  async getREReceiptById(@Arg('reReceiptId') reReceiptId: number): Promise<REReceipt> {
+    const reReceipt: REReceipt = await this.REReceiptById(reReceiptId);
+    return reReceipt;
+  }
+
   @Mutation(() => REAssumptions, {
-    description: 'Create REReceipt',
+    description: 'Create REAssumptions',
   })
   async createREAssumptions(@Arg('REAssumptionsData') REAssumptionsData: CreateREAssumptionsDto): Promise<REAssumptions> {
     const reAssumptions: REAssumptions = await this.REAssumptionsCreate(REAssumptionsData);
     return reAssumptions;
   }
+
+  @Query(() => REAssumptions, {
+    description: 'Get REAssumptions by id'
+  })
+  async getREAssumptionsById(@Arg('reAssumptionsId') reAssumptionsId: number): Promise<REAssumptions> {
+    const reAssumptions: REAssumptions = await this.REAssumptionsById(reAssumptionsId);
+    return reAssumptions;
+  }
+
+  @Mutation(() => REAssumptions, {
+    description: 'Update REAssumptions'
+  })
+  async updateREAssumptions(@Arg('assumptionId') assumptionId: number, @Arg('REAssumptionsData') REAssumptionsData: CreateREAssumptionsDto): Promise<REAssumptions> {
+    const reAssumptions: REAssumptions = await this.REAssumptionsUpdate(assumptionId, REAssumptionsData);
+    return reAssumptions;
+  }
+
 }

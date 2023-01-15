@@ -13,7 +13,7 @@ export class REAsset extends BaseEntity {
   id: number;
 
   @OneToMany((type) => REReceipt, re_receipt => re_receipt.re_asset, {
-    onDelete: "SET NULL"
+    onDelete: "SET NULL",
   })
   reReceiptConnection: REReceipt[];
 
@@ -30,55 +30,61 @@ export class REAsset extends BaseEntity {
   user: User;
 
   @OneToOne((type) => REAssumptions, {
-    onDelete: "CASCADE",
+    onDelete: "SET NULL",
     eager: true,
     nullable: true
   })
   @JoinColumn()
-  re_assumptions: REAssumptions
-
-
-  @Field()
-  @Column()
-  purchase_price: number
+  @Field((type) => REAssumptions, {
+    nullable: true
+  })
+  re_assumptions: REAssumptions;
 
   @Field()
   @Column()
-  address: string
+  purchase_price: number;
 
   @Field()
   @Column()
-  postal_code: string
+  address: string;
 
   @Field()
   @Column()
-  city: string
+  postal_code: string;
 
   @Field()
   @Column()
-  province: string
+  city: string;
 
   @Field()
   @Column()
-  country: string
+  province: string;
+
+  @Field()
+  @Column()
+  country: string;
+
+  @Field()
+  @Column({ default: 1 })
+  bedrooms: number;
+
+  @Field()
+  @Column({ default: 1 })
+  bathrooms: number;
 
   @Field(type => [String])
   @Column("text", { array: true })
-  picture_links: string[]
+  picture_links: string[];
 
   @Field()
   @Column()
-  purchase_date: Date
+  purchase_date: Date;
 
   @Field()
   @Column()
-  hold_length: number
+  favorite: boolean;
 
   @Field()
   @Column()
-  favorite: boolean
-
-  @Field()
-  @Column()
-  tracking: boolean /* When the asset is purchased, it is moved to the tracking page */
+  tracking: boolean; /* When the asset is purchased, it is moved to the tracking page */
 }

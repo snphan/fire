@@ -11,9 +11,7 @@ export class REAssumptions extends BaseEntity {
   id: number;
 
   @Field(() => REAsset)
-  @OneToOne(() => REAsset, re_asset => re_asset.re_assumptions, {
-    onDelete: "SET NULL",
-  })
+  @OneToOne(() => REAsset, re_asset => re_asset.re_assumptions)
   re_asset: REAsset;
 
   @Field()
@@ -46,7 +44,7 @@ export class REAssumptions extends BaseEntity {
 
   @Field()
   @Column("float", { default: 300 })
-  utilties: number; /* per month */
+  utilities: number; /* per month */
 
   @Field()
   @Column("float", { default: 50 })
@@ -71,4 +69,12 @@ export class REAssumptions extends BaseEntity {
   @Field()
   @Column("float", { default: 5 })
   interest_rate: number;
+
+  @Field()
+  @Column("float", { default: 25 })
+  mortgage_length: number;
+
+  @Field()
+  @Column("int", { default: 10 })
+  hold_length: number;
 }

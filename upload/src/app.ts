@@ -1,12 +1,12 @@
 import express from 'express';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
-
+import cors from 'cors';
 const app = express();
 
 
 app.use("/media", express.static("./media"));
-
+app.use(cors({ origin: ['http://localhost:8000'], credentials: true }));
 /* Multer Settings */
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {

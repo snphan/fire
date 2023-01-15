@@ -11,7 +11,7 @@ interface UserInfo {
   password: string,
 }
 
-export function SignUpForm({ user, goBackToLogin }: any) {
+export function SignUpForm({ user, goToDashboard, goToSignIn, loginUser, setUserID }: any) {
 
   const [userInfo, setUserInfo] = useState<UserInfo>({
     email: user.email,
@@ -25,7 +25,7 @@ export function SignUpForm({ user, goBackToLogin }: any) {
   if (error) return (
     <div>
       <p>Submission error! {error.message} {JSON.stringify(data)}</p>
-      <button onClick={() => goBackToLogin()}>Back</button>
+      <button onClick={() => goToDashboard()}>Back</button>
     </div>
   );
 
@@ -33,39 +33,50 @@ export function SignUpForm({ user, goBackToLogin }: any) {
     /* Singup using only the unique information from google */
     userInfo.password = user.sub;
 
-    createUser({ variables: { userData: userInfo } });
-    goBackToLogin();
+    createUser({
+      variables: { userData: userInfo }, onCompleted: () => {
+        loginUser({
+          variables: { userData: { email: user.email, password: user.sub } },
+          onCompleted: (res: any) => {
+            setUserID(res.login.id);
+          }
+        });
+      }
+    });
+    goToDashboard();
   }
 
   return (
-    <div className="w-full max-w-lg">
-      <p className="text-xl m-3">It doesn't seem like you are registered... Please Sign Up</p>
-      <div className="flex flex-wrap -mx-3 mb-6">
-        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          htmlFor="Email">Email</label>
-        <input className="appearance-none block w-full text-lg bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-          type="text" name="" id="Email" value={userInfo.email} onChange={(e) => setUserInfo(({ ...userInfo, email: e.target.value }))} />
-      </div>
+    <div className="flex flex-col min-h-screen items-center justify-center">
+      <div className="w-full max-w-lg">
+        <p className="text-xl m-3">It doesn't seem like you are registered... Please Sign Up</p>
+        <div className="flex flex-wrap -mx-3 mb-6">
+          <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+            htmlFor="Email">Email</label>
+          <input className="appearance-none block w-full text-lg bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            type="text" name="" id="Email" value={userInfo.email} onChange={(e) => setUserInfo(({ ...userInfo, email: e.target.value }))} />
+        </div>
 
-      <div className="flex flex-wrap -mx-3 mb-6">
-        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          htmlFor="last-name">Last Name</label>
-        <input className="appearance-none block w-full text-lg bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-          type="text" name="" id="last-name" value={userInfo.last_name} onChange={(e) => setUserInfo(({ ...userInfo, last_name: e.target.value }))} />
-      </div>
+        <div className="flex flex-wrap -mx-3 mb-6">
+          <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+            htmlFor="last-name">Last Name</label>
+          <input className="appearance-none block w-full text-lg bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            type="text" name="" id="last-name" value={userInfo.last_name} onChange={(e) => setUserInfo(({ ...userInfo, last_name: e.target.value }))} />
+        </div>
 
-      <div className="flex flex-wrap -mx-3 mb-6">
-        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-          htmlFor="first-name">First Name</label>
-        <input className="appearance-none block w-full text-lg bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-          type="text" name="" id="first-name" value={userInfo.first_name} onChange={(e) => setUserInfo(({ ...userInfo, first_name: e.target.value }))} />
-      </div>
+        <div className="flex flex-wrap -mx-3 mb-6">
+          <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+            htmlFor="first-name">First Name</label>
+          <input className="appearance-none block w-full text-lg bg-gray-200 text-gray-700 border border-gray-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            type="text" name="" id="first-name" value={userInfo.first_name} onChange={(e) => setUserInfo(({ ...userInfo, first_name: e.target.value }))} />
+        </div>
 
-      <div>
-        <button className="w-32 bg-transparent border-blue-500 border hover:bg-blue-500 m-5 text-white text-lg font-bold py-2 px-4 rounded-full"
-          onClick={() => goBackToLogin()}>Back</button>
-        <button className="w-32 bg-blue-500 hover:bg-blue-700 m-5 text-white text-lg font-bold py-2 px-4 rounded-full"
-          onClick={() => handleRegister()}>Register</button>
+        <div className="flex justify-center">
+          <button className="w-32 bg-transparent border-blue-500 border hover:bg-blue-500 m-5 text-white text-lg font-bold py-2 px-4 rounded-full"
+            onClick={() => goToSignIn()}>Back</button>
+          <button className="w-32 bg-blue-500 hover:bg-blue-700 m-5 text-white text-lg font-bold py-2 px-4 rounded-full"
+            onClick={() => handleRegister()}>Register</button>
+        </div>
       </div>
     </div>
   )
