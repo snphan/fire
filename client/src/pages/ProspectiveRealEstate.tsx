@@ -28,7 +28,7 @@ export function ProspectiveRealEstate({ userID }: any) {
     if (assetID) {
       setCurrentAsset(REAssetData?.getUserById.re_asset.filter((item: any) => (item.id === assetID))?.at(0));
     }
-  }, [assetID])
+  }, [assetID, REAssetData])
 
   if (error) return <p>{`Error! ${error}`}</p>;
 
@@ -104,9 +104,7 @@ export function ProspectiveRealEstate({ userID }: any) {
                 <Button onClick={() => createREAssumption({
                   variables: { reAssumptionsData: { reAssetId: assetID } },
                   onCompleted: () => {
-                    refetchData({ userID: userID }).then((data: any) => {
-                      setCurrentAsset(data?.data.getUserById.re_asset.filter((item: any) => (item.id === assetID))?.at(0));
-                    });
+                    refetchData({ userID: userID });
                   }
                 })}>Create Assumptions</Button>
               </div>
