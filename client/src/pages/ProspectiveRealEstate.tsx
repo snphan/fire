@@ -129,6 +129,18 @@ export function ProspectiveRealEstate({ userID }: any) {
                 </div>
               </Tooltip>
               <h1>Property Analysis</h1>
+              <div className="grow"></div>
+              <Tooltip content={"Delete"} className="capitalize bg-gray-900 p-2">
+                <div className="transition-all mr-5 hover:bg-gradient-to-tr hover:from-pink-800 hover:to-pink-500 hover:bg-red-700 hover:shadow-pink-300/20 hover:scale-105 rounded-full cursor-pointer w-12 h-12 flex justify-center items-center"
+                  onClick={() => {
+
+                    /* Go Back to list view */
+                    setAssetID(null);
+                    setCurrentAsset(null);
+                  }} >
+                  <span className="material-icons text-4xl">delete</span>
+                </div>
+              </Tooltip>
             </div>
 
             <div className='flex'>
