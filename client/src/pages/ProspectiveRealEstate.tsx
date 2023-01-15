@@ -22,7 +22,6 @@ export function ProspectiveRealEstate({ userID }: any) {
   const handleOpenAddREAsset = () => setOpenAddREAsset(!openAddREAsset);
 
   const options = {
-    grid: { top: 8, right: 8, bottom: 24, left: 36 },
     xAxis: {
       type: 'category',
       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -110,9 +109,9 @@ export function ProspectiveRealEstate({ userID }: any) {
                   REInfo={currentAsset} disabled
                 />
               </div>
-              <div className="grow bg-gray-800 mr-5 mb-5 rounded-xl drop-shadow-strong">
+              <div className="w-3/5 bg-gray-800 mr-5 mb-5 rounded-xl drop-shadow-strong">
                 <h4 className='font-bold m-2'>Projection</h4>
-                <ReactECharts className="m-4" option={options} />
+                <ReactECharts className="" option={options} />
               </div>
             </div>
 
