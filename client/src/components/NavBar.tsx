@@ -14,7 +14,7 @@ export function NavBar({ setAppState, endSession, currState }: any) {
         ]).map((icon) => (
 
           <Tooltip key={icon.name} content={icon.state.replaceAll("-", " ")} className="capitalize bg-gray-900 p-2">
-            <li onClick={() => setAppState(icon.state)} className={((currState === icon.state) ? "bg-light-blue-500 " : "") + ("cursor-pointer hover:bg-gray-600 rounded-lg flex flex-col justify-center items-center w-14 h-14 m-3")}>
+            <li onClick={() => setAppState(icon.state)} className={((currState === icon.state) ? "bg-light-blue-500 " : "") + ("cursor-pointer hover:bg-zinc-800 rounded-lg flex flex-col justify-center items-center w-14 h-14 m-3")}>
               <span className="text-3xl material-icons material-symbols-outlined">{icon.name}</span>
             </li>
           </Tooltip>
