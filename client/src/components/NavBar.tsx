@@ -23,7 +23,7 @@ export function NavBar({ setAppState, endSession, currState }: any) {
         )}
         <li className="grow"></li>
         <Tooltip content="Logout" className="bg-gray-900 p-2 capitalize">
-          <li onClick={() => endSession()} className="cursor-pointer hover:bg-gray-600 rounded-lg flex flex-col justify-center items-center w-14 h-14 m-3">
+          <li onClick={() => endSession()} className="cursor-pointer hover:bg-zinc-800 rounded-lg flex flex-col justify-center items-center w-14 h-14 m-3">
             <span className="text-3xl material-icons">logout</span>
           </li>
         </Tooltip>
