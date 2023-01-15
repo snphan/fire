@@ -6,7 +6,7 @@ import { Tooltip, Button } from '@material-tailwind/react';
 export function NavBar({ setAppState, endSession, currState }: any) {
 
   return (
-    <nav className="bg-gray-800 drop-shadow-strong w-20 h-screen fixed top-0 left-0">
+    <nav className="bg-gray-800 drop-shadow-strong w-20 h-screen fixed top-0 left-0 z-20">
       <ul className="flex items-center justify-start flex-col h-full">
         {([
           { name: "space_dashboard", state: "dashboard" },
