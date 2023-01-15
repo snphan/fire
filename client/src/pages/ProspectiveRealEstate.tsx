@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { GET_USER_BY_ID } from '@/queries';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { REListItem } from '@/components/REListItem';
-import { Button, Tooltip } from '@material-tailwind/react';
+import { Button, Tooltip, Chip } from '@material-tailwind/react';
 import { AddREAssetForm } from '@/components/AddREAssetForm';
 import { AddREAssumptionsForm } from '@/components/AddREAssumptionsForm';
 import { Loading } from '@/components/Loading';
@@ -15,6 +15,10 @@ import { fireTheme } from '@/config/echart.config';
 import { REAnalyzer } from '@/utils/re_analysis';
 
 echarts.registerTheme('my_theme', fireTheme);
+const CADFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'CAD'
+})
 
 export function ProspectiveRealEstate({ userID }: any) {
 
@@ -26,9 +30,9 @@ export function ProspectiveRealEstate({ userID }: any) {
 
   const handleOpenAddREAsset = () => setOpenAddREAsset(!openAddREAsset);
 
-  const reAnalyzer = currentAsset && new REAnalyzer(currentAsset);
+  const reAnalyzer = currentAsset?.re_assumptions && new REAnalyzer(currentAsset);
 
-  const projectionOptions = currentAsset && {
+  const projectionOptions = currentAsset?.re_assumptions && {
     xAxis: {
       type: 'category',
       data: [...Array(currentAsset.re_assumptions.hold_length + 1).keys()].map((item) => {
@@ -139,13 +143,39 @@ export function ProspectiveRealEstate({ userID }: any) {
                 />
               </div>
               <div className="w-3/5 bg-gray-800 mr-5 mb-5 rounded-xl drop-shadow-strong">
-                <h4 className='font-bold m-2'>Projection</h4>
-                <ReactECharts theme="my_theme" style={{ height: "75%" }} option={projectionOptions} />
+                <div className="flex flex-col justify-between h-full">
+                  <h4 className='font-bold m-2'>Projection</h4>
+                  {currentAsset?.re_assumptions &&
+                    <>
+                      <ReactECharts theme="my_theme" style={{ height: "65%" }} option={projectionOptions} />
+                      <div id='quickstats' className="m-4 flex justify-between">
+                        <Tooltip content={"Total Out of Pocket"} className="capitalize bg-gray-900 p-2">
+                          <div className="p-5 flex flex-col justify-center items-center h-20 shadow-xl rounded-xl border border-red-500 text-red-500">
+                            <div><span className="material-icons material-symbols-outlined">point_of_sale</span></div>
+                            <div className="font-bold">{"-" + CADFormatter.format(reAnalyzer.totalOutOfPocket)}</div>
+                          </div>
+                        </Tooltip>
+                        <Tooltip content={"Mortgage Payment (Month)"} className="capitalize bg-gray-900 p-2">
+                          <div className="p-5 flex flex-col justify-center items-center h-20 shadow-xl rounded-xl border border-red-500 text-red-500">
+                            <div><span className="material-icons material-symbols-outlined">house</span></div>
+                            <div className="font-bold">{"-" + CADFormatter.format(reAnalyzer.mortgagePayment)}</div>
+                          </div>
+                        </Tooltip>
+                        <Tooltip content={"Average Rent (Month)"} className="capitalize bg-gray-900 p-2">
+                          <div className="p-5 flex flex-col justify-center items-center h-20 shadow-xl rounded-xl border border-lime-300 text-lime-300">
+                            <div><span className="material-icons material-symbols-outlined">attach_money</span></div>
+                            <div className="font-bold">{"+" + CADFormatter.format(reAnalyzer.avgRent)}</div>
+                          </div>
+                        </Tooltip>
+                      </div>
+                    </>
+                  }
+                </div>
               </div>
             </div>
 
 
-            {currentAsset.re_assumptions ?
+            {currentAsset?.re_assumptions ?
               <div className="rounded-xl grow mx-5 mb-5 bg-gray-800 drop-shadow-strong">
                 <AddREAssumptionsForm currentAsset={currentAsset} setCurrentAsset={setCurrentAsset} assumptions={currentAsset.re_assumptions}></AddREAssumptionsForm>
               </div>
