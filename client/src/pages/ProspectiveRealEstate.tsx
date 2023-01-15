@@ -191,7 +191,7 @@ export function ProspectiveRealEstate({ userID }: any) {
                           <Tooltip content={"Loss"} className="capitalize bg-gray-900 p-2">
                             <div className="p-2 flex flex-col justify-center items-center h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-800 to-pink-500 text-gray-200">
                               <div><span className="material-icons material-symbols-outlined">payment</span></div>
-                              <div className="font-bold">{"-" + CADFormatter.format(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + reAnalyzer.mortgagePayment))}</div>
+                              <div className="font-bold">{CADFormatter.format(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + reAnalyzer.mortgagePayment))}</div>
                             </div>
                           </Tooltip>
                         }
