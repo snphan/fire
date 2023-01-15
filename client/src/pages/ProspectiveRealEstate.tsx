@@ -5,13 +5,10 @@ import { REListItem } from '@/components/REListItem';
 import {
   Button,
   Tooltip,
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter
 } from '@material-tailwind/react';
 import { AddREAssetForm } from '@/components/AddREAssetForm';
 import { AddREAssumptionsForm } from '@/components/AddREAssumptionsForm';
+import { DeleteREAssetDialog } from '@/components/DeleteREAssetDialog';
 import { Loading } from '@/components/Loading';
 import Carousel from '@/components/Carousel';
 import { REACT_APP_MEDIA_HOST } from '@/config';
@@ -241,29 +238,13 @@ export function ProspectiveRealEstate({ userID }: any) {
         }
       </div>
       <AddREAssetForm open={openAddREAsset} handleOpen={handleOpenAddREAsset} userID={userID} />
-
-      <Dialog size="xs" className="bg-zinc-900" open={openConfirmDelete} handler={handleOpenConfirmDelete}>
-        <DialogHeader className="text-zinc-300 font-ubuntu">Confirm Delete</DialogHeader>
-        <DialogBody className="text-zinc-400 font-ubuntu">
-          Are you sure you want to delete this Asset?
-        </DialogBody>
-        <DialogFooter>
-          <Button
-            variant="text"
-            color="gray"
-            onClick={handleOpenConfirmDelete}
-            className="mr-2"
-          >
-            <span>Back</span>
-          </Button>
-          <Button variant="gradient" color="red" onClick={() => {
-            console.log("deleteing!")
-          }
-          }>
-            <span>Confirm</span>
-          </Button>
-        </DialogFooter>
-      </Dialog>
+      <DeleteREAssetDialog
+        userID={userID}
+        assetID={assetID}
+        setAssetID={setAssetID}
+        setCurrentAsset={setCurrentAsset}
+        open={openConfirmDelete}
+        handleOpen={handleOpenConfirmDelete} />
     </>
   )
 }

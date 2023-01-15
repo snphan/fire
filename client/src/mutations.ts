@@ -64,3 +64,11 @@ mutation updateREAssumptions($updateReAssumptionsData: CreateREAssumptionsDto!, 
   }
 }
 `
+
+export const DELETE_REASSET = gql`
+mutation deleteREAsset($reAssetId: Float!) {
+    deleteREAsset(reAssetId: $reAssetId) {
+      id
+    }
+  }
+`
