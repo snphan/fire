@@ -69,6 +69,8 @@ services:
       - ./client:/app
       - /app/node_modules
     restart: 'unless-stopped'
+    networks:
+      - backend
 
   upload:
     build:
@@ -82,6 +84,8 @@ services:
       - ./upload:/app
       - /app/node_modules
     restart: 'unless-stopped'
+    networks:
+      - backend
 
 networks:
   backend:
