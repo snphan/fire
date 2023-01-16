@@ -7,7 +7,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { ThemeProvider } from '@material-tailwind/react';
 
 const client = new ApolloClient({
-  uri: "http://localhost:3000/graphql",
+  uri: "http://localhost/api/graphql",
   cache: new InMemoryCache(),
   credentials: 'include'
 });

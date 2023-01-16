@@ -15,7 +15,7 @@ services:
   server:
     build:
       context: server
-      target: development-build-stage
+      target: production-build-stage
       dockerfile: Dockerfile
     container_name: server
     ports:
@@ -27,9 +27,23 @@ services:
     networks:
       - backend
     links:
-      - pg
+      - pg-prod
     depends_on:
+      - pg-prod
       - pg
+      - pg-test
+
+  pg-prod:
+    image: bitnami/postgresql:11-debian-9
+    container_name: pg-prod
+    environment:
+      POSTGRESQL_USERNAME: root
+      POSTGRESQL_PASSWORD: password
+      POSTGRESQL_DATABASE: prod
+    ports:
+      - '5435:5432'
+    networks:
+      - backend
 
   pg-test:
     image: bitnami/postgresql:11-debian-9
@@ -60,7 +74,7 @@ services:
   client:
     build:
       context: client
-      target: development-build-stage
+      target: production-build-stage
       dockerfile: Dockerfile
     container_name: client
     ports:
@@ -68,7 +82,6 @@ services:
     volumes:
       - ./client:/app
       - /app/node_modules
-    restart: 'unless-stopped'
     networks:
       - backend
 

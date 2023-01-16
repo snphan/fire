@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from 'typeorm';
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne, Relation } from 'typeorm';
 import { Field, ObjectType } from 'type-graphql';
 import { REAsset } from './re_asset.entity';
 
@@ -15,7 +15,7 @@ export class REReceipt extends BaseEntity {
     onDelete: "SET NULL",
     eager: true /* Allows us to get the parent (FK referenced) */
   })
-  re_asset: REAsset;
+  re_asset: Relation<REAsset>;
 
   @Field()
   @Column()

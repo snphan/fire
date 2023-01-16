@@ -108,7 +108,7 @@ class App {
     });
 
     await apolloServer.start();
-    apolloServer.applyMiddleware({ app: this.app, cors: ORIGIN, path: '/graphql' });
+    apolloServer.applyMiddleware({ app: this.app, cors: ORIGIN, path: '/api/graphql' });
   }
 
   private initializeErrorHandling() {

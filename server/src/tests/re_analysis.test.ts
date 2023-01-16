@@ -39,7 +39,7 @@ afterAll(async () => {
 
 
 describe('Testing Real Estate Asset Analysis', () => {
-  describe('[POST] /graphql', () => {
+  describe('[POST] /api/graphql', () => {
     it('response should have the Create userData', async () => {
       const userData: CreateUserDto = {
         email: 'test@email.com',
@@ -58,13 +58,13 @@ describe('Testing Real Estate Asset Analysis', () => {
         variables: { userData: userData }
       }
 
-      const response = await request(app.getServer()).post('/graphql').send(createUserMutation);
+      const response = await request(app.getServer()).post('/api/graphql').send(createUserMutation);
       expect(response.error).toBeFalsy();
       expect(response.body.data.createUser.email).toBe(userData.email);
       userId = response.body.data.createUser.id;
     });
   });
-  describe('[POST] create real estate asset /graphql', () => {
+  describe('[POST] create real estate asset /api/graphql', () => {
     it('should return some of the real estate asset data', async () => {
 
 
@@ -102,7 +102,7 @@ describe('Testing Real Estate Asset Analysis', () => {
         variables: { REAssetData: REAssetData }
       }
 
-      const response = await request(app.getServer()).post('/graphql').send(createREAssetMutation);
+      const response = await request(app.getServer()).post('/api/graphql').send(createREAssetMutation);
       expect(response.error).toBeFalsy();
       expect(response.body.data.createREAsset.user.id).toBe(REAssetData.userId);
       expect(response.body.data.createREAsset.address).toBe(REAssetData.address);
@@ -113,7 +113,7 @@ describe('Testing Real Estate Asset Analysis', () => {
     });
   });
 
-  describe('[POST] create real estate asset receipt /graphql', () => {
+  describe('[POST] create real estate asset receipt /api/graphql', () => {
     it('should return some of the real estate receipt data', async () => {
 
 
@@ -138,7 +138,7 @@ describe('Testing Real Estate Asset Analysis', () => {
         variables: { REReceiptData: REReceiptData }
       }
 
-      const response = await request(app.getServer()).post('/graphql').send(createREReceiptMutation);
+      const response = await request(app.getServer()).post('/api/graphql').send(createREReceiptMutation);
       expect(response.error).toBeFalsy();
       expect(response.body.data.createREReceipt.re_asset.id).toBe(reAssetId);
       expect(response.body.data.createREReceipt.type).toBe(REReceiptData.type);
@@ -147,7 +147,7 @@ describe('Testing Real Estate Asset Analysis', () => {
   });
 
 
-  describe('[POST] query user by id and get RE analysis info /graphql', () => {
+  describe('[POST] query user by id and get RE analysis info /api/graphql', () => {
     it('should return RE Asset data and RE Receipt data and parent ids', async () => {
       const REReceiptData: CreateREReceiptDto = {
         reAssetId: reAssetId,
@@ -189,7 +189,7 @@ describe('Testing Real Estate Asset Analysis', () => {
       }
 
 
-      const response = await request(app.getServer()).post('/graphql').send(findUserByIdQuery);
+      const response = await request(app.getServer()).post('/api/graphql').send(findUserByIdQuery);
       expect(response.error).toBeFalsy();
       expect(response.body.data.getUserById.id).toBe(userId);
       expect(response.body.data.getUserById.re_asset[0].id).toBe(reAssetId);
@@ -214,7 +214,7 @@ describe('Testing Real Estate Asset Analysis', () => {
         variables: { REAssumptionsData: { reAssetId: reAssetId } }
       }
 
-      const response = await request(app.getServer()).post('/graphql').send(createREAssumptionsMutation);
+      const response = await request(app.getServer()).post('/api/graphql').send(createREAssumptionsMutation);
       expect(response.error).toBeFalsy();
       expect(response.body.errors[0].extensions.exception.status).toBe(409);
     });
@@ -252,7 +252,7 @@ describe('Testing Real Estate Asset Analysis', () => {
       }
 
 
-      const response = await request(app.getServer()).post('/graphql').send(updateREAssumptionsMutation);
+      const response = await request(app.getServer()).post('/api/graphql').send(updateREAssumptionsMutation);
       expect(response.error).toBeFalsy();
       expect(response.body.data.updateREAssumptions.closing_cost).toBe(newAssumptionsData.closing_cost);
     });
@@ -274,12 +274,12 @@ describe('Testing Real Estate Asset Analysis', () => {
         }`,
         variables: { reAssetId: reAssetId }
       }
-      let response = await request(app.getServer()).post('/graphql').send(deleteREAssetMutation);
+      let response = await request(app.getServer()).post('/api/graphql').send(deleteREAssetMutation);
       expect(response.error).toBeFalsy();
       expect(response.body.data.deleteREAsset.id).toBe(reAssetId);
 
       /* Delete again but should return 409 */
-      response = await request(app.getServer()).post('/graphql').send(deleteREAssetMutation);
+      response = await request(app.getServer()).post('/api/graphql').send(deleteREAssetMutation);
       expect(response.error).toBeFalsy();
       expect(response.body.errors[0].extensions.exception.status).toBe(409);
 
@@ -295,7 +295,7 @@ describe('Testing Real Estate Asset Analysis', () => {
         variables: { reAssumptionsId: reAssumptionsId }
       }
 
-      const response = await request(app.getServer()).post('/graphql').send(getREAssumptionsById);
+      const response = await request(app.getServer()).post('/api/graphql').send(getREAssumptionsById);
       expect(response.error).toBeFalsy();
       expect(response.body.errors[0].extensions.exception.status).toBe(409);
     });
@@ -309,7 +309,7 @@ describe('Testing Real Estate Asset Analysis', () => {
         variables: { reReceiptId: reReceiptId }
       }
 
-      const response = await request(app.getServer()).post('/graphql').send(getREReceiptById);
+      const response = await request(app.getServer()).post('/api/graphql').send(getREReceiptById);
       expect(response.error).toBeFalsy();
       expect(response.body.data.getREReceiptById.id).toBe(reReceiptId);
     });

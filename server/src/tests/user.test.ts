@@ -34,7 +34,7 @@ beforeAll(async () => {
     variables: { userData: userData }
   }
 
-  const response = await request(app.getServer()).post('/graphql').send(createUserMutation);
+  const response = await request(app.getServer()).post('/api/graphql').send(createUserMutation);
   userId = response.body.data.createUser.id;
 })
 
@@ -49,7 +49,7 @@ afterAll(async () => {
 });
 
 describe('Testing User', () => {
-  describe('[POST] /graphql', () => {
+  describe('[POST] /api/graphql', () => {
     it('response statusCode 200 / findAll', async () => {
       const findAllUserQuery = {
         query: `query findAllUsers {
@@ -60,7 +60,7 @@ describe('Testing User', () => {
         }`
       }
 
-      const response = await request(app.getServer()).post('/graphql').send(findAllUserQuery);
+      const response = await request(app.getServer()).post('/api/graphql').send(findAllUserQuery);
       expect(response.statusCode).toBe(200);
       const responseUser = response.body.data.getUsers[0];
       expect(response.error).toBeFalsy();
@@ -68,7 +68,7 @@ describe('Testing User', () => {
     })
   })
 
-  describe('[POST] /graphql', () => {
+  describe('[POST] /api/graphql', () => {
     it('response statusCode 200 / findById', async () => {
       const findUserByIdQuery = {
         query: `query userById($id: Float!) {
@@ -80,7 +80,7 @@ describe('Testing User', () => {
         variables: { id: userId }
       }
 
-      const response = await request(app.getServer()).post('/graphql').send(findUserByIdQuery);
+      const response = await request(app.getServer()).post('/api/graphql').send(findUserByIdQuery);
       expect(response.statusCode).toBe(200);
       const responseUser = response.body.data.getUserById;
       expect(response.error).toBeFalsy();
@@ -88,7 +88,7 @@ describe('Testing User', () => {
     })
   })
 
-  describe('[POST] /graphql', () => {
+  describe('[POST] /api/graphql', () => {
     it('response statusCode 200 / findByEmail', async () => {
       const findUserByEmailQuery = {
         query: `query userByEmail($email: String!) {
@@ -111,18 +111,18 @@ describe('Testing User', () => {
         variables: { email: 'somerandomemail@gmail.com' }
       }
 
-      const response = await request(app.getServer()).post('/graphql').send(findUserByEmailQuery);
+      const response = await request(app.getServer()).post('/api/graphql').send(findUserByEmailQuery);
       expect(response.statusCode).toBe(200);
       const responseUser = response.body.data.getUserByEmail;
       expect(response.error).toBeFalsy();
       expect(responseUser.id).toBe(userId);
 
-      const responseNaN = await request(app.getServer()).post('/graphql').send(findUserByEmailQueryNaN);
+      const responseNaN = await request(app.getServer()).post('/api/graphql').send(findUserByEmailQueryNaN);
       expect(responseNaN.text).toMatch(/"status":409/);
     })
   })
 
-  describe('[POST] /graphql', () => {
+  describe('[POST] /api/graphql', () => {
     it('response statusCode 200 / updateUser', async () => {
 
       const newUserData: CreateUserDto = {
@@ -142,7 +142,7 @@ describe('Testing User', () => {
         variables: { id: userId, userData: newUserData }
       }
 
-      const response = await request(app.getServer()).post('/graphql').send(updateUserMutation);
+      const response = await request(app.getServer()).post('/api/graphql').send(updateUserMutation);
       expect(response.statusCode).toBe(200);
       expect(response.error).toBeFalsy();
       const responseUser = response.body.data.updateUser;
@@ -151,7 +151,7 @@ describe('Testing User', () => {
     })
   })
 
-  describe('[POST] /graphql', () => {
+  describe('[POST] /api/graphql', () => {
     it('response statusCode 200 / deleteUser', async () => {
 
       const deleteUserMutation = {
@@ -164,7 +164,7 @@ describe('Testing User', () => {
         variables: { id: userId }
       }
 
-      const response = await request(app.getServer()).post('/graphql').send(deleteUserMutation);
+      const response = await request(app.getServer()).post('/api/graphql').send(deleteUserMutation);
       expect(response.statusCode).toBe(200);
       expect(response.error).toBeFalsy();
       const responseUser = response.body.data.deleteUser;
