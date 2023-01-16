@@ -1,0 +1,111 @@
+version: '3.7'
+
+services:
+  proxy:
+    image: nginx:alpine
+    container_name: proxy
+    ports:
+      - '80:80'
+    volumes:
+      - ./server/nginx.conf:/etc/nginx/nginx.conf
+    restart: 'unless-stopped'
+    networks:
+      - backend
+
+  server:
+    build:
+      context: server
+      target: production-build-stage
+      dockerfile: Dockerfile
+    container_name: server
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    restart: 'unless-stopped'
+    networks:
+      - backend
+    links:
+      - pg-prod
+    depends_on:
+      - pg-prod
+      - pg
+      - pg-test
+
+  pg-prod:
+    image: bitnami/postgresql:11-debian-9
+    container_name: pg-prod
+    environment:
+      POSTGRESQL_USERNAME: root
+      POSTGRESQL_PASSWORD: password
+      POSTGRESQL_DATABASE: prod
+    ports:
+      - '5435:5432'
+    networks:
+      - backend
+
+  pg-test:
+    image: bitnami/postgresql:11-debian-9
+    container_name: pg-test
+    environment:
+      POSTGRESQL_USERNAME: root
+      POSTGRESQL_PASSWORD: password
+      POSTGRESQL_DATABASE: test
+    ports:
+      - '5433:5432'
+    networks:
+      - backend
+
+  pg:
+    image: bitnami/postgresql:11-debian-9
+    container_name: pg
+    environment:
+      POSTGRESQL_USERNAME: root
+      POSTGRESQL_PASSWORD: password
+      POSTGRESQL_DATABASE: dev
+    volumes:
+      - pg-data:/bitnami/postgresql
+    ports:
+      - '5432:5432'
+    networks:
+      - backend
+  
+  client:
+    build:
+      context: client
+      target: production-build-stage
+      dockerfile: Dockerfile
+    container_name: client
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    networks:
+      - backend
+
+  upload:
+    build:
+      context: upload
+      target: development-build-stage
+      dockerfile: Dockerfile
+    container_name: upload
+    ports:
+      - '4000:4000'
+    volumes:
+      - ./upload:/app
+      - /app/node_modules
+    restart: 'unless-stopped'
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  data:
+    driver: local
+  pg-data:
+    driver: local

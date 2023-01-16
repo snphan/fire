@@ -48,6 +48,7 @@ class App {
   }
 
   private async connectToDatabase() {
+    console.log(dbConnection);
     await createConnection(dbConnection);
   }
 

@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, OneToOne, JoinTable } from 'typeorm';
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, OneToOne, JoinTable, Relation } from 'typeorm';
 import { Field, Float, ObjectType } from 'type-graphql';
 import { REAsset } from './re_asset.entity';
 
@@ -12,7 +12,7 @@ export class REAssumptions extends BaseEntity {
 
   @Field(() => REAsset)
   @OneToOne(() => REAsset, re_asset => re_asset.re_assumptions)
-  re_asset: REAsset;
+  re_asset: Relation<REAsset>;
 
   @Field()
   @Column("float", { default: 3 })

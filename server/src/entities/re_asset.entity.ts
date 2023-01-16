@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, PrimaryColumnCannotBeNullableError, OneToOne, JoinColumn } from 'typeorm';
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, PrimaryColumnCannotBeNullableError, OneToOne, JoinColumn, Relation } from 'typeorm';
 import { Ctx, Field, ObjectType } from 'type-graphql';
 import { REReceipt } from './re_receipt.entity';
 import { User } from './users.entity';
@@ -15,7 +15,7 @@ export class REAsset extends BaseEntity {
   @OneToMany((type) => REReceipt, re_receipt => re_receipt.re_asset, {
     onDelete: "SET NULL",
   })
-  reReceiptConnection: REReceipt[];
+  reReceiptConnection: Relation<REReceipt[]>;
 
   @Field((type) => [REReceipt])
   async re_receipt(@Ctx() { REReceiptLoader }): Promise<REReceipt[]> {
@@ -27,7 +27,7 @@ export class REAsset extends BaseEntity {
     onDelete: "SET NULL",
     eager: true
   })
-  user: User;
+  user: Relation<User>;
 
   @OneToOne((type) => REAssumptions, {
     onDelete: "SET NULL",
@@ -38,7 +38,7 @@ export class REAsset extends BaseEntity {
   @Field((type) => REAssumptions, {
     nullable: true
   })
-  re_assumptions: REAssumptions;
+  re_assumptions: Relation<REAssumptions>;
 
   @Field()
   @Column()

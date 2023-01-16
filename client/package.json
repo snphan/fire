@@ -29,7 +29,8 @@
     "start": "PORT=8000 craco start",
     "build": "craco build",
     "test": "craco test",
-    "eject": "craco eject"
+    "eject": "craco eject",
+    "prod": "npm run build && NODE_ENV=production serve -s build -l 8000"
   },
   "eslintConfig": {
     "extends": [
