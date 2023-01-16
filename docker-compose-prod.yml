@@ -40,6 +40,8 @@ services:
       POSTGRESQL_USERNAME: root
       POSTGRESQL_PASSWORD: password
       POSTGRESQL_DATABASE: prod
+    volumes:
+      - pg-prod-data:/bitnami/postgresql
     ports:
       - '5435:5432'
     networks:
@@ -108,4 +110,6 @@ volumes:
   data:
     driver: local
   pg-data:
+    driver: local
+  pg-prod-data:
     driver: local
