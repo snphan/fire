@@ -30,7 +30,7 @@ afterAll(async () => {
 });
 
 describe('Testing Auth', () => {
-  describe('[POST] /graphql', () => {
+  describe('[POST] /api/graphql', () => {
     it('response should have the Create userData', async () => {
       const userData: CreateUserDto = {
         email: 'test@email.com',
@@ -49,7 +49,7 @@ describe('Testing Auth', () => {
         variables: { userData: userData }
       }
 
-      const response = await request(app.getServer()).post('/graphql').send(createUserMutation);
+      const response = await request(app.getServer()).post('/api/graphql').send(createUserMutation);
       expect(response.error).toBeFalsy();
       expect(response.body.data.createUser.email).toBe(userData.email);
       userId = response.body.data.createUser.id;
@@ -57,7 +57,7 @@ describe('Testing Auth', () => {
     });
   });
 
-  describe('[POST] /graphql', () => {
+  describe('[POST] /api/graphql', () => {
     it('response should have the Set-Cookie header with the Authorization token', async () => {
       const userData: UserLoginDto = {
         email: 'test@email.com',
@@ -73,13 +73,13 @@ describe('Testing Auth', () => {
         variables: { userData: userData }
       };
 
-      const response = await request(app.getServer()).post('/graphql').send(loginUserQuery);
+      const response = await request(app.getServer()).post('/api/graphql').send(loginUserQuery);
       expect(response.headers['set-cookie'][0]).toMatch(/^Authorization=.+/);
       authCookie = response.headers['set-cookie'][0].match(/^Authorization=[^;]+/)[0];
     });
   });
 
-  describe('[POST] /graphql', () => {
+  describe('[POST] /api/graphql', () => {
     it('logout Set-Cookie Authorization=; Max-age=0', async () => {
 
       const userData = {
@@ -97,7 +97,7 @@ describe('Testing Auth', () => {
       };
 
       const response = await request(app.getServer())
-        .post('/graphql')
+        .post('/api/graphql')
         .set("Cookie", authCookie)
         .send(logoutUserQuery);
       expect(response.body.data.logout.email).toBe(userData.email);
