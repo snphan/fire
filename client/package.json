@@ -30,7 +30,7 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "craco eject",
-    "prod": "npm run build && NODE_ENV=production serve -s build -l 8000"
+    "prod": "npm run build && NODE_ENV=production serve -s build -l 8000 --ssl-cert /etc/ssl/live/firecash.app/fullchain.pem --ssl-key /etc/ssl/live/firecash.app/privkey.pem"
   },
   "eslintConfig": {
     "extends": [
