@@ -101,7 +101,7 @@ services:
   upload:
     build:
       context: upload
-      target: development-build-stage
+      target: production-build-stage
       dockerfile: Dockerfile
     container_name: upload
     ports:
