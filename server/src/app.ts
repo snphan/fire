@@ -1,4 +1,6 @@
 import 'reflect-metadata';
+import https from 'https';
+import fs from 'fs';
 import { ApolloServerPluginLandingPageProductionDefault, ApolloServerPluginLandingPageLocalDefault, ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
 import { ApolloServer } from 'apollo-server-express';
 import compression from 'compression';
@@ -34,13 +36,29 @@ class App {
   }
 
   public async listen() {
-    this.app.listen(this.port, () => {
-      logger.info(`=================================`);
-      logger.info(`======= ENV: ${this.env} =======`);
-      logger.info(`🚀 App listening on the port ${this.port}`);
-      logger.info(`🎮 http://localhost:${this.port}/graphql`);
-      logger.info(`=================================`);
-    });
+    if (this.env === "production") {
+      https.createServer(
+        {
+          key: fs.readFileSync("/etc/ssl/live/firecash.app/privkey.pem"),
+          cert: fs.readFileSync("/etc/ssl/live/firecash.app/fullchain.pem"),
+        },
+        this.app   
+      ).listen(this.port, () => {
+        logger.info(`=================================`);
+        logger.info(`======= ENV: ${this.env} =======`);
+        logger.info(`🚀 App listening on the port ${this.port}`);
+        logger.info(`🎮 https://localhost:${this.port}/api/graphql`);
+        logger.info(`=================================`);
+      });
+    } else {
+      this.app.listen(this.port, () => {
+        logger.info(`=================================`);
+        logger.info(`======= ENV: ${this.env} =======`);
+        logger.info(`🚀 App listening on the port ${this.port}`);
+        logger.info(`🎮 http://localhost:${this.port}/api/graphql`);
+        logger.info(`=================================`);
+      });
+    }
   }
 
   public getServer() {

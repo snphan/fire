@@ -4,7 +4,9 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "build": "npx swc src -d dist --source-maps --copy-files",
+    "start": "npm run build && cross-env NODE_ENV=production node dist/app.js"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +21,8 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@swc/cli": "^0.1.57",
+    "@swc/core": "^1.2.220",
     "cross-env": "^7.0.3",
     "nodemon": "^2.0.20",
     "ts-node": "^10.9.1",

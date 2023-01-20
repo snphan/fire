@@ -5,9 +5,10 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { ThemeProvider } from '@material-tailwind/react';
+import { REACT_APP_SERVER_HOST } from '@/config';
 
 const client = new ApolloClient({
-  uri: "http://localhost/api/graphql",
+  uri: `${REACT_APP_SERVER_HOST}/api/graphql`,
   cache: new InMemoryCache(),
   credentials: 'include'
 });
