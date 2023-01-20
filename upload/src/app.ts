@@ -2,6 +2,9 @@ import express from 'express';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import cors from 'cors';
+import https from 'https';
+import fs from 'fs';
+
 const app = express();
 
 
@@ -27,4 +30,13 @@ app.post("/upload", upload.array('file'), (req: any, res) => {
   res.json({ status: "success", filenames: names });
 })
 
-app.listen(4000, () => console.log("listening on port 4000"));
+https
+    .createServer(
+        {
+            key: fs.readFileSync("/etc/ssl/live/firecash.app/privkey.pem"),
+            cert: fs.readFileSync("/etc/ssl/live/firecash.app/fullchain.pem"),
+        },
+        app
+    ).listen(4000, () => {
+        console.log("Upload server is running at port 4000");
+    });
