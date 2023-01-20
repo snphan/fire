@@ -40,8 +40,6 @@ services:
       - pg-prod
     depends_on:
       - pg-prod
-      - pg
-      - pg-test
 
   pg-prod:
     image: arm64v8/postgres
@@ -51,50 +49,9 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: prod
     volumes:
-      - pg-prod-data:/bitnami/postgresql
+      - pg-prod-data:/var/lib/postgresql/data
     ports:
       - '5435:5432'
-    networks:
-      - backend
-
-  pg-test:
-    image: bitnami/postgresql:11-debian-9
-    container_name: pg-test
-    environment:
-      POSTGRESQL_USERNAME: root
-      POSTGRESQL_PASSWORD: password
-      POSTGRESQL_DATABASE: test
-    ports:
-      - '5433:5432'
-    networks:
-      - backend
-
-  pg:
-    image: bitnami/postgresql:11-debian-9
-    container_name: pg
-    environment:
-      POSTGRESQL_USERNAME: root
-      POSTGRESQL_PASSWORD: password
-      POSTGRESQL_DATABASE: dev
-    volumes:
-      - pg-data:/bitnami/postgresql
-    ports:
-      - '5432:5432'
-    networks:
-      - backend
-  
-  client:
-    build:
-      context: client
-      target: production-build-stage
-      dockerfile: Dockerfile
-    container_name: client
-    ports:
-      - '8000:8000'
-    volumes:
-      - ./client:/app
-      - /app/node_modules
-      - ./certbot/conf/:/etc/ssl/:ro
     networks:
       - backend
 
@@ -111,6 +68,21 @@ services:
       - /app/node_modules
       - ./certbot/conf/:/etc/ssl/:ro
     restart: 'unless-stopped'
+    networks:
+      - backend
+
+  client:
+    build:
+      context: client
+      target: production-build-stage
+      dockerfile: Dockerfile
+    container_name: client
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+      - ./certbot/conf/:/etc/ssl/:ro
     networks:
       - backend
 

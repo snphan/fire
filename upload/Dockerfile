@@ -22,6 +22,7 @@ CMD ["npm", "run", "dev"]
 FROM common-build-stage as production-build-stage
 
 RUN npm install cross-env -g
+RUN npm install -D @swc/cli @swc/core -g
 ENV NODE_ENV production
 
 CMD ["npm", "run", "start"]

@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon",
     "build": "npx swc src -d dist --source-maps --copy-files",
-    "start": "npm run build && cross-env NODE_ENV=production node dist/server.js"
+    "start": "npm run build && cross-env NODE_ENV=production node dist/app.js"
   },
   "keywords": [],
   "author": "",
