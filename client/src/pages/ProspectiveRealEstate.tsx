@@ -109,20 +109,21 @@ export function ProspectiveRealEstate({ userID }: any) {
                 <span onClick={handleOpenAddREAsset} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer text-5xl material-icons material-symbols-outlined">add</span>
               </Tooltip>
             </div>
-            {loading &&
+            {loading ?
               <Loading />
+              :
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
+                {REAssetData?.getUserById.re_asset.map((item: any) => {
+                  const { id } = item;
+                  return (<REListItem
+                    className="items-center"
+                    key={item.id}
+                    REInfo={item} onClick={() => {
+                      setAssetID(id);
+                    }} />);
+                })}
+              </div>
             }
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
-              {REAssetData?.getUserById.re_asset.map((item: any) => {
-                const { id } = item;
-                return (<REListItem
-                  className="items-center"
-                  key={item.id}
-                  REInfo={item} onClick={() => {
-                    setAssetID(id);
-                  }} />);
-              })}
-            </div>
           </>
           :
           /* Property Analysis SubPage */
