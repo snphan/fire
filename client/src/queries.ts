@@ -45,3 +45,8 @@ export const GET_USER_BY_ID = gql`
     }
   }
 `
+export const PLAID_CREATE_LINK_TOKEN = gql`
+query getLinkToken {
+  createLinkToken
+}
+`

@@ -7,7 +7,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { ThemeProvider } from '@material-tailwind/react';
 import { REACT_APP_SERVER_HOST } from '@/config';
 
-const client = new ApolloClient({
+export const apolloClient = new ApolloClient({
   uri: `${REACT_APP_SERVER_HOST}/api/graphql`,
   cache: new InMemoryCache(),
   credentials: 'include'
@@ -17,7 +17,7 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <ApolloProvider client={client}>
+  <ApolloProvider client={apolloClient}>
     <React.StrictMode>
       <ThemeProvider>
         <App />
