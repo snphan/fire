@@ -16,7 +16,7 @@ export class PlaidResolver {
     const configs: LinkTokenCreateRequest = {
       user: {
         // This should correspond to a unique id for the current user.
-        client_user_id: 'user-id',
+        client_user_id: String(user.id),
       },
       client_name: 'Plaid Quickstart',
       products: PLAID_PRODUCTS,
