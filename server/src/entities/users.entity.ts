@@ -1,7 +1,8 @@
 import { IsNotEmpty } from 'class-validator';
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, OneToMany, Relation } from 'typeorm';
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, OneToMany, Relation, OneToOne, JoinColumn } from 'typeorm';
 import { Ctx, Field, ObjectType } from 'type-graphql';
 import { REAsset } from './re_asset.entity';
+import { PlaidInfo } from './plaid_auth.entity';
 
 @ObjectType()
 @Entity()
@@ -49,4 +50,15 @@ export class User extends BaseEntity {
   async re_asset(@Ctx() { REAssetLoader }): Promise<REAsset[]> {
     return REAssetLoader.load(this.id);
   }
+
+  @OneToOne((type) => PlaidInfo, {
+    nullable: true,
+    onDelete: "SET NULL",
+    eager: true
+  })
+  @JoinColumn()
+  @Field((type) => PlaidInfo, {
+    nullable: true
+  })
+  plaidinfo: Relation<PlaidInfo>
 }
