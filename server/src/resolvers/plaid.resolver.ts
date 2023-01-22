@@ -1,3 +1,4 @@
+import { Configuration, PlaidApi, Products, PlaidEnvironments } from 'plaid';
 import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 import { CreateUserDto } from '@dtos/users.dto';
 import UserRepository from '@repositories/users.repository';

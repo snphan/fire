@@ -32,6 +32,7 @@
     "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.0",
     "pg": "^8.7.3",
+    "plaid": "^12.3.0",
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^5.1.4",
     "type-graphql": "^1.1.1",
