@@ -23,7 +23,7 @@ export class authResolver extends AuthRepository {
     /* On login set the cookie */
     ctx.res.cookie("Authorization", tokenData.token, {
       httpOnly: true,
-      secure: NODE_ENV === "development" ? false : true,
+      secure: true,
       sameSite: "None",
       maxAge: 60 * 30 * 1000,
     });
