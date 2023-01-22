@@ -5,6 +5,7 @@ Financial Independence, Retire Early. Keep track of your finances and investment
 # Quickstart
 
 1. Install docker https://docs.docker.com/get-docker/
+1. Add the correct environment files to the services: server (.env.development.local | .env.test.local | .env.production.local), client (.env). root folder for docker-compose-prod.yml (.env). 
 1. In root, run the following command (-d: background)
 
         docker-compose up -d --build
