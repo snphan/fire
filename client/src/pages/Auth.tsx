@@ -21,9 +21,9 @@ export function Auth({ setAppState, loginUser, setUserInfo, setUserID }: any) {
         loginUser({
           variables: { userData: userData }, onCompleted: (res: any) => {
             setUserID(res.login.id)
+            setAppState("dashboard");
           }
         });
-        setAppState("dashboard");
       }), onError: (() => {
         setUserInfo(userObject);
         setAppState("signup");
