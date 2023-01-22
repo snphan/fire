@@ -21,15 +21,19 @@ export function Dashboard({ }: any) {
   }
 
   const { open: plaidOpen, ready } = usePlaidLink({
-    token: linkToken && JSON.parse(linkToken.createLinkToken)["link_token"],
+    token: linkToken && linkToken.createLinkToken["link_token"],
     onSuccess: handleCompleteBankConnect
   });
 
+  useEffect(() => {
+    console.log(accountData);
+  }, [accountData])
+
   return (
     <div className="ml-24 min-h-screen max-w-screen overflow-hidden">
-      {linkToken?.createLinkToken}
+      {linkToken ? JSON.stringify(linkToken.createLinkToken) : null}
       <Button onClick={() => plaidOpen()} disabled={!ready}>Connect to Bank</Button>
-      {accountData?.getAccounts}
+      {accountData ? JSON.stringify(accountData) : null}
       <Button onClick={() => getAccounts()}>Get Accounts</Button>
     </div>
   )

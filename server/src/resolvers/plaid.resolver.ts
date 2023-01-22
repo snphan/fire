@@ -8,15 +8,16 @@ import { ClientRequest } from 'http';
 import { PlaidInfo } from '@/entities/plaid_auth.entity';
 import CryptoJS from 'crypto-js';
 import { HttpException } from '@/exceptions/HttpException';
+import GraphQLJSON, { GraphQLJSONObject } from 'graphql-type-json';
 
 @Resolver()
 export class PlaidResolver {
 
   @Authorized()
-  @Query(() => String, {
+  @Query(() => GraphQLJSON, {
     description: 'Get the Link token as a JSON response'
   })
-  async createLinkToken(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<String> {
+  async createLinkToken(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<Object> {
     const configs: LinkTokenCreateRequest = {
       user: {
         // This should correspond to a unique id for the current user.
@@ -28,7 +29,6 @@ export class PlaidResolver {
       language: 'en',
     };
 
-    console.log(user);
 
     if (PLAID_REDIRECT_URI !== '') {
       configs.redirect_uri = PLAID_REDIRECT_URI;
@@ -39,7 +39,7 @@ export class PlaidResolver {
     }
     const createTokenResponse = await plaidClient.linkTokenCreate(configs);
 
-    return JSON.stringify(createTokenResponse.data);
+    return createTokenResponse.data;
   }
 
   @Authorized()
@@ -62,10 +62,10 @@ export class PlaidResolver {
   }
 
   @Authorized()
-  @Query(() => String, {
+  @Query(() => GraphQLJSON, {
     description: 'Get the User\'s accounts as a JSON string'
   })
-  async getAccounts(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi) {
+  async getAccounts(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<Object> {
     console.log(user);
     if (!user.plaidinfo) throw new HttpException(409, "User has not connected to an Account through Plaid");
 
@@ -75,10 +75,9 @@ export class PlaidResolver {
       const accountsResponse = await plaidClient.accountsGet({
         access_token: decryptedAccessToken
       })
-      return JSON.stringify(accountsResponse.data);
+      return accountsResponse.data;
     } catch (error) {
-      return JSON.stringify(error.response);
+      return error.response;
     }
-
   }
 }
