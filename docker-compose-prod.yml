@@ -46,8 +46,10 @@ services:
     container_name: pg-prod
     environment:
       POSTGRES_USER: root
-      POSTGRES_PASSWORD: password
       POSTGRES_DB: prod
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD 
+    env_file:
+      - .env
     volumes:
       - pg-prod-data:/var/lib/postgresql/data
     ports:
