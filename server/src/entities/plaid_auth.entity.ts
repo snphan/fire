@@ -18,7 +18,7 @@ export class PlaidInfo extends BaseEntity {
   @Column({ nullable: true })
   access_token: string;
 
-  @Field((type) => [String])
-  @Column("text", { array: true, default: [] })
-  item_ids: string[];
+  @Field()
+  @Column()
+  item_id: string;
 }

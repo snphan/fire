@@ -46,7 +46,18 @@ export const GET_USER_BY_ID = gql`
   }
 `
 export const PLAID_CREATE_LINK_TOKEN = gql`
-query getLinkToken {
+query createLinkToken {
   createLinkToken
+}
+`
+export const PLAID_EXCHANGE_TOKEN = gql`
+query exchangePublicToken($publicToken: String!) {
+  exchangePublicToken(publicToken: $publicToken)
+}
+`
+
+export const PLAID_GET_ACCOUNTS = gql`
+query getAccounts {
+  getAccounts
 }
 `
