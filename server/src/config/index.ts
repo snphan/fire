@@ -1,10 +1,13 @@
 import { config } from 'dotenv';
+import { CountryCode, Products } from 'plaid';
+
 config({ path: `.env.${process.env.NODE_ENV || 'development'}.local` });
 
 export const CREDENTIALS = process.env.CREDENTIALS === 'true';
-export const PLAID_PRODUCTS = process.env.PLAID_PRODUCTS.split(',');
-export const PLAID_COUNTRY_CODES = process.env.PLAID_COUNTRY_CODES.split(',');
+export const PLAID_PRODUCTS: Products[] = (process.env.PLAID_PRODUCTS || Products.Transactions).split(',').map((product: Products) => product);
+export const PLAID_COUNTRY_CODES: CountryCode[] = process.env.PLAID_COUNTRY_CODES.split(',').map((cc: CountryCode) => cc);
 export const PLAID_REDIRECT_URI = process.env.PLAID_REDIRECT_URI || '';
+export const PLAID_ANDROID_PACKAGE_NAME = process.env.PLAID_ANDROID_PACKAGE_NAME || '';
 export const ORIGIN = process.env.ORIGIN === 'true';
 export const {
   NODE_ENV,
