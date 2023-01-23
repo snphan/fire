@@ -19,6 +19,6 @@ export class PlaidInfo extends BaseEntity {
   access_token: string;
 
   @Field()
-  @Column()
+  @Column({ nullable: true })
   item_id: string;
 }
