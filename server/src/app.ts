@@ -11,18 +11,20 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import { buildSchema } from 'type-graphql';
 import { createConnection } from 'typeorm';
-import { NODE_ENV, PORT, ORIGIN, CREDENTIALS } from '@config';
+import { NODE_ENV, PORT, ORIGIN, CREDENTIALS, PLAID_ENV, PLAID_CLIENT_ID, PLAID_SECRET, PLAID_PRODUCTS, PLAID_COUNTRY_CODES, PLAID_REDIRECT_URI, PLAID_ANDROID_PACKAGE_NAME } from '@config';
 import { dbConnection } from '@databases';
 import { authMiddleware, authChecker } from '@middlewares/auth.middleware';
 import errorMiddleware from '@middlewares/error.middleware';
 import { logger, responseLogger, errorLogger } from '@utils/logger';
 import { createREAssetLoader } from '@utils/REAssetLoader';
 import { createREReceiptLoader } from './utils/REReceiptLoader';
+import { Configuration, LinkTokenCreateRequest, PlaidApi, PlaidEnvironments } from 'plaid';
 
 class App {
   public app: express.Application;
   public env: string;
   public port: string | number;
+  public plaidClient: PlaidApi;
 
   constructor(resolvers) {
     this.app = express();
@@ -31,6 +33,7 @@ class App {
 
     this.connectToDatabase();
     this.initializeMiddlewares();
+    this.initPlaid();
     this.initApolloServer(resolvers);
     this.initializeErrorHandling();
   }
@@ -42,7 +45,7 @@ class App {
           key: fs.readFileSync("/etc/ssl/live/firecash.app/privkey.pem"),
           cert: fs.readFileSync("/etc/ssl/live/firecash.app/fullchain.pem"),
         },
-        this.app   
+        this.app
       ).listen(this.port, () => {
         logger.info(`=================================`);
         logger.info(`======= ENV: ${this.env} =======`);
@@ -82,6 +85,22 @@ class App {
     this.app.use(cookieParser());
   }
 
+  private async initPlaid() {
+    /* Init the Plaid API */
+    const configuration = new Configuration({
+      basePath: PlaidEnvironments[PLAID_ENV],
+      baseOptions: {
+        headers: {
+          'PLAID-CLIENT-ID': PLAID_CLIENT_ID,
+          'PLAID-SECRET': PLAID_SECRET,
+          'Plaid-Version': '2020-09-14'
+        }
+      }
+    })
+
+    this.plaidClient = new PlaidApi(configuration);
+  }
+
   private async initApolloServer(resolvers) {
     const schema = await buildSchema({
       resolvers: resolvers,
@@ -102,7 +121,8 @@ class App {
             user,
             res,
             REAssetLoader: createREAssetLoader(),
-            REReceiptLoader: createREReceiptLoader()
+            REReceiptLoader: createREReceiptLoader(),
+            plaidClient: this.plaidClient
           };
         } catch (error) {
           throw new Error(error);

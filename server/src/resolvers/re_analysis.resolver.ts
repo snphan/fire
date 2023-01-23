@@ -1,4 +1,4 @@
-import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { CreateUserDto } from '@dtos/users.dto';
 import UserRepository from '@repositories/users.repository';
 import { User } from '@entities/users.entity';
@@ -12,6 +12,8 @@ import { REAssumptions } from '@/entities/re_assumption.entity';
 
 @Resolver()
 export class REAssetResolver extends REAssetRepository {
+
+  @Authorized()
   @Mutation(() => REAsset, {
     description: 'Create REAsset',
   })
@@ -20,6 +22,7 @@ export class REAssetResolver extends REAssetRepository {
     return reAsset;
   }
 
+  @Authorized()
   @Mutation(() => REAsset, {
     description: 'Delete REAsset'
   })
@@ -28,6 +31,7 @@ export class REAssetResolver extends REAssetRepository {
     return reAsset;
   }
 
+  @Authorized()
   @Mutation(() => REReceipt, {
     description: 'Create REReceipt',
   })
@@ -36,6 +40,7 @@ export class REAssetResolver extends REAssetRepository {
     return reReceipt;
   }
 
+  @Authorized()
   @Query(() => REReceipt, {
     description: 'Get REReceipt by id'
   })
@@ -44,6 +49,7 @@ export class REAssetResolver extends REAssetRepository {
     return reReceipt;
   }
 
+  @Authorized()
   @Mutation(() => REAssumptions, {
     description: 'Create REAssumptions',
   })
@@ -52,6 +58,7 @@ export class REAssetResolver extends REAssetRepository {
     return reAssumptions;
   }
 
+  @Authorized()
   @Query(() => REAssumptions, {
     description: 'Get REAssumptions by id'
   })
@@ -60,6 +67,7 @@ export class REAssetResolver extends REAssetRepository {
     return reAssumptions;
   }
 
+  @Authorized()
   @Mutation(() => REAssumptions, {
     description: 'Update REAssumptions'
   })

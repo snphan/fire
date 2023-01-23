@@ -72,3 +72,9 @@ mutation deleteREAsset($reAssetId: Float!) {
     }
   }
 `
+
+export const PLAID_EXCHANGE_TOKEN = gql`
+mutation exchangePublicToken($publicToken: String!) {
+  exchangePublicToken(publicToken: $publicToken)
+}
+`

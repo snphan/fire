@@ -45,3 +45,29 @@ export const GET_USER_BY_ID = gql`
     }
   }
 `
+export const PLAID_CREATE_LINK_TOKEN = gql`
+query createLinkToken {
+  createLinkToken
+}
+`
+export const PLAID_GET_ACCOUNTS = gql`
+query getAccounts {
+  getAccounts
+}
+`
+export const PLAID_GET_TRANSACTIONS = gql`
+query getTransactions {
+  getTransactions
+}
+`
+
+export const PLAID_GET_INVESTMENT_TRANSACTIONS = gql`
+  query getInvestmentTransactions {
+    getInvestmentTransactions
+  }
+`
+export const PLAID_GET_BALANCE = gql`
+  query getBalance {
+    getBalance
+  }
+`
