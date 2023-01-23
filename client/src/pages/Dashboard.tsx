@@ -29,22 +29,8 @@ export function Dashboard({ }: any) {
     onSuccess: handleCompleteBankConnect
   });
 
-  useEffect(() => {
-    console.log("account: ", accountData);
-    console.log("transaction ", transactionsData);
-    console.log("Investment: ", investmentTransactionsData);
-    console.log("Balance: ", balanceData)
-  }, [accountData, transactionsData, investmentTransactionsData, balanceData])
-
   return (
     <div className="ml-24 min-h-screen max-w-screen overflow-hidden">
-      {linkToken ? JSON.stringify(linkToken.createLinkToken) : null}
-      <Button onClick={() => plaidOpen()} disabled={!ready}>Connect to Bank</Button>
-      {accountData ? JSON.stringify(accountData) : null}
-      <Button onClick={() => getAccounts()}>Get Accounts</Button>
-      <Button onClick={() => getTransactions()}>Get Transactions</Button>
-      <Button onClick={() => getInvestmentTransactions()}>Get Investment Transactions</Button>
-      <Button onClick={() => getBalance()}>Get Balance</Button>
     </div>
   )
 }
