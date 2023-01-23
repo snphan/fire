@@ -9,9 +9,15 @@ import { PlaidInfo } from '@/entities/plaid_auth.entity';
 import CryptoJS from 'crypto-js';
 import { HttpException } from '@/exceptions/HttpException';
 import GraphQLJSON, { GraphQLJSONObject } from 'graphql-type-json';
+import dayjs from 'dayjs';
 
 @Resolver()
 export class PlaidResolver {
+
+  decryptAccessToken(encryptedAccessToken: string): string {
+    const decryptedAccessToken = CryptoJS.AES.decrypt(encryptedAccessToken, SECRET_KEY).toString(CryptoJS.enc.Utf8);
+    return decryptedAccessToken;
+  }
 
   @Authorized()
   @Query(() => GraphQLJSON, {
@@ -43,20 +49,21 @@ export class PlaidResolver {
   }
 
   @Authorized()
-  @Query(() => String, {
+  @Mutation(() => String, {
     description: 'Exchange the Public Token for an Access Token and Return the Item Id'
   })
   async exchangePublicToken(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi, @Arg('publicToken') publicToken: string): Promise<string> {
     let createPlaidInfo: PlaidInfo;
-    if (!user.plaidinfo) {
-      const tokenResponse = await plaidClient.itemPublicTokenExchange({ public_token: publicToken });
-      const ACCESS_TOKEN = tokenResponse.data.access_token;
-      const ITEM_ID = tokenResponse.data.item_id;
+    const tokenResponse = await plaidClient.itemPublicTokenExchange({ public_token: publicToken });
+    const ACCESS_TOKEN = tokenResponse.data.access_token;
+    const ITEM_ID = tokenResponse.data.item_id;
+    const encryptedAccessToken = CryptoJS.AES.encrypt(ACCESS_TOKEN, SECRET_KEY).toString();
 
-      const encryptedAccessToken = CryptoJS.AES.encrypt(ACCESS_TOKEN, SECRET_KEY).toString();
+    if (!user.plaidinfo) {
       createPlaidInfo = await PlaidInfo.create({ user: user, access_token: encryptedAccessToken, item_id: ITEM_ID }).save();
     } else {
-      createPlaidInfo = user.plaidinfo;
+      await PlaidInfo.update(user.plaidinfo.id, { access_token: encryptedAccessToken });
+      createPlaidInfo = await PlaidInfo.findOne({ where: { id: user.plaidinfo.id } });
     }
     return createPlaidInfo.item_id;
   }
@@ -66,18 +73,79 @@ export class PlaidResolver {
     description: 'Get the User\'s accounts as a JSON string'
   })
   async getAccounts(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<Object> {
-    console.log(user);
     if (!user.plaidinfo) throw new HttpException(409, "User has not connected to an Account through Plaid");
 
-    const decryptedAccessToken = CryptoJS.AES.decrypt(user.plaidinfo.access_token, SECRET_KEY).toString(CryptoJS.enc.Utf8);
     try {
-
       const accountsResponse = await plaidClient.accountsGet({
-        access_token: decryptedAccessToken
+        access_token: this.decryptAccessToken(user.plaidinfo.access_token)
       })
       return accountsResponse.data;
     } catch (error) {
       return error.response;
     }
   }
+
+  @Authorized()
+  @Query(() => GraphQLJSON, {
+    description: 'Get the User\'s transactions as a JSON Object'
+  })
+  async getTransactions(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<Object> {
+    if (!user.plaidinfo) throw new HttpException(409, "User has not connected to an Account through Plaid");
+    let cursor = null;
+    let added = [];
+    let modified = [];
+    let removed = [];
+    let hasMore = true;
+
+
+    while (hasMore) {
+      const request = {
+        access_token: this.decryptAccessToken(user.plaidinfo.access_token),
+        cursor: cursor
+      };
+      const response = await plaidClient.transactionsSync(request);
+      const data = response.data;
+      added = added.concat(data.added);
+      modified = modified.concat(data.modified);
+      removed = removed.concat(data.removed);
+      hasMore = data.has_more;
+
+      cursor = data.next_cursor;
+    }
+
+    return { added: added }
+  }
+
+  @Authorized()
+  @Query(() => GraphQLJSON, {
+    description: 'Get the User\'s investment transactions as a JSON Object'
+  })
+  async getInvestmentTransactions(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi) {
+    const startDate = dayjs().subtract(30, 'days').format('YYYY-MM-DD');
+    const today = dayjs().format('YYYY-MM-DD');
+
+    const configs = {
+      access_token: this.decryptAccessToken(user.plaidinfo.access_token),
+      start_date: startDate,
+      end_date: today,
+    };
+    try {
+      const investmentTransactionsResponse = await plaidClient.investmentsTransactionsGet(configs);
+      return { investments_transactions: investmentTransactionsResponse.data };
+    } catch (error) {
+      return error.response;
+    }
+  }
+
+  @Authorized()
+  @Query(() => GraphQLJSON, {
+    description: 'Get the User\'s Current Balance'
+  })
+  async getBalance(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi) {
+    const balanceResponse = await plaidClient.accountsBalanceGet({
+      access_token: this.decryptAccessToken(user.plaidinfo.access_token)
+    });
+    return { balance: balanceResponse.data };
+  }
+
 }
