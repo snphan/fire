@@ -2,7 +2,7 @@ import { IsNotEmpty } from 'class-validator';
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, OneToMany, Relation, OneToOne, JoinColumn } from 'typeorm';
 import { Ctx, Field, ObjectType } from 'type-graphql';
 import { REAsset } from './re_asset.entity';
-import { PlaidInfo } from './plaid_auth.entity';
+import { PlaidInfo } from './plaid_info.entity';
 
 @ObjectType()
 @Entity()
@@ -51,14 +51,13 @@ export class User extends BaseEntity {
     return REAssetLoader.load(this.id);
   }
 
+  // No Field() because we don't want to send access_token
+  // to the client
   @OneToOne((type) => PlaidInfo, {
     nullable: true,
     onDelete: "SET NULL",
     eager: true
   })
   @JoinColumn()
-  @Field((type) => PlaidInfo, {
-    nullable: true
-  })
   plaidinfo: Relation<PlaidInfo>
 }

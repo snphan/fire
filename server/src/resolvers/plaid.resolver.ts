@@ -5,7 +5,7 @@ import UserRepository from '@repositories/users.repository';
 import { User } from '@entities/users.entity';
 import { PLAID_ANDROID_PACKAGE_NAME, PLAID_CLIENT_ID, PLAID_COUNTRY_CODES, PLAID_ENV, PLAID_PRODUCTS, PLAID_REDIRECT_URI, PLAID_SECRET, SECRET_KEY } from '@/config';
 import { ClientRequest } from 'http';
-import { PlaidInfo } from '@/entities/plaid_auth.entity';
+import { PlaidInfo } from '@/entities/plaid_info.entity';
 import CryptoJS from 'crypto-js';
 import { HttpException } from '@/exceptions/HttpException';
 import GraphQLJSON, { GraphQLJSONObject } from 'graphql-type-json';
@@ -17,6 +17,18 @@ export class PlaidResolver {
   decryptAccessToken(encryptedAccessToken: string): string {
     const decryptedAccessToken = CryptoJS.AES.decrypt(encryptedAccessToken, SECRET_KEY).toString(CryptoJS.enc.Utf8);
     return decryptedAccessToken;
+  }
+
+  @Authorized()
+  @Query(() => Boolean, {
+    description: 'Check if user has linked a bank account'
+  })
+  async bankAccountLinked(@Ctx('user') user: User) {
+    console.log(user.plaidinfo)
+    if (user.plaidinfo) {
+      return true
+    }
+    return false
   }
 
   @Authorized()

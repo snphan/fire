@@ -45,6 +45,12 @@ export const GET_USER_BY_ID = gql`
     }
   }
 `
+export const IS_BANKACCOUNT_LINKED = gql`
+  query bankAccountLinked {
+    bankAccountLinked
+  }
+`
+
 export const PLAID_CREATE_LINK_TOKEN = gql`
 query createLinkToken {
   createLinkToken
