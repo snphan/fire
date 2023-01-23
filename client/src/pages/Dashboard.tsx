@@ -6,6 +6,7 @@ import { PLAID_EXCHANGE_TOKEN } from '@/mutations';
 import { apolloClient } from '..';
 import { Button } from '@material-tailwind/react';
 import { usePlaidLink } from 'react-plaid-link';
+import { Loading } from '@/components/Loading';
 
 
 export function Dashboard({ }: any) {
@@ -21,8 +22,8 @@ export function Dashboard({ }: any) {
     ]
   });
   const { data: accountData } = useQuery<any>(PLAID_GET_ACCOUNTS);
-  const { data: balanceData } = useQuery<any>(PLAID_GET_BALANCE);
-  const { data: transactionsData } = useQuery<any>(PLAID_GET_TRANSACTIONS);
+  const { data: balanceData, loading: loadingBalance } = useQuery<any>(PLAID_GET_BALANCE);
+  const { data: transactionsData, loading: loadingTransactions } = useQuery<any>(PLAID_GET_TRANSACTIONS);
 
   const [totalBalance, setTotalBalance] = useState<number | undefined>(undefined);
 
@@ -44,7 +45,10 @@ export function Dashboard({ }: any) {
     if (balanceData) {
       setTotalBalance(balanceData.getBalance.balance.accounts.reduce((a: number, b: any) => a + b.balances.current, 0));
     }
-  }, [balanceData]);
+    if (transactionsData) {
+      console.log(transactionsData);
+    }
+  }, [balanceData, transactionsData]);
 
   return (
     <div className="ml-24 flex flex-col min-h-screen min-w-0 max-w-full overflow-hidden">
@@ -64,7 +68,11 @@ export function Dashboard({ }: any) {
             <div className="flex flex-col bg-zinc-900 h-52 p-3 m-4 rounded-xl shadow-xl">
               <div className="text-sm font-bold">Total Balance</div>
               <div className="grow flex justify-center items-center">
-                <div className="text-4xl font-bold text-sky-500">{totalBalance && currencyFormatter.format(totalBalance!)}</div>
+                {loadingBalance ?
+                  <Loading className="w-12 h-12"></Loading>
+                  :
+                  <div className="text-4xl font-bold text-sky-500">{totalBalance && currencyFormatter.format(totalBalance!)}</div>
+                }
               </div>
             </div>
           </div>
