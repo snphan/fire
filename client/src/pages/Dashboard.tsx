@@ -14,13 +14,17 @@ export function Dashboard({ }: any) {
   const { data: linkToken } = useQuery<any>(PLAID_CREATE_LINK_TOKEN);
   const [exchangeLinkToken, { data: itemId }] = useMutation<any>(PLAID_EXCHANGE_TOKEN, {
     refetchQueries: [
-      { query: IS_BANKACCOUNT_LINKED }
+      { query: IS_BANKACCOUNT_LINKED },
+      { query: PLAID_GET_ACCOUNTS },
+      { query: PLAID_GET_BALANCE },
+      { query: PLAID_GET_TRANSACTIONS },
     ]
   });
-  const [getAccounts, { data: accountData }] = useLazyQuery<any>(PLAID_GET_ACCOUNTS);
-  const [getBalance, { data: balanceData }] = useLazyQuery<any>(PLAID_GET_BALANCE);
-  const [getTransactions, { data: transactionsData }] = useLazyQuery<any>(PLAID_GET_TRANSACTIONS);
-  const [getInvestmentTransactions, { data: investmentTransactionsData }] = useLazyQuery<any>(PLAID_GET_INVESTMENT_TRANSACTIONS);
+  const { data: accountData } = useQuery<any>(PLAID_GET_ACCOUNTS);
+  const { data: balanceData } = useQuery<any>(PLAID_GET_BALANCE);
+  const { data: transactionsData } = useQuery<any>(PLAID_GET_TRANSACTIONS);
+
+  const [totalBalance, setTotalBalance] = useState<number | undefined>(undefined);
 
   const handleCompleteBankConnect = (publicToken: string) => {
     console.log("Success! Public Token is: " + publicToken);
@@ -34,8 +38,16 @@ export function Dashboard({ }: any) {
     onSuccess: handleCompleteBankConnect
   });
 
+  const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+
+  useEffect(() => {
+    if (balanceData) {
+      setTotalBalance(balanceData.getBalance.balance.accounts.reduce((a: number, b: any) => a + b.balances.current, 0));
+    }
+  }, [balanceData]);
+
   return (
-    <div className="ml-24 flex flex-col min-h-screen max-w-screen overflow-hidden">
+    <div className="ml-24 flex flex-col min-h-screen min-w-0 max-w-full overflow-hidden">
       <h1>Dashboard</h1>
       {!isBankLinked?.bankAccountLinked ?
         <div className='grow flex justify-center items-center'>
@@ -48,8 +60,13 @@ export function Dashboard({ }: any) {
         </div>
         :
         <>
-          <div className="bg-zinc-900 w-64 h-64 p-3 m-6 rounded-xl shadow-xl">
-            <div className="text-sm font-bold">Spending Month</div>
+          <div className="flex justify-between">
+            <div className="flex flex-col bg-zinc-900 h-52 p-3 m-4 rounded-xl shadow-xl">
+              <div className="text-sm font-bold">Total Balance</div>
+              <div className="grow flex justify-center items-center">
+                <div className="text-4xl font-bold text-sky-500">{totalBalance && currencyFormatter.format(totalBalance!)}</div>
+              </div>
+            </div>
           </div>
         </>
       }
