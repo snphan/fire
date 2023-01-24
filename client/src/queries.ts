@@ -77,3 +77,9 @@ export const PLAID_GET_BALANCE = gql`
     getBalance
   }
 `
+
+export const PLAID_GET_INSTITUTION_BY_NAME = gql`
+  query searchInstitution($query: String!) {
+    searchInstitution(query: $query)
+  }
+`

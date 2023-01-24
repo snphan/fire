@@ -53,11 +53,10 @@ export class User extends BaseEntity {
 
   // No Field() because we don't want to send access_token
   // to the client
-  @OneToOne((type) => PlaidInfo, {
-    nullable: true,
+  @OneToMany((type) => PlaidInfo, plaidinfo => plaidinfo.user, {
     onDelete: "SET NULL",
-    eager: true
+    eager: true,
+    cascade: true
   })
-  @JoinColumn()
-  plaidinfo: Relation<PlaidInfo>
+  plaidInfoConnection: Promise<Relation<PlaidInfo[]>>;
 }

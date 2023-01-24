@@ -78,3 +78,9 @@ mutation exchangePublicToken($publicToken: String!) {
   exchangePublicToken(publicToken: $publicToken)
 }
 `
+
+export const PLAID_UNLINK_BANK = gql`
+mutation unlinkBank {
+  unlinkBank
+}
+`

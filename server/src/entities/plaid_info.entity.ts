@@ -1,7 +1,8 @@
 import { IsNotEmpty } from 'class-validator';
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, OneToMany, Relation, OneToOne } from 'typeorm';
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, OneToMany, Relation, OneToOne, ManyToOne } from 'typeorm';
 import { Ctx, Field, ObjectType } from 'type-graphql';
 import { User } from './users.entity';
+import { Products } from 'plaid';
 
 @ObjectType()
 @Entity()
@@ -11,7 +12,7 @@ export class PlaidInfo extends BaseEntity {
   id: number;
 
   @Field((type) => User)
-  @OneToOne((type) => User, user => user.plaidinfo)
+  @ManyToOne((type) => User, user => user.plaidInfoConnection)
   user: Relation<User>;
 
   @Field()
@@ -21,4 +22,16 @@ export class PlaidInfo extends BaseEntity {
   @Field()
   @Column({ nullable: true })
   item_id: string;
+
+  @Field((type) => [Products])
+  @Column("text", { array: true })
+  products: Products[];
+
+  @Field()
+  @Column({ default: "" })
+  institution_id: string;
+
+  @Field()
+  @Column({ default: "" })
+  institution_name: string;
 }
