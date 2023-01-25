@@ -19,6 +19,7 @@ export function Dashboard({ }: any) {
   const { data: accountData } = useQuery<any>(PLAID_GET_ACCOUNTS);
   const { data: balanceData, loading: loadingBalance } = useQuery<any>(PLAID_GET_BALANCE);
   const { data: transactionsData, loading: loadingTransactions } = useQuery<any>(PLAID_GET_TRANSACTIONS);
+  const { data: investmentTransactionsData } = useQuery<any>(PLAID_GET_INVESTMENT_TRANSACTIONS);
 
   const [totalBalance, setTotalBalance] = useState<number | undefined>(undefined);
 
@@ -43,7 +44,10 @@ export function Dashboard({ }: any) {
     if (accountData) {
       console.log(accountData);
     }
-  }, [balanceData, transactionsData, accountData]);
+    if (investmentTransactionsData) {
+      console.log(investmentTransactionsData);
+    }
+  }, [balanceData, transactionsData, accountData, investmentTransactionsData]);
 
   return (
     <div className="ml-24 flex flex-col min-h-screen min-w-0 max-w-full overflow-hidden">

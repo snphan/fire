@@ -147,23 +147,24 @@ export class PlaidResolver extends PlaidRepository {
 
 
     for (const plaidInfo of findPlaidInfo) {
+      if (plaidInfo.products.includes(Products.Transactions)) {
+        while (hasMore) {
+          const request = {
+            access_token: this.decryptAccessToken(plaidInfo.access_token),
+            cursor: cursor,
+            options: {
+              include_personal_finance_category: true
+            }
+          };
+          const response = await plaidClient.transactionsSync(request);
+          const data = response.data;
+          added = added.concat(data.added);
+          modified = modified.concat(data.modified);
+          removed = removed.concat(data.removed);
+          hasMore = data.has_more;
 
-      while (hasMore) {
-        const request = {
-          access_token: this.decryptAccessToken(plaidInfo.access_token),
-          cursor: cursor,
-          options: {
-            include_personal_finance_category: true
-          }
-        };
-        const response = await plaidClient.transactionsSync(request);
-        const data = response.data;
-        added = added.concat(data.added);
-        modified = modified.concat(data.modified);
-        removed = removed.concat(data.removed);
-        hasMore = data.has_more;
-
-        cursor = data.next_cursor;
+          cursor = data.next_cursor;
+        }
       }
     }
 
@@ -184,13 +185,15 @@ export class PlaidResolver extends PlaidRepository {
     try {
       let investment_transactions = [];
       for (const plaidInfo of findPlaidInfo) {
-        const configs = {
-          access_token: this.decryptAccessToken(plaidInfo.access_token),
-          start_date: startDate,
-          end_date: today,
-        };
-        const investmentTransactionsResponse = await plaidClient.investmentsTransactionsGet(configs);
-        investment_transactions = investment_transactions.concat(investmentTransactionsResponse.data.investment_transactions);
+        if (plaidInfo.products.includes(Products.Investments)) {
+          const configs = {
+            access_token: this.decryptAccessToken(plaidInfo.access_token),
+            start_date: startDate,
+            end_date: today,
+          };
+          const investmentTransactionsResponse = await plaidClient.investmentsTransactionsGet(configs);
+          investment_transactions = investment_transactions.concat(investmentTransactionsResponse.data.investment_transactions);
+        }
       }
       return { investments_transactions: investment_transactions };
     } catch (error) {
