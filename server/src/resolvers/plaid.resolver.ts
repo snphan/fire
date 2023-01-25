@@ -36,15 +36,16 @@ export class PlaidResolver extends PlaidRepository {
   @Query(() => GraphQLJSON, {
     description: 'Get the Link token as a JSON response'
   })
-  async createLinkToken(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<Object> {
-    // TODO: products and country code should be selectable. 
+  async createLinkToken(@Arg('products') products: string, @Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<Object> {
+
+    const formatedProducts = products.split(',').map((product: Products) => product)
     const configs: LinkTokenCreateRequest = {
       user: {
         // This should correspond to a unique id for the current user.
         client_user_id: String(user.id),
       },
       client_name: 'Fire Cash',
-      products: PLAID_PRODUCTS,
+      products: formatedProducts,
       country_codes: PLAID_COUNTRY_CODES,
       language: 'en',
     };
@@ -65,7 +66,9 @@ export class PlaidResolver extends PlaidRepository {
   @Mutation(() => Boolean, {
     description: 'Exchange the Public Token for an Access Token and Return the Item Id'
   })
-  async exchangePublicToken(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi, @Arg('publicToken') publicToken: string): Promise<boolean> {
+  async exchangePublicToken(@Arg('publicToken') publicToken: string, @Arg('products') products: string, @Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<boolean> {
+
+    const formatedProducts = products.split(',').map((product: Products) => product)
     let createPlaidInfo: PlaidInfo;
     const tokenResponse = await plaidClient.itemPublicTokenExchange({ public_token: publicToken });
     const ACCESS_TOKEN = tokenResponse.data.access_token;
@@ -87,17 +90,18 @@ export class PlaidResolver extends PlaidRepository {
     const findPlaidInfo = await this.getPlaidInfoByUser(user);
     for (const plaidInfo of findPlaidInfo) {
       if (requestItem.institution_id === plaidInfo.institution_id) {
-        await PlaidInfo.update(plaidInfo.id, { access_token: encryptedAccessToken, item_id: ITEM_ID });
+        await PlaidInfo.update(plaidInfo.id, { products: formatedProducts, access_token: encryptedAccessToken, item_id: ITEM_ID });
         console.log("Update");
         return true;
       }
     }
     /* Create if there are no duplicates found */
+    // TODO: PLAID_PRODUCTS env variable needs to be changed to user selected products.
     createPlaidInfo = await PlaidInfo.create({
       user: user,
       access_token: encryptedAccessToken,
       item_id: ITEM_ID,
-      products: PLAID_PRODUCTS,
+      products: formatedProducts,
       institution_id: requestItem.institution_id,
       institution_name: requestInstitutionName
     }).save();
@@ -212,6 +216,7 @@ export class PlaidResolver extends PlaidRepository {
     }
     return { balance: balances };
   }
+
 
   // @Authorized()
   // @Mutation(() => Boolean, {
