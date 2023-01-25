@@ -26,9 +26,6 @@ export function PlaidUnlinkPrompt({ openPlaidUnlink, setOpenPlaidUnlink }: any) 
     ]
   });
 
-  useEffect(() => {
-    console.log(unlinkBankNames);
-  }, [unlinkBankNames])
   return (
     <Dialog open={openPlaidUnlink} handler={() => { setOpenPlaidUnlink(!openPlaidUnlink); setUnlinkBankNames([]) }} className="bg-zinc-800 max-h-screen overflow-auto">
       <DialogHeader className="text-gray-100">Unlink Accounts</DialogHeader>
