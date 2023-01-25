@@ -8,20 +8,14 @@ import { Button, Chip, Dialog, DialogBody, DialogFooter, DialogHeader, Tooltip }
 import { PlaidLinkOptions, usePlaidLink } from 'react-plaid-link';
 import { Loading } from '@/components/Loading';
 import { PlaidLinkPrompt } from '@/components/Plaid/PlaidLinkPrompt';
+import { PlaidUnlinkPrompt } from '@/components/Plaid/PlaidUnlinkPrompt';
 
 
 export function Dashboard({ }: any) {
 
-  const { data: isBankLinked, refetch: refetchIsBankLinked } = useQuery<any>(IS_BANKACCOUNT_LINKED);
+  const { data: isBankLinked } = useQuery<any>(IS_BANKACCOUNT_LINKED);
   const [openPlaidPrompt, setOpenPlaidPrompt] = useState<boolean>(false);
-  const [unlinkBankAccount] = useMutation<any>(PLAID_UNLINK_BANK, {
-    refetchQueries: [
-      { query: IS_BANKACCOUNT_LINKED },
-      { query: PLAID_GET_ACCOUNTS },
-      { query: PLAID_GET_BALANCE },
-      { query: PLAID_GET_TRANSACTIONS },
-    ]
-  });
+  const [openPlaidUnlink, setOpenPlaidUnlink] = useState<boolean>(false);
   const { data: accountData } = useQuery<any>(PLAID_GET_ACCOUNTS);
   const { data: balanceData, loading: loadingBalance } = useQuery<any>(PLAID_GET_BALANCE);
   const { data: transactionsData, loading: loadingTransactions } = useQuery<any>(PLAID_GET_TRANSACTIONS);
@@ -71,7 +65,7 @@ export function Dashboard({ }: any) {
                 <span onClick={() => setOpenPlaidPrompt(!openPlaidPrompt)} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer text-3xl material-icons">account_balance</span>
               </Tooltip>
               <Tooltip content={"Unlink"} className="capitalize bg-gray-900 p-2">
-                <span onClick={() => unlinkBankAccount()} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer text-3xl material-icons">link_off</span>
+                <span onClick={() => setOpenPlaidUnlink(!openPlaidUnlink)} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer text-3xl material-icons">link_off</span>
               </Tooltip>
             </div>
           </div>
@@ -93,6 +87,7 @@ export function Dashboard({ }: any) {
       {openPlaidPrompt &&
         <PlaidLinkPrompt setOpenPlaidPrompt={setOpenPlaidPrompt} />
       }
+      <PlaidUnlinkPrompt openPlaidUnlink={openPlaidUnlink} setOpenPlaidUnlink={setOpenPlaidUnlink} />
     </div>
   )
 }

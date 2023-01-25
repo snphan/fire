@@ -1,5 +1,5 @@
 import { PLAID_EXCHANGE_TOKEN } from '@/mutations';
-import { IS_BANKACCOUNT_LINKED, PLAID_CREATE_LINK_TOKEN, PLAID_GET_ACCOUNTS, PLAID_GET_BALANCE, PLAID_GET_TRANSACTIONS } from '@/queries';
+import { IS_BANKACCOUNT_LINKED, PLAID_CREATE_LINK_TOKEN, PLAID_GET_ACCOUNTS, PLAID_GET_BALANCE, PLAID_GET_BANK_NAMES, PLAID_GET_TRANSACTIONS } from '@/queries';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { Button, Dialog, DialogBody, DialogFooter, DialogHeader } from '@material-tailwind/react';
 import React, { useState } from 'react';
@@ -23,6 +23,7 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
       { query: PLAID_GET_ACCOUNTS },
       { query: PLAID_GET_BALANCE },
       { query: PLAID_GET_TRANSACTIONS },
+      { query: PLAID_GET_BANK_NAMES }
     ]
   });
 
@@ -60,7 +61,7 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
   const { open, ready } = usePlaidLink(plaidConfig)
   return (
     <>
-      <Dialog size="lg" open={true} handler={() => setOpenProductSelection(!openProductSelection)} className="bg-gray-800 max-h-screen overflow-auto">
+      <Dialog size="lg" open={true} handler={() => setOpenProductSelection(!openProductSelection)} className="bg-zinc-800 max-h-screen overflow-auto">
         <DialogHeader className="text-gray-100">Select Products</DialogHeader>
         <DialogBody className="text-gray-200 flex flex-col">
           <div className="grid grid-cols-3 gap-1">

@@ -218,22 +218,45 @@ export class PlaidResolver extends PlaidRepository {
   }
 
 
-  // @Authorized()
-  // @Mutation(() => Boolean, {
-  //   description: 'Remove the user\'s item'
-  // })
-  // async unlinkBank(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi) {
-  //   const request: ItemRemoveRequest = {
-  //     access_token: this.decryptAccessToken(user.plaidinfo.access_token)
-  //   }
-  //   try {
-  //     const response = await plaidClient.itemRemove(request);
-  //     PlaidInfo.delete({ id: user.plaidinfo.id });
-  //     return true;
-  //   } catch (error) {
-  //     return false;
-  //   }
-  // }
+  @Authorized()
+  @Query(() => [String], {
+    description: 'Get a list of the user\'s connected bank accounts'
+  })
+  async getBankNames(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi) {
+    const findPlaidInfo = await this.getPlaidInfoByUser(user);
+    const bankNames = findPlaidInfo.map((plaidInfo) => plaidInfo.institution_name);
+
+    return bankNames;
+  }
+
+  @Authorized()
+  @Mutation(() => Boolean, {
+    description: 'Remove the user\'s item'
+  })
+  async unlinkBank(@Arg('bankNames', (type) => [String]) bankNames: string[], @Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi) {
+    const findPlaidInfo = await this.getPlaidInfoByUser(user);
+
+    try {
+      for (const bankName of bankNames) {
+        const filteredPlaidInfo = findPlaidInfo.filter((plaidInfo) => plaidInfo.institution_name === bankName)
+        if (!findPlaidInfo.length) throw new HttpException(409, `${bankName} does not exist on this user`);
+
+        console.log(filteredPlaidInfo)
+        const access_token = this.decryptAccessToken(filteredPlaidInfo[0].access_token)
+        const request: ItemRemoveRequest = {
+          access_token: access_token
+        }
+        console.log(request);
+        const response = await plaidClient.itemRemove(request);
+        console.log(response.data);
+        PlaidInfo.delete({ id: filteredPlaidInfo[0].id });
+        console.log(`Delete ${filteredPlaidInfo[0].id}`)
+      }
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 
   @Authorized()
   @Query(() => GraphQLJSON, {

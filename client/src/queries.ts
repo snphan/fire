@@ -83,3 +83,9 @@ export const PLAID_GET_INSTITUTION_BY_NAME = gql`
     searchInstitution(query: $query)
   }
 `
+
+export const PLAID_GET_BANK_NAMES = gql`
+  query getBankNames {
+    getBankNames
+  }
+`

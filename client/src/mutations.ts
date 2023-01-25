@@ -80,7 +80,7 @@ mutation exchangePublicToken($publicToken: String!, $products: String!) {
 `
 
 export const PLAID_UNLINK_BANK = gql`
-mutation unlinkBank {
-  unlinkBank
+mutation unlinkBank($bankNames: [String!]!) {
+  unlinkBank(bankNames: $bankNames)
 }
 `
