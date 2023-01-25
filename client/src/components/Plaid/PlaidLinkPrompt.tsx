@@ -41,7 +41,7 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
     /* Exchange the PublicToken for a Permanent Access token */
     console.log("Exchanging Public token");
     exchangeLinkToken({
-      variables: { publicToken: publicToken, products: selectedProducts.join(',') },
+      variables: { publicToken: publicToken, products: selectedProducts },
       onCompleted: () => setSelectedProducts([])
     });
     setLinkToken(null);
@@ -115,11 +115,10 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
 
           {!linkToken ?
             <Button variant="gradient" color="green" onClick={() => {
-              const formatProducts = selectedProducts.join(',');
               // setOpenProductSelection(!openProductSelection);
               getLinkToken({
                 variables: {
-                  products: formatProducts
+                  products: selectedProducts
 
                 },
                 onCompleted: (res) => {

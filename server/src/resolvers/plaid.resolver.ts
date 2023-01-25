@@ -36,9 +36,9 @@ export class PlaidResolver extends PlaidRepository {
   @Query(() => GraphQLJSON, {
     description: 'Get the Link token as a JSON response'
   })
-  async createLinkToken(@Arg('products') products: string, @Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<Object> {
+  async createLinkToken(@Arg('products', (type) => [String]) products: string[], @Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<Object> {
 
-    const formatedProducts = products.split(',').map((product: Products) => product)
+    const formatedProducts = products.map((product: Products) => product)
     const configs: LinkTokenCreateRequest = {
       user: {
         // This should correspond to a unique id for the current user.
@@ -66,9 +66,9 @@ export class PlaidResolver extends PlaidRepository {
   @Mutation(() => Boolean, {
     description: 'Exchange the Public Token for an Access Token and Return the Item Id'
   })
-  async exchangePublicToken(@Arg('publicToken') publicToken: string, @Arg('products') products: string, @Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<boolean> {
+  async exchangePublicToken(@Arg('publicToken') publicToken: string, @Arg('products', (type) => [String]) products: string[], @Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<boolean> {
 
-    const formatedProducts = products.split(',').map((product: Products) => product)
+    const formatedProducts = products.map((product: Products) => product)
     let createPlaidInfo: PlaidInfo;
     const tokenResponse = await plaidClient.itemPublicTokenExchange({ public_token: publicToken });
     const ACCESS_TOKEN = tokenResponse.data.access_token;

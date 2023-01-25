@@ -52,7 +52,7 @@ export const IS_BANKACCOUNT_LINKED = gql`
 `
 
 export const PLAID_CREATE_LINK_TOKEN = gql`
-query createLinkToken($products: String!) {
+query createLinkToken($products: [String!]!) {
   createLinkToken(products: $products)
 }
 `
