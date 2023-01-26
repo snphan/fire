@@ -10,6 +10,8 @@ import { Loading } from '@/components/Loading';
 import { PlaidLinkPrompt } from '@/components/Plaid/PlaidLinkPrompt';
 import { PlaidUnlinkPrompt } from '@/components/Plaid/PlaidUnlinkPrompt';
 import { TotalBalance } from '@/components/Dashboard/TotalBalance';
+import { TotalIncome } from '@/components/Dashboard/TotalIncome';
+import { ExpensesBreakdown } from '@/components/Dashboard/ExpensesBreadown';
 
 
 export function Dashboard({ }: any) {
@@ -17,38 +19,18 @@ export function Dashboard({ }: any) {
   const { data: isBankLinked } = useQuery<any>(IS_BANKACCOUNT_LINKED);
   const [openPlaidPrompt, setOpenPlaidPrompt] = useState<boolean>(false);
   const [openPlaidUnlink, setOpenPlaidUnlink] = useState<boolean>(false);
-  const { data: accountData } = useQuery<any>(PLAID_GET_ACCOUNTS);
   const { data: balanceData, loading: loadingBalance } = useQuery<any>(PLAID_GET_BALANCE);
   const { data: transactionsData, loading: loadingTransactions } = useQuery<any>(PLAID_GET_TRANSACTIONS);
   const { data: investmentTransactionsData } = useQuery<any>(PLAID_GET_INVESTMENT_TRANSACTIONS);
 
-  const [totalBalance, setTotalBalance] = useState<number | undefined>(undefined);
-
-  const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
-
   useEffect(() => {
-    if (balanceData) {
-      setTotalBalance(balanceData.getBalance.balance.reduce(
-        (a: number, b: any) => {
-          if (b.balances.iso_currency_code === 'USD') {
-            return a + b.balances.current * 1.3;
-          } else {
-            return a + b.balances.current;
-          }
-        }
-
-        , 0));
-    }
-    if (transactionsData) {
-      console.log(transactionsData);
-    }
-    if (accountData) {
-      console.log(accountData);
-    }
-    if (investmentTransactionsData) {
-      console.log(investmentTransactionsData);
-    }
-  }, [balanceData, transactionsData, accountData, investmentTransactionsData]);
+    // if (transactionsData) {
+    //   console.log(transactionsData);
+    // }
+    // if (investmentTransactionsData) {
+    //   console.log(investmentTransactionsData);
+    // }
+  }, [balanceData, transactionsData, investmentTransactionsData]);
 
   return (
     <div className="ml-24 flex flex-col min-h-screen min-w-0 max-w-full overflow-hidden">
@@ -74,9 +56,11 @@ export function Dashboard({ }: any) {
               </Tooltip>
             </div>
           </div>
-          <div className="flex justify-between">
-            <TotalBalance loading={loadingBalance} totalBalance={totalBalance} />
+          <div className="flex justify-start">
+            <TotalBalance loading={loadingBalance} balanceData={balanceData} />
+            <TotalIncome loading={loadingTransactions} transactions={transactionsData} />
           </div>
+          <ExpensesBreakdown className="grow w-2/5" loading={loadingTransactions} transactions={transactionsData} />
         </>
       }
       {/* Rerender everytime so we can access Plaid Link */}
