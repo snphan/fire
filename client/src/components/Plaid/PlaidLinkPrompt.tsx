@@ -37,9 +37,7 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
   }
 
   const handleCompleteBankConnect = (publicToken: string) => {
-    console.log("Success! Public Token is: " + publicToken);
     /* Exchange the PublicToken for a Permanent Access token */
-    console.log("Exchanging Public token");
     exchangeLinkToken({
       variables: { publicToken: publicToken, products: selectedProducts },
       onCompleted: () => setSelectedProducts([])

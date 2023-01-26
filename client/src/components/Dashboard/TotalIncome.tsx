@@ -9,9 +9,7 @@ export function TotalIncome({ loading, transactions }: any) {
   const currencyFormatter = useContext(CurrencyContext);
   useEffect(() => {
     if (transactions) {
-      console.log(transactions);
       const incomeTransactions = transactions.getTransactions.added.filter((item: any) => item.personal_finance_category.primary === "INCOME");
-      console.log(incomeTransactions);
       const incomeAmounts = incomeTransactions.map((item: any) => item.amount);
       setIncome(incomeAmounts.reduce((a: number, b: number) => a + b, 0));
     }

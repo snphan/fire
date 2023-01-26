@@ -23,13 +23,8 @@ export function Dashboard({ }: any) {
   const { data: transactionsData, loading: loadingTransactions } = useQuery<any>(PLAID_GET_TRANSACTIONS);
   const { data: investmentTransactionsData } = useQuery<any>(PLAID_GET_INVESTMENT_TRANSACTIONS);
 
+  // DEBUG
   useEffect(() => {
-    // if (transactionsData) {
-    //   console.log(transactionsData);
-    // }
-    // if (investmentTransactionsData) {
-    //   console.log(investmentTransactionsData);
-    // }
   }, [balanceData, transactionsData, investmentTransactionsData]);
 
   return (

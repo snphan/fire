@@ -76,10 +76,6 @@ export function ExpensesBreakdown({ loading, transactions, className }: any) {
     }
   }, [transactions]);
 
-  useEffect(() => {
-    console.log(expenses);
-  }, [expenses])
-
   const expensesOptions = {
     tooltip: {
       trigger: 'item'
