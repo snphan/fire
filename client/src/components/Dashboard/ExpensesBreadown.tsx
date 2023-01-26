@@ -135,7 +135,7 @@ export function ExpensesBreakdown({ loading, transactions, className }: any) {
         :
         <>
           <div className="flex justify-center">
-            <div className="text-4xl font-bold text-pink-400">
+            <div className="text-4xl font-bold text-pink-400 mt-4">
               {currencyFormatter.format(Object.entries(expenses).reduce((a: number, keyValue: any) => a - Math.abs(keyValue[1]), 0))}
             </div>
           </div>
