@@ -9,6 +9,7 @@ import { PlaidLinkOptions, usePlaidLink } from 'react-plaid-link';
 import { Loading } from '@/components/Loading';
 import { PlaidLinkPrompt } from '@/components/Plaid/PlaidLinkPrompt';
 import { PlaidUnlinkPrompt } from '@/components/Plaid/PlaidUnlinkPrompt';
+import { TotalBalance } from '@/components/Dashboard/TotalBalance';
 
 
 export function Dashboard({ }: any) {
@@ -74,16 +75,7 @@ export function Dashboard({ }: any) {
             </div>
           </div>
           <div className="flex justify-between">
-            <div className="flex flex-col bg-zinc-900 h-52 p-3 m-4 rounded-xl shadow-xl">
-              <div className="text-sm font-bold">Total Balance</div>
-              <div className="grow flex justify-center items-center">
-                {loadingBalance ?
-                  <Loading className="w-12 h-12"></Loading>
-                  :
-                  <div className="text-4xl font-bold text-sky-500">{totalBalance && currencyFormatter.format(totalBalance!)}</div>
-                }
-              </div>
-            </div>
+            <TotalBalance loading={loadingBalance} totalBalance={totalBalance} />
           </div>
         </>
       }
