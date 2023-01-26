@@ -23,15 +23,17 @@ export function TotalBalance({ loading, balanceData }: any) {
 
   return (
 
-    <div className="flex flex-col bg-zinc-900 h-52 p-3 m-4 rounded-xl shadow-xl">
-      <div className="text-sm font-bold">Total Balance</div>
-      <div className="grow flex justify-center items-center">
-        {loading ?
-          <Loading className="w-12 h-12"></Loading>
-          :
-          <div className="text-4xl font-bold text-sky-500">{totalBalance && currencyFormatter.format(totalBalance!)}</div>
-        }
+    <button className="focus:ring focus:ring-blue-300 transition-all bg-zinc-900 h-64 p-3 m-4 rounded-xl shadow-xl">
+      <div className="flex flex-col h-full items-start">
+        <div className="text-sm font-bold">Total Balance</div>
+        <div className="grow flex justify-center items-center w-full">
+          {loading ?
+            <Loading className="w-12 h-12"></Loading>
+            :
+            <div className="text-4xl font-bold text-sky-500">{typeof totalBalance !== undefined && currencyFormatter.format(totalBalance!)}</div>
+          }
+        </div>
       </div>
-    </div>
+    </button>
   )
 }
