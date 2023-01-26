@@ -96,7 +96,6 @@ export class PlaidResolver extends PlaidRepository {
       }
     }
     /* Create if there are no duplicates found */
-    // TODO: PLAID_PRODUCTS env variable needs to be changed to user selected products.
     createPlaidInfo = await PlaidInfo.create({
       user: user,
       access_token: encryptedAccessToken,
