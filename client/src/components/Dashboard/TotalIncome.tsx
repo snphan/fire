@@ -4,7 +4,6 @@ import { Loading } from '../Loading';
 
 export function TotalIncome({ loading, transactions }: any) {
 
-
   const [income, setIncome] = useState<number>(0);
 
   const currencyFormatter = useContext(CurrencyContext);
@@ -18,10 +17,9 @@ export function TotalIncome({ loading, transactions }: any) {
     }
   }, [transactions]);
 
-
   return (
     <div className="flex flex-col bg-zinc-900 h-52 p-3 m-4 rounded-xl shadow-xl">
-      <div className="text-sm font-bold">Total Month Profits</div>
+      <div className="text-sm font-bold">Total Month Income</div>
       <div className="grow flex justify-center items-center">
         {loading ?
           <Loading className="w-12 h-12"></Loading>
