@@ -3,6 +3,7 @@ import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateC
 import { Ctx, Field, ObjectType } from 'type-graphql';
 import { User } from './users.entity';
 import { Products } from 'plaid';
+import dayjs from 'dayjs';
 
 @ObjectType()
 @Entity()
@@ -38,4 +39,8 @@ export class PlaidInfo extends BaseEntity {
   @Field({ nullable: true })
   @Column({ default: null, nullable: true }) // Plaid Spec, setting null starts txn sync from beginning of history.
   txn_cursor: string;
+
+  @Field()
+  @Column({ default: dayjs().subtract(2, 'years').format('YYYY-MM-DD') })
+  invest_txn_update_date: string
 }
