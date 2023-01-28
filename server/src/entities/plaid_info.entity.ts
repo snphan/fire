@@ -34,4 +34,8 @@ export class PlaidInfo extends BaseEntity {
   @Field()
   @Column({ default: "" })
   institution_name: string;
+
+  @Field({ nullable: true })
+  @Column({ default: null, nullable: true }) // Plaid Spec, setting null starts txn sync from beginning of history.
+  txn_cursor: string;
 }

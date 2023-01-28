@@ -6,7 +6,6 @@ import { User } from '@entities/users.entity';
 import { PLAID_ANDROID_PACKAGE_NAME, PLAID_CLIENT_ID, PLAID_COUNTRY_CODES, PLAID_ENV, PLAID_PRODUCTS, PLAID_REDIRECT_URI, PLAID_SECRET, SECRET_KEY } from '@/config';
 import { ClientRequest } from 'http';
 import { PlaidInfo } from '@/entities/plaid_info.entity';
-import CryptoJS from 'crypto-js';
 import { HttpException } from '@/exceptions/HttpException';
 import GraphQLJSON, { GraphQLJSONObject } from 'graphql-type-json';
 import dayjs from 'dayjs';
@@ -14,11 +13,6 @@ import PlaidRepository from '@/repositories/plaid.repository';
 
 @Resolver()
 export class PlaidResolver extends PlaidRepository {
-
-  decryptAccessToken(encryptedAccessToken: string): string {
-    const decryptedAccessToken = CryptoJS.AES.decrypt(encryptedAccessToken, SECRET_KEY).toString(CryptoJS.enc.Utf8);
-    return decryptedAccessToken;
-  }
 
   @Authorized()
   @Query(() => Boolean, {
@@ -131,44 +125,44 @@ export class PlaidResolver extends PlaidRepository {
     }
   }
 
-  @Authorized()
-  @Query(() => GraphQLJSON, {
-    description: 'Get the User\'s transactions as a JSON Object'
-  })
-  async syncTransactions(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<Object> {
-    const findPlaidInfo = await this.getPlaidInfoByUser(user);
-    if (!findPlaidInfo.length) throw new HttpException(409, "User has not connected to an Account through Plaid");
-    let cursor = null;
-    let added = [];
-    let modified = [];
-    let removed = [];
-    let hasMore = true;
+  // @Authorized()
+  // @Query(() => GraphQLJSON, {
+  //   description: 'Get the User\'s transactions as a JSON Object'
+  // })
+  // async syncTransactions(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<Object> {
+  //   const findPlaidInfo = await this.getPlaidInfoByUser(user);
+  //   if (!findPlaidInfo.length) throw new HttpException(409, "User has not connected to an Account through Plaid");
 
+  //   for (const plaidInfo of findPlaidInfo) {
 
-    for (const plaidInfo of findPlaidInfo) {
-      if (plaidInfo.products.includes(Products.Transactions)) {
-        while (hasMore) {
-          const request = {
-            access_token: this.decryptAccessToken(plaidInfo.access_token),
-            cursor: cursor,
-            options: {
-              include_personal_finance_category: true
-            }
-          };
-          const response = await plaidClient.transactionsSync(request);
-          const data = response.data;
-          added = added.concat(data.added);
-          modified = modified.concat(data.modified);
-          removed = removed.concat(data.removed);
-          hasMore = data.has_more;
+  //     let cursor = null;
+  //     let added = [];       // New added txns
+  //     let modified = [];    // Txns that were modified
+  //     let removed = [];     // Txns that were removed
+  //     let hasMore = true;
+  //     if (plaidInfo.products.includes(Products.Transactions)) {
+  //       while (hasMore) {
+  //         const request = {
+  //           access_token: this.decryptAccessToken(plaidInfo.access_token),
+  //           cursor: cursor,
+  //           options: {
+  //             include_personal_finance_category: true
+  //           }
+  //         };
+  //         const response = await plaidClient.transactionsSync(request);
+  //         const data = response.data;
+  //         added = added.concat(data.added);
+  //         modified = modified.concat(data.modified);
+  //         removed = removed.concat(data.removed);
+  //         hasMore = data.has_more;
 
-          cursor = data.next_cursor;
-        }
-      }
-    }
+  //         cursor = data.next_cursor;
+  //       }
+  //     }
+  //   }
 
-    return { added: added }
-  }
+  //   return { added: added }
+  // }
 
   @Authorized()
   @Query(() => GraphQLJSON, {
