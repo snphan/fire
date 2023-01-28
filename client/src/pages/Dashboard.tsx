@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { NavBar } from '@/components/NavBar';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { IS_BANKACCOUNT_LINKED, PLAID_CREATE_LINK_TOKEN, PLAID_GET_ACCOUNTS, PLAID_GET_BALANCE, PLAID_GET_INSTITUTION_BY_NAME, PLAID_GET_INVESTMENT_TRANSACTIONS, PLAID_GET_TRANSACTIONS } from '@/queries';
+import { IS_BANKACCOUNT_LINKED, PLAID_CREATE_LINK_TOKEN, PLAID_GET_ACCOUNTS, PLAID_GET_BALANCE, PLAID_GET_INSTITUTION_BY_NAME, PLAID_GET_INVESTMENT_TRANSACTIONS, PLAID_SYNC_TRANSACTIONS } from '@/queries';
 import { PLAID_EXCHANGE_TOKEN, PLAID_UNLINK_BANK } from '@/mutations';
 import { apolloClient } from '..';
 import { Button, Chip, Dialog, DialogBody, DialogFooter, DialogHeader, Tooltip } from '@material-tailwind/react';
@@ -20,7 +20,7 @@ export function Dashboard({ }: any) {
   const [openPlaidPrompt, setOpenPlaidPrompt] = useState<boolean>(false);
   const [openPlaidUnlink, setOpenPlaidUnlink] = useState<boolean>(false);
   const { data: balanceData, loading: loadingBalance } = useQuery<any>(PLAID_GET_BALANCE);
-  const { data: transactionsData, loading: loadingTransactions } = useQuery<any>(PLAID_GET_TRANSACTIONS);
+  const { data: transactionsData, loading: loadingTransactions } = useQuery<any>(PLAID_SYNC_TRANSACTIONS);
   const { data: investmentTransactionsData } = useQuery<any>(PLAID_GET_INVESTMENT_TRANSACTIONS);
 
   // DEBUG

@@ -49,7 +49,7 @@ export function ExpensesBreakdown({ loading, transactions, className }: any) {
   });
 
   const totalExpenseForCategory = (CATEGORY: string) => {
-    const filteredTransactions = transactions.getTransactions.added.filter((item: any) => item.personal_finance_category.primary === CATEGORY);
+    const filteredTransactions = transactions.syncTransactions.added.filter((item: any) => item.personal_finance_category.primary === CATEGORY);
     return filteredTransactions.reduce((a: number, b: any) => a + b.amount, 0)
   }
 

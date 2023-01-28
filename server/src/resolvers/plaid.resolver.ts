@@ -109,7 +109,7 @@ export class PlaidResolver extends PlaidRepository {
 
   @Authorized()
   @Query(() => GraphQLJSON, {
-    description: 'Get the User\'s accounts as a JSON string'
+    description: 'Get the User\'s accounts as a JSON object'
   })
   async getAccounts(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<Object> {
     const findPlaidInfo = await this.getPlaidInfoByUser(user);
@@ -135,7 +135,7 @@ export class PlaidResolver extends PlaidRepository {
   @Query(() => GraphQLJSON, {
     description: 'Get the User\'s transactions as a JSON Object'
   })
-  async getTransactions(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<Object> {
+  async syncTransactions(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi): Promise<Object> {
     const findPlaidInfo = await this.getPlaidInfoByUser(user);
     if (!findPlaidInfo.length) throw new HttpException(409, "User has not connected to an Account through Plaid");
     let cursor = null;

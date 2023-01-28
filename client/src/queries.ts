@@ -61,9 +61,9 @@ query getAccounts {
   getAccounts
 }
 `
-export const PLAID_GET_TRANSACTIONS = gql`
-query getTransactions {
-  getTransactions
+export const PLAID_SYNC_TRANSACTIONS = gql`
+query syncTransactions {
+  syncTransactions
 }
 `
 

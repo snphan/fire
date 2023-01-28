@@ -1,5 +1,5 @@
 import { PLAID_EXCHANGE_TOKEN } from '@/mutations';
-import { IS_BANKACCOUNT_LINKED, PLAID_CREATE_LINK_TOKEN, PLAID_GET_ACCOUNTS, PLAID_GET_BALANCE, PLAID_GET_BANK_NAMES, PLAID_GET_TRANSACTIONS } from '@/queries';
+import { IS_BANKACCOUNT_LINKED, PLAID_CREATE_LINK_TOKEN, PLAID_GET_ACCOUNTS, PLAID_GET_BALANCE, PLAID_GET_BANK_NAMES, PLAID_SYNC_TRANSACTIONS } from '@/queries';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { Button, Dialog, DialogBody, DialogFooter, DialogHeader } from '@material-tailwind/react';
 import React, { useState } from 'react';
@@ -22,7 +22,7 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
       { query: IS_BANKACCOUNT_LINKED },
       { query: PLAID_GET_ACCOUNTS },
       { query: PLAID_GET_BALANCE },
-      { query: PLAID_GET_TRANSACTIONS },
+      { query: PLAID_SYNC_TRANSACTIONS },
       { query: PLAID_GET_BANK_NAMES }
     ]
   });
