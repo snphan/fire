@@ -14,7 +14,7 @@ export const authMiddleware = async req => {
       const { id } = (await verify(Authorization, secretKey)) as DataStoredInToken;
       const userRepository = getRepository(User);
 
-      const findUser = await userRepository.findOne(id, { select: ['id', 'email', 'password'] });
+      const findUser = await userRepository.findOne({ where: { id: id }, select: ['id', 'email', 'password'] });
       return findUser;
     }
 
