@@ -4,6 +4,8 @@ import { Ctx, Field, ObjectType } from 'type-graphql';
 import { User } from './users.entity';
 import { Products } from 'plaid';
 import dayjs from 'dayjs';
+import { Transaction } from './transactions.entity';
+import { InvestmentTransaction } from './investment_transactions.entity';
 
 @ObjectType()
 @Entity()
@@ -43,4 +45,16 @@ export class PlaidInfo extends BaseEntity {
   @Field()
   @Column({ default: dayjs().subtract(2, 'years').format('YYYY-MM-DD') })
   invest_txn_update_date: string
+
+  @OneToMany((type) => Transaction, (transactions) => transactions.plaidInfo, {
+    onDelete: "SET NULL"
+  })
+  transactions: Promise<Relation<Transaction[]>>;
+
+  @OneToMany(
+    (type) => InvestmentTransaction,
+    (investment_transactions) => investment_transactions.plaidInfo,
+    { onDelete: "SET NULL" }
+  )
+  investment_transactions: Promise<Relation<InvestmentTransaction[]>>;
 }
