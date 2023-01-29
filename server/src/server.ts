@@ -8,9 +8,10 @@ import { PlaidResolver } from './resolvers/plaid.resolver';
 
 validateEnv();
 
-const app = new App(
+/* Export the app so we can use a the DB DataSource globally. refer to typeorm docs */
+export const app = new App(
   [authResolver, userResolver, REAssetResolver, PlaidResolver],
-  '*/30 * * * * *'
+  '0 1 * * *' // Everday at 1 am
 );
 
 app.listen();
