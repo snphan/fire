@@ -1,22 +1,18 @@
 import { DB_ENCRYPTION_KEY } from "@/config";
 import { Field, ID, ObjectType } from "type-graphql";
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn, Relation } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn, Relation } from "typeorm";
 import { EncryptionTransformer } from "typeorm-encrypted";
 import { PlaidInfo } from "./plaid_info.entity";
 
 @Entity()
 @ObjectType()
 export class InvestmentTransaction extends BaseEntity {
-  @Field((type) => ID)
-  @PrimaryGeneratedColumn()
-  id: number;
+  @Field()
+  @PrimaryColumn()
+  investment_transaction_id: string;
 
   @ManyToOne((type) => PlaidInfo, plaidInfo => plaidInfo.investment_transactions)
   plaidInfo: Relation<PlaidInfo>;
-
-  @Field()
-  @Column()
-  investment_transaction_id: string;
 
   @Field()
   @Column()

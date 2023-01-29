@@ -1,6 +1,6 @@
 import { PersonalFinanceCategory } from "plaid";
 import { Field, ID, ObjectType } from "type-graphql";
-import { BaseEntity, Column, ColumnTypeUndefinedError, Entity, ManyToOne, PrimaryGeneratedColumn, Relation } from "typeorm";
+import { BaseEntity, Column, ColumnTypeUndefinedError, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn, Relation } from "typeorm";
 import { PlaidInfo } from "./plaid_info.entity";
 import { EncryptionTransformer } from "typeorm-encrypted";
 import { DB_ENCRYPTION_KEY } from "@/config";
@@ -8,16 +8,12 @@ import { DB_ENCRYPTION_KEY } from "@/config";
 @Entity()
 @ObjectType()
 export class Transaction extends BaseEntity {
-  @Field((type) => ID)
-  @PrimaryGeneratedColumn()
-  id: number;
+  @Field()
+  @PrimaryColumn()
+  transaction_id: string;
 
   @ManyToOne((type) => PlaidInfo, (plaidInfo) => plaidInfo.transactions)
   plaidInfo: Relation<PlaidInfo>;
-
-  @Field()
-  @Column()
-  transaction_id: string;
 
   @Field()
   @Column()
