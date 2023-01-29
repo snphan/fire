@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@types/crypto-js": "^4.1.1",
+    "@types/node-cron": "^3.0.7",
     "apollo-server-core": "^3.10.0",
     "apollo-server-express": "^3.10.0",
     "bcrypt": "^5.0.1",
