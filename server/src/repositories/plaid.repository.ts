@@ -9,6 +9,7 @@ import CryptoJS from 'crypto-js';
 import dayjs from "dayjs";
 import { Transaction } from "@/entities/transactions.entity";
 import { InvestmentTransaction } from "@/entities/investment_transactions.entity";
+import { app } from "@/server";
 
 @EntityRepository()
 export default class PlaidRepository {
@@ -37,12 +38,12 @@ export default class PlaidRepository {
   private plaidInvestTransactionToEntity(plaidInfo: PlaidInfo, plaidInvestTransaction: PlaidInvestmentTransaction): InvestmentTransaction {
     return InvestmentTransaction.create({
       plaidInfo: plaidInfo,
-      investment_transaction_id: plaidInvestTransaction.transaction_id,
+      investment_transaction_id: plaidInvestTransaction.investment_transaction_id,
       date: new Date(plaidInvestTransaction.date),
       type: plaidInvestTransaction.type,
       name: plaidInvestTransaction.name,
       iso_currency: plaidInvestTransaction.iso_currency_code,
-      amount: plaidInvestTransaction.amount
+      amount: String(plaidInvestTransaction.amount)
     })
   }
 
@@ -116,7 +117,19 @@ export default class PlaidRepository {
     console.log("Writing to the DB!");
     console.log(syncedTransactions["TD Canada Trust"]["added"][0]);
     try {
-      await syncedTransactions["TD Canada Trust"]["added"][0].save();
+      await app.appDataSource
+        .createQueryBuilder()
+        .insert()
+        .into(Transaction)
+        .values(syncedTransactions["TD Canada Trust"]["added"])
+        .execute();
+
+      await app.appDataSource
+        .createQueryBuilder()
+        .insert()
+        .into(InvestmentTransaction)
+        .values(syncedTransactions["TD Canada Trust - WebBroker"]["investment_transactions"])
+        .execute();
     } catch (err) {
       console.log(err);
     }
