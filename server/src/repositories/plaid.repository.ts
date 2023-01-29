@@ -17,7 +17,7 @@ export default class PlaidRepository {
   }
 
   public async getPlaidInfoByUser(user: User) {
-    return await PlaidInfo.find({ where: { user: user } })
+    return await PlaidInfo.find({ where: { user: { id: user.id } } })
   }
 
   /**
