@@ -11,6 +11,18 @@ import { Transaction } from "@/entities/transactions.entity";
 import { InvestmentTransaction } from "@/entities/investment_transactions.entity";
 import { app } from "@/server";
 
+interface UpdatesFromPlaid {
+  [key: string]: {
+    plaidInfoId: number,
+    added: Transaction[],
+    modified: Transaction[],
+    removed: RemovedTransaction[],
+    investment_transactions: InvestmentTransaction[],
+    investUpdateDate: string,
+    txnCursor: string
+  }
+}
+
 @EntityRepository()
 export default class PlaidRepository {
 
@@ -54,20 +66,22 @@ export default class PlaidRepository {
    */
   public async syncTransactions(user: User, plaidClient: PlaidApi) {
     const findPlaidInfo = await this.getPlaidInfoByUser(user);
-    // if (!findPlaidInfo.length) throw new HttpException(409, "User has not connected to an Account through Plaid");
     if (!findPlaidInfo.length) { console.log("No plaid connection"); return; }
 
-    const syncedTransactions = {};  // Store updates in memory until written to DB. 
-    const newCursors = {};          // Update the cursors after txns have been updated (if crash, we can redo the sync)
-    const newInvestUpdateDates = {};// Update the investment sync dates
+    const syncedTransactions: UpdatesFromPlaid = {};  // Store updates in memory until written to DB. 
 
     // Fetch the new transactions.
     for (const plaidInfo of findPlaidInfo) {
-      syncedTransactions[plaidInfo.institution_name] = {
+      const { institution_name } = plaidInfo;
+
+      syncedTransactions[institution_name] = {
+        plaidInfoId: plaidInfo.id,
         added: undefined,
         modified: undefined,
-        deleted: undefined,
-        investment_transactions: undefined
+        removed: undefined,
+        investment_transactions: undefined,
+        investUpdateDate: undefined,
+        txnCursor: undefined
       };
       try {
         if (plaidInfo.products.includes(Products.Transactions)) {
@@ -92,10 +106,10 @@ export default class PlaidRepository {
             hasMore = data.has_more;
             cursor = data.next_cursor;
           }
-          newCursors[plaidInfo.institution_name] = cursor;
-          syncedTransactions[plaidInfo.institution_name].added = added.map((txn) => this.plaidTransactionToEntity(plaidInfo, txn));
-          syncedTransactions[plaidInfo.institution_name].modified = modified.map((txn) => this.plaidTransactionToEntity(plaidInfo, txn));
-          syncedTransactions[plaidInfo.institution_name].removed = removed;
+          syncedTransactions[institution_name].txnCursor = cursor;
+          syncedTransactions[institution_name].added = added.map((txn) => this.plaidTransactionToEntity(plaidInfo, txn));
+          syncedTransactions[institution_name].modified = modified.map((txn) => this.plaidTransactionToEntity(plaidInfo, txn));
+          syncedTransactions[institution_name].removed = removed;
         }
 
         if (plaidInfo.products.includes(Products.Investments)) {
@@ -109,8 +123,8 @@ export default class PlaidRepository {
 
           const response = await plaidClient.investmentsTransactionsGet(configs);
           const data = response.data;
-          syncedTransactions[plaidInfo.institution_name].investment_transactions = data.investment_transactions.map((txn) => this.plaidInvestTransactionToEntity(plaidInfo, txn));
-          newInvestUpdateDates[plaidInfo.institution_name] = today;
+          syncedTransactions[institution_name].investment_transactions = data.investment_transactions.map((txn) => this.plaidInvestTransactionToEntity(plaidInfo, txn));
+          syncedTransactions[institution_name].investUpdateDate = today;
         }
       } catch (err) {
         console.log(err.response.statusText);
@@ -122,7 +136,8 @@ export default class PlaidRepository {
     console.log("Writing to the DB!");
     console.log(syncedTransactions["TD Canada Trust"]["added"][0]);
     for (const institution_name of Object.keys(syncedTransactions)) {
-      const { added, modified, removed, investment_transactions } = syncedTransactions[institution_name];
+      const { added, modified, removed, investment_transactions, txnCursor, investUpdateDate, plaidInfoId } = syncedTransactions[institution_name];
+
       try {
         if (added)
           await app.appDataSource
@@ -158,7 +173,8 @@ export default class PlaidRepository {
             .where({ transaction_id: In(removed.map((item: RemovedTransaction) => item.transaction_id)) })
             .execute()
 
-
+        /* Only after all the Sync Completes for a Institution should cursor update. */
+        if (txnCursor) await PlaidInfo.update(plaidInfoId, { txn_cursor: txnCursor });
 
         if (investment_transactions)
           await app.appDataSource
@@ -172,16 +188,14 @@ export default class PlaidRepository {
               { skipUpdateIfNoValuesChanged: true }
             )
             .execute();
+
+        /* Only after all the Sync Completes for a Institution should date update. */
+        if (investUpdateDate)
+          await PlaidInfo.update(plaidInfoId, { invest_txn_update_date: investUpdateDate });
+
       } catch (err) {
         console.log(err);
       }
     }
-    // console.log(syncedTransactions["TD Canada Trust - WebBroker"]["investment_transactions"][0]);
-    // console.log(newCursors);
-    // console.log(newInvestUpdateDates);
-
-    // Update cursors
-
-    // return { added: added }
   }
 }
