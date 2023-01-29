@@ -10,7 +10,7 @@ import express from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import { buildSchema } from 'type-graphql';
-import { createConnection } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { NODE_ENV, PORT, ORIGIN, CREDENTIALS, PLAID_ENV, PLAID_CLIENT_ID, PLAID_SECRET, PLAID_PRODUCTS, PLAID_COUNTRY_CODES, PLAID_REDIRECT_URI, PLAID_ANDROID_PACKAGE_NAME } from '@config';
 import { dbConnection } from '@databases';
 import { authMiddleware, authChecker } from '@middlewares/auth.middleware';
@@ -29,6 +29,7 @@ class App {
   public env: string;
   public port: string | number;
   public plaidClient: PlaidApi;
+  public appDataSource: DataSource;
   private plaidSyncRate: string;
 
   constructor(resolvers, plaidSyncRate: string) {
@@ -93,7 +94,8 @@ class App {
   }
 
   private async connectToDatabase() {
-    await createConnection(dbConnection);
+    this.appDataSource = new DataSource(dbConnection);
+    await this.appDataSource.initialize();
   }
 
   private initializeMiddlewares() {
