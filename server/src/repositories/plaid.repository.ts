@@ -30,7 +30,7 @@ export default class PlaidRepository {
       category: plaidTransaction.personal_finance_category.primary,
       name: plaidTransaction.name,
       iso_currency: plaidTransaction.iso_currency_code,
-      amount: plaidTransaction.amount
+      amount: String(plaidTransaction.amount) // So that we can encrypt it.
     })
   }
 
@@ -114,7 +114,12 @@ export default class PlaidRepository {
 
     // Write to DB
     console.log("Writing to the DB!");
-    // console.log(syncedTransactions["TD Canada Trust"]["added"][0]);
+    console.log(syncedTransactions["TD Canada Trust"]["added"][0]);
+    try {
+      await syncedTransactions["TD Canada Trust"]["added"][0].save();
+    } catch (err) {
+      console.log(err);
+    }
     // console.log(syncedTransactions["TD Canada Trust - WebBroker"]["investment_transactions"][0]);
     // console.log(newCursors);
     // console.log(newInvestUpdateDates);
