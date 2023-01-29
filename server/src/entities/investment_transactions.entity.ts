@@ -8,7 +8,7 @@ import { PlaidInfo } from "./plaid_info.entity";
 @ObjectType()
 export class InvestmentTransaction extends BaseEntity {
   @Field()
-  @PrimaryColumn()
+  @PrimaryColumn({ unique: true })
   investment_transaction_id: string;
 
   @ManyToOne((type) => PlaidInfo, plaidInfo => plaidInfo.investment_transactions)

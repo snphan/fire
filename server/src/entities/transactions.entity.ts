@@ -9,7 +9,7 @@ import { DB_ENCRYPTION_KEY } from "@/config";
 @ObjectType()
 export class Transaction extends BaseEntity {
   @Field()
-  @PrimaryColumn()
+  @PrimaryColumn({ unique: true })
   transaction_id: string;
 
   @ManyToOne((type) => PlaidInfo, (plaidInfo) => plaidInfo.transactions)

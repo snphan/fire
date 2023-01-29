@@ -2,9 +2,9 @@ import { SECRET_KEY } from "@/config";
 import { PlaidInfo } from "@/entities/plaid_info.entity";
 import { User } from "@/entities/users.entity";
 import { HttpException } from "@/exceptions/HttpException";
-import { Transaction as PlaidTransaction, InvestmentTransaction as PlaidInvestmentTransaction, PlaidApi, Products } from "plaid";
+import { Transaction as PlaidTransaction, InvestmentTransaction as PlaidInvestmentTransaction, PlaidApi, Products, RemovedTransaction } from "plaid";
 import { Ctx } from "type-graphql";
-import { EntityRepository } from "typeorm";
+import { EntityRepository, In } from "typeorm";
 import CryptoJS from 'crypto-js';
 import dayjs from "dayjs";
 import { Transaction } from "@/entities/transactions.entity";
@@ -63,13 +63,18 @@ export default class PlaidRepository {
 
     // Fetch the new transactions.
     for (const plaidInfo of findPlaidInfo) {
-      syncedTransactions[plaidInfo.institution_name] = {};
+      syncedTransactions[plaidInfo.institution_name] = {
+        added: undefined,
+        modified: undefined,
+        deleted: undefined,
+        investment_transactions: undefined
+      };
       try {
         if (plaidInfo.products.includes(Products.Transactions)) {
           let cursor = plaidInfo.txn_cursor;
-          let added = [];       // New added txns
-          let modified = [];    // Txns that were modified
-          let removed = [];     // Txns that were removed
+          let added: PlaidTransaction[] = [];       // New added txns
+          let modified: PlaidTransaction[] = [];    // Txns that were modified
+          let removed: RemovedTransaction[] = [];     // Txns that were removed
           let hasMore = true;
           while (hasMore) {
             const request = {
@@ -88,9 +93,9 @@ export default class PlaidRepository {
             cursor = data.next_cursor;
           }
           newCursors[plaidInfo.institution_name] = cursor;
-          syncedTransactions[plaidInfo.institution_name]["added"] = added.map((txn) => this.plaidTransactionToEntity(plaidInfo, txn))
-          syncedTransactions[plaidInfo.institution_name]["modified"] = modified.map((txn) => this.plaidTransactionToEntity(plaidInfo, txn));
-          syncedTransactions[plaidInfo.institution_name]["removed"] = removed.map((txn) => this.plaidTransactionToEntity(plaidInfo, txn));
+          syncedTransactions[plaidInfo.institution_name].added = added.map((txn) => this.plaidTransactionToEntity(plaidInfo, txn));
+          syncedTransactions[plaidInfo.institution_name].modified = modified.map((txn) => this.plaidTransactionToEntity(plaidInfo, txn));
+          syncedTransactions[plaidInfo.institution_name].removed = removed;
         }
 
         if (plaidInfo.products.includes(Products.Investments)) {
@@ -104,7 +109,7 @@ export default class PlaidRepository {
 
           const response = await plaidClient.investmentsTransactionsGet(configs);
           const data = response.data;
-          syncedTransactions[plaidInfo.institution_name]["investment_transactions"] = data.investment_transactions.map((txn) => this.plaidInvestTransactionToEntity(plaidInfo, txn));
+          syncedTransactions[plaidInfo.institution_name].investment_transactions = data.investment_transactions.map((txn) => this.plaidInvestTransactionToEntity(plaidInfo, txn));
           newInvestUpdateDates[plaidInfo.institution_name] = today;
         }
       } catch (err) {
@@ -116,22 +121,60 @@ export default class PlaidRepository {
     // Write to DB
     console.log("Writing to the DB!");
     console.log(syncedTransactions["TD Canada Trust"]["added"][0]);
-    try {
-      await app.appDataSource
-        .createQueryBuilder()
-        .insert()
-        .into(Transaction)
-        .values(syncedTransactions["TD Canada Trust"]["added"])
-        .execute();
+    for (const institution_name of Object.keys(syncedTransactions)) {
+      const { added, modified, removed, investment_transactions } = syncedTransactions[institution_name];
+      try {
+        if (added)
+          await app.appDataSource
+            .createQueryBuilder()
+            .insert()
+            .into(Transaction)
+            .values(added)
+            .orUpdate(
+              ['date', 'category', 'name', 'iso_currency', 'amount'],
+              ['transaction_id'],
+              { skipUpdateIfNoValuesChanged: true }
+            )
+            .execute();
 
-      await app.appDataSource
-        .createQueryBuilder()
-        .insert()
-        .into(InvestmentTransaction)
-        .values(syncedTransactions["TD Canada Trust - WebBroker"]["investment_transactions"])
-        .execute();
-    } catch (err) {
-      console.log(err);
+        if (modified)
+          await app.appDataSource
+            .createQueryBuilder()
+            .insert()
+            .into(Transaction)
+            .values(modified)
+            .orUpdate(
+              ['date', 'category', 'name', 'iso_currency', 'amount'],
+              ['transaction_id'],
+              { skipUpdateIfNoValuesChanged: true }
+            )
+            .execute()
+
+        if (removed)
+          await app.appDataSource
+            .createQueryBuilder()
+            .delete()
+            .from(Transaction)
+            .where({ transaction_id: In(removed.map((item: RemovedTransaction) => item.transaction_id)) })
+            .execute()
+
+
+
+        if (investment_transactions)
+          await app.appDataSource
+            .createQueryBuilder()
+            .insert()
+            .into(InvestmentTransaction)
+            .values(syncedTransactions[institution_name]["investment_transactions"])
+            .orUpdate(
+              ['date', 'type', 'name', 'iso_currency', 'amount'],
+              ['investment_transaction_id'],
+              { skipUpdateIfNoValuesChanged: true }
+            )
+            .execute();
+      } catch (err) {
+        console.log(err);
+      }
     }
     // console.log(syncedTransactions["TD Canada Trust - WebBroker"]["investment_transactions"][0]);
     // console.log(newCursors);
