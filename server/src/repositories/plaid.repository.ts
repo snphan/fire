@@ -2,11 +2,13 @@ import { SECRET_KEY } from "@/config";
 import { PlaidInfo } from "@/entities/plaid_info.entity";
 import { User } from "@/entities/users.entity";
 import { HttpException } from "@/exceptions/HttpException";
-import { PlaidApi, Products } from "plaid";
+import { Transaction as PlaidTransaction, InvestmentTransaction as PlaidInvestmentTransaction, PlaidApi, Products } from "plaid";
 import { Ctx } from "type-graphql";
 import { EntityRepository } from "typeorm";
 import CryptoJS from 'crypto-js';
 import dayjs from "dayjs";
+import { Transaction } from "@/entities/transactions.entity";
+import { InvestmentTransaction } from "@/entities/investment_transactions.entity";
 
 @EntityRepository()
 export default class PlaidRepository {
@@ -18,6 +20,30 @@ export default class PlaidRepository {
 
   public async getPlaidInfoByUser(user: User) {
     return await PlaidInfo.find({ where: { user: { id: user.id } } })
+  }
+
+  private plaidTransactionToEntity(plaidInfo: PlaidInfo, plaidTransaction: PlaidTransaction): Transaction {
+    return Transaction.create({
+      plaidInfo: plaidInfo,
+      transaction_id: plaidTransaction.transaction_id,
+      date: new Date(plaidTransaction.date),
+      category: plaidTransaction.personal_finance_category.primary,
+      name: plaidTransaction.name,
+      iso_currency: plaidTransaction.iso_currency_code,
+      amount: plaidTransaction.amount
+    })
+  }
+
+  private plaidInvestTransactionToEntity(plaidInfo: PlaidInfo, plaidInvestTransaction: PlaidInvestmentTransaction): InvestmentTransaction {
+    return InvestmentTransaction.create({
+      plaidInfo: plaidInfo,
+      investment_transaction_id: plaidInvestTransaction.transaction_id,
+      date: new Date(plaidInvestTransaction.date),
+      type: plaidInvestTransaction.type,
+      name: plaidInvestTransaction.name,
+      iso_currency: plaidInvestTransaction.iso_currency_code,
+      amount: plaidInvestTransaction.amount
+    })
   }
 
   /**
@@ -59,9 +85,9 @@ export default class PlaidRepository {
           cursor = data.next_cursor;
         }
         newCursors[plaidInfo.institution_name] = cursor;
-        syncedTransactions[plaidInfo.institution_name]["added"] = added.sort((a: any, b: any) => (new Date(b.date)).getTime() - (new Date(a.date)).getTime());
-        syncedTransactions[plaidInfo.institution_name]["modified"] = modified;
-        syncedTransactions[plaidInfo.institution_name]["removed"] = removed;
+        syncedTransactions[plaidInfo.institution_name]["added"] = added.map((txn) => this.plaidTransactionToEntity(plaidInfo, txn))
+        syncedTransactions[plaidInfo.institution_name]["modified"] = modified.map((txn) => this.plaidTransactionToEntity(plaidInfo, txn));
+        syncedTransactions[plaidInfo.institution_name]["removed"] = removed.map((txn) => this.plaidTransactionToEntity(plaidInfo, txn));
       }
 
       if (plaidInfo.products.includes(Products.Investments)) {
@@ -75,14 +101,15 @@ export default class PlaidRepository {
 
         const response = await plaidClient.investmentsTransactionsGet(configs);
         const data = response.data;
-        syncedTransactions[plaidInfo.institution_name]["investment_transactions"] = data.investment_transactions;
+        syncedTransactions[plaidInfo.institution_name]["investment_transactions"] = data.investment_transactions.map((txn) => this.plaidInvestTransactionToEntity(plaidInfo, txn));
         newInvestUpdateDates[plaidInfo.institution_name] = today;
       }
     }
 
     // Write to DB
     console.log("Writing to the DB!");
-    // console.log(syncedTransactions);
+    console.log(syncedTransactions["TD Canada Trust"]["added"][0]);
+    console.log(syncedTransactions["TD Canada Trust - WebBroker"]["investment_transactions"][0]);
     // console.log(newCursors);
     // console.log(newInvestUpdateDates);
 

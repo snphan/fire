@@ -47,14 +47,18 @@ export class PlaidInfo extends BaseEntity {
   invest_txn_update_date: string
 
   @OneToMany((type) => Transaction, (transactions) => transactions.plaidInfo, {
-    onDelete: "SET NULL"
+    onDelete: "SET NULL",
+    cascade: true
   })
   transactions: Promise<Relation<Transaction[]>>;
 
   @OneToMany(
     (type) => InvestmentTransaction,
     (investment_transactions) => investment_transactions.plaidInfo,
-    { onDelete: "SET NULL" }
+    {
+      onDelete: "SET NULL",
+      cascade: true
+    }
   )
   investment_transactions: Promise<Relation<InvestmentTransaction[]>>;
 }
