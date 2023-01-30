@@ -54,7 +54,6 @@ export function Dashboard({ }: any) {
 
   // DEBUG
   useEffect(() => {
-    console.log(transactionsData);
   }, [balanceData, transactionsData, investmentTransactionsData]);
 
 
