@@ -12,7 +12,7 @@ import { PlaidLinkPrompt } from '@/components/Plaid/PlaidLinkPrompt';
 import { PlaidUnlinkPrompt } from '@/components/Plaid/PlaidUnlinkPrompt';
 import { TotalBalance } from '@/components/Dashboard/TotalBalance';
 import { TotalIncome } from '@/components/Dashboard/TotalIncome';
-import { ExpensesBreakdown } from '@/components/Dashboard/ExpensesBreadown';
+import { ExpensesBreakdown } from '@/components/Dashboard/ExpensesBreakdown';
 import { DashboardQueriesContext, TxnPeriodContext } from '@/Context';
 
 
@@ -86,11 +86,13 @@ export function Dashboard({ }: any) {
               </Tooltip>
             </div>
           </div>
-          <div className="flex justify-start">
-            <TotalBalance loading={loadingBalance} balanceData={balanceData} />
-            <TotalIncome loading={loadingTransactions} transactions={transactionsData} />
+          <div className="grow flex flex-col w-1/3">
+            <div className="flex justify-start">
+              <TotalBalance className="grow focus:ring focus:ring-blue-300 transition-all bg-zinc-900 h-64 p-3 m-4 rounded-xl shadow-xl" loading={loadingBalance} balanceData={balanceData} />
+              <TotalIncome className="focus:ring focus:ring-blue-300 transition-all bg-zinc-900 h-64 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
+            </div>
+            <ExpensesBreakdown className="grow" loading={loadingTransactions} transactions={transactionsData} />
           </div>
-          <ExpensesBreakdown className="grow w-2/5" loading={loadingTransactions} transactions={transactionsData} />
         </>
       }
       {/* Rerender everytime so we can access Plaid Link */}

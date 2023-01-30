@@ -1,13 +1,13 @@
-import { CurrencyContext } from '@/Context';
+import { CurrencyContext, MonthYearFormatContext } from '@/Context';
 import React, { useContext, useEffect, useState } from 'react';
 import { Loading } from '../Loading';
 
-export function TotalIncome({ loading, transactions }: any) {
+export function TotalIncome({ loading, transactions, className }: any) {
 
   const [income, setIncome] = useState<number>(0);
 
   const currencyFormatter = useContext(CurrencyContext);
-  const monthYearFormatter = Intl.DateTimeFormat('en-us', { month: 'long', year: 'numeric' });
+  const monthYearFormatter = useContext(MonthYearFormatContext);
 
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export function TotalIncome({ loading, transactions }: any) {
   }, [income]);
 
   return (
-    <button className="focus:ring focus:ring-blue-300 transition-all bg-zinc-900 h-64 p-3 m-4 rounded-xl shadow-xl">
+    <button className={className}>
       <div className="flex flex-col h-full items-start">
         <div className="text-sm font-bold">Total {monthYearFormatter.format(new Date())} Income</div>
         <div className="grow flex justify-center items-center w-full">

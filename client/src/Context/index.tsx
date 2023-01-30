@@ -4,7 +4,9 @@ import { createContext } from 'react';
 export const CurrencyContext = createContext(
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
 );
-
+export const MonthYearFormatContext = createContext(
+  new Intl.DateTimeFormat('en-us', { month: 'short', year: 'numeric' })
+)
 
 const thisMonth = (new Date()).getUTCMonth() + 1;
 const nextMonth = thisMonth + 1 > 12 ? 1 : thisMonth + 1;

@@ -1,4 +1,4 @@
-import { CurrencyContext } from '@/Context';
+import { CurrencyContext, MonthYearFormatContext } from '@/Context';
 import React, { useContext, useEffect, useState } from 'react';
 import { Loading } from '../Loading';
 import * as echarts from 'echarts';
@@ -32,7 +32,7 @@ interface Expenses {
 
 export function ExpensesBreakdown({ loading, transactions, className }: any) {
 
-  const monthYearFormatter = Intl.DateTimeFormat('en-us', { month: 'long', year: 'numeric' });
+  const monthYearFormatter = useContext(MonthYearFormatContext);
 
   const [expenses, setExpenses] = useState<Expenses>({
     travel: 0,
