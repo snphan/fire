@@ -78,6 +78,14 @@ export function Dashboard({ }: any) {
           <div className="flex justify-between">
             <h1>Dashboard</h1>
             <div>
+              <Tooltip content={"Sync Transactions"} className="capitalize bg-gray-900 p-2">
+                {syncLoading ?
+
+                  <span className="m-4 text-gray-800 text-3xl material-icons">pending</span>
+                  :
+                  <span onClick={() => syncUserTransactions()} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer text-3xl material-icons">sync</span>
+                }
+              </Tooltip>
               <Tooltip content={"Link/Update Account"} className="capitalize bg-gray-900 p-2">
                 <span onClick={() => setOpenPlaidPrompt(!openPlaidPrompt)} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer text-3xl material-icons">account_balance</span>
               </Tooltip>
