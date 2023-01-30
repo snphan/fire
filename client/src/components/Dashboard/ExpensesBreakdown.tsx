@@ -83,7 +83,7 @@ export function ExpensesBreakdown({ loading, transactions, className }: any) {
       trigger: 'item'
     },
     legend: {
-      top: '5%',
+      top: '0%',
       left: 'center'
     },
     series: [
@@ -126,14 +126,14 @@ export function ExpensesBreakdown({ loading, transactions, className }: any) {
   }
 
   return (
-    <div className={(className ? className : "") + " flex flex-col bg-zinc-900 h-96 p-3 m-4 rounded-xl shadow-xl"}>
+    <div className={className}>
       <div className="text-sm font-bold">Total {monthYearFormatter.format(new Date())} Expenses</div>
       {loading ?
         <Loading className="w-12 h-12"></Loading>
         :
         <>
           <div className="flex justify-center">
-            <div className="text-4xl font-bold text-pink-400 mt-4">
+            <div className="text-4xl font-bold text-pink-400 my-5">
               {currencyFormatter.format(Object.entries(expenses).reduce((a: number, keyValue: any) => a - Math.abs(keyValue[1]), 0))}
             </div>
           </div>

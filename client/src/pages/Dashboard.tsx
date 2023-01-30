@@ -86,12 +86,15 @@ export function Dashboard({ }: any) {
               </Tooltip>
             </div>
           </div>
-          <div className="grow flex flex-col w-1/3">
-            <div className="flex justify-start">
-              <TotalBalance className="grow focus:ring focus:ring-blue-300 transition-all bg-zinc-900 h-64 p-3 m-4 rounded-xl shadow-xl" loading={loadingBalance} balanceData={balanceData} />
-              <TotalIncome className="focus:ring focus:ring-blue-300 transition-all bg-zinc-900 h-64 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
-            </div>
-            <ExpensesBreakdown className="grow" loading={loadingTransactions} transactions={transactionsData} />
+
+          {/* Dashboard Viz Components */}
+          <div className="grow w-full grid xl:grid-cols-6 xl:grid-rows-6">
+            <TotalBalance className="row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingBalance} balanceData={balanceData} />
+            <TotalIncome className="row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
+            <TotalIncome className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
+            <TotalIncome className="col-span-2 row-span-6 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
+            <ExpensesBreakdown className="row-span-4 col-span-2 flex flex-col bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
+            <TotalIncome className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
           </div>
         </>
       }
