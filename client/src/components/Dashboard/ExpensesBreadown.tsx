@@ -32,6 +32,8 @@ interface Expenses {
 
 export function ExpensesBreakdown({ loading, transactions, className }: any) {
 
+  const monthYearFormatter = Intl.DateTimeFormat('en-us', { month: 'long', year: 'numeric' });
+
   const [expenses, setExpenses] = useState<Expenses>({
     travel: 0,
     food_and_drink: 0,
@@ -49,8 +51,8 @@ export function ExpensesBreakdown({ loading, transactions, className }: any) {
   });
 
   const totalExpenseForCategory = (CATEGORY: string) => {
-    const filteredTransactions = transactions.syncTransactions.added.filter((item: any) => item.personal_finance_category.primary === CATEGORY);
-    return filteredTransactions.reduce((a: number, b: any) => a + b.amount, 0)
+    const filteredTransactions = transactions.getTransactions.filter((item: any) => item.category === CATEGORY);
+    return filteredTransactions.reduce((a: number, b: any) => a + Math.abs(parseFloat(b.amount)), 0)
   }
 
   const currencyFormatter = useContext(CurrencyContext);
@@ -125,7 +127,7 @@ export function ExpensesBreakdown({ loading, transactions, className }: any) {
 
   return (
     <div className={(className ? className : "") + " flex flex-col bg-zinc-900 h-96 p-3 m-4 rounded-xl shadow-xl"}>
-      <div className="text-sm font-bold">Total Month Expenses</div>
+      <div className="text-sm font-bold">Total {monthYearFormatter.format(new Date())} Expenses</div>
       {loading ?
         <Loading className="w-12 h-12"></Loading>
         :

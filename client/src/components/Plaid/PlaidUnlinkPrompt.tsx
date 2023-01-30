@@ -30,7 +30,7 @@ export function PlaidUnlinkPrompt({ openPlaidUnlink, setOpenPlaidUnlink }: any) 
     <Dialog open={openPlaidUnlink} handler={() => { setOpenPlaidUnlink(!openPlaidUnlink); setUnlinkBankNames([]) }} className="bg-zinc-800 max-h-screen overflow-auto">
       <DialogHeader className="text-gray-100">Unlink Accounts</DialogHeader>
       <DialogBody className="text-gray-200 grid grid-cols-2">
-        {bankNames &&
+        {bankNames ?
           bankNames.getBankNames.map((name: string) =>
             <Checkbox
               onChange={(e) => {
@@ -43,7 +43,8 @@ export function PlaidUnlinkPrompt({ openPlaidUnlink, setOpenPlaidUnlink }: any) 
               }}
               color="red" icon={<span className="material-icons text-sm">close</span>} labelProps={{ className: "!text-gray-100" }} id={name} key={name} label={name}></Checkbox>
           )
-
+          :
+          <div>No banks to display</div>
         }
       </DialogBody>
       <DialogFooter>

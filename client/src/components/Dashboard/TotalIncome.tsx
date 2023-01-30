@@ -7,18 +7,25 @@ export function TotalIncome({ loading, transactions }: any) {
   const [income, setIncome] = useState<number>(0);
 
   const currencyFormatter = useContext(CurrencyContext);
+  const monthYearFormatter = Intl.DateTimeFormat('en-us', { month: 'long', year: 'numeric' });
+
+
   useEffect(() => {
-    if (transactions) {
-      const incomeTransactions = transactions.syncTransactions.added.filter((item: any) => item.personal_finance_category.primary === "INCOME");
+    if (transactions?.getTransactions.length) {
+      const incomeTransactions = transactions.getTransactions.filter((item: any) => item.category === "INCOME");
       const incomeAmounts = incomeTransactions.map((item: any) => item.amount);
-      setIncome(incomeAmounts.reduce((a: number, b: number) => a + b, 0));
+      setIncome(incomeAmounts.reduce((a: number, b: string) => a + Math.abs(parseFloat(b)), 0));
     }
   }, [transactions]);
+
+  //DEBUG 
+  useEffect(() => {
+  }, [income]);
 
   return (
     <button className="focus:ring focus:ring-blue-300 transition-all bg-zinc-900 h-64 p-3 m-4 rounded-xl shadow-xl">
       <div className="flex flex-col h-full items-start">
-        <div className="text-sm font-bold">Total Month Income</div>
+        <div className="text-sm font-bold">Total {monthYearFormatter.format(new Date())} Income</div>
         <div className="grow flex justify-center items-center w-full">
           {loading ?
             <Loading className="w-12 h-12"></Loading>

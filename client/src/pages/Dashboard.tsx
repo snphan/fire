@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { NavBar } from '@/components/NavBar';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { IS_BANKACCOUNT_LINKED, PLAID_CREATE_LINK_TOKEN, PLAID_GET_ACCOUNTS, PLAID_GET_BALANCE, PLAID_GET_INSTITUTION_BY_NAME, PLAID_GET_INVESTMENT_TRANSACTIONS, PLAID_SYNC_TRANSACTIONS } from '@/queries';
+import {
+  IS_BANKACCOUNT_LINKED,
+  PLAID_CREATE_LINK_TOKEN,
+  PLAID_GET_ACCOUNTS,
+  PLAID_GET_BALANCE,
+  PLAID_GET_INSTITUTION_BY_NAME,
+  PLAID_GET_INVESTMENT_TRANSACTIONS,
+  PLAID_GET_TRANSACTIONS,
+  PLAID_SYNC_TRANSACTIONS
+} from '@/queries';
 import { PLAID_EXCHANGE_TOKEN, PLAID_UNLINK_BANK } from '@/mutations';
 import { apolloClient } from '..';
 import { Button, Chip, Dialog, DialogBody, DialogFooter, DialogHeader, Tooltip } from '@material-tailwind/react';
@@ -16,16 +25,25 @@ import { ExpensesBreakdown } from '@/components/Dashboard/ExpensesBreadown';
 
 export function Dashboard({ }: any) {
 
+  const thisMonth = (new Date()).getUTCMonth() + 1;
+  const nextMonth = thisMonth + 1 > 12 ? 1 : thisMonth + 1;
+  const thisYear = (new Date()).getUTCFullYear();
+  const nextYear = thisMonth + 1 > 12 ? thisYear + 1 : thisYear;
+
   const { data: isBankLinked } = useQuery<any>(IS_BANKACCOUNT_LINKED);
   const [openPlaidPrompt, setOpenPlaidPrompt] = useState<boolean>(false);
   const [openPlaidUnlink, setOpenPlaidUnlink] = useState<boolean>(false);
   const { data: balanceData, loading: loadingBalance } = useQuery<any>(PLAID_GET_BALANCE);
-  const { data: transactionsData, loading: loadingTransactions } = useQuery<any>(PLAID_SYNC_TRANSACTIONS);
-  const { data: investmentTransactionsData } = useQuery<any>(PLAID_GET_INVESTMENT_TRANSACTIONS);
+  const { data: transactionsData, loading: loadingTransactions } = useQuery<any>(PLAID_GET_TRANSACTIONS,
+    { variables: { startDate: `${thisYear}-${thisMonth}-01`, endDate: `${nextYear}-${nextMonth}-01` } });
+  const { data: investmentTransactionsData } = useQuery<any>(PLAID_GET_INVESTMENT_TRANSACTIONS,
+    { variables: { startDate: `${thisYear}-${thisMonth}-01`, endDate: `${nextYear}-${nextMonth}-01` } });
 
   // DEBUG
   useEffect(() => {
   }, [balanceData, transactionsData, investmentTransactionsData]);
+
+
 
   return (
     <div className="ml-24 flex flex-col min-h-screen min-w-0 max-w-full overflow-hidden">

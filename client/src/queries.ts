@@ -45,6 +45,7 @@ export const GET_USER_BY_ID = gql`
     }
   }
 `
+
 export const IS_BANKACCOUNT_LINKED = gql`
   query bankAccountLinked {
     bankAccountLinked
@@ -67,10 +68,28 @@ query syncTransactions {
 }
 `
 
-export const PLAID_GET_INVESTMENT_TRANSACTIONS = gql`
-  query getInvestmentTransactions {
-    getInvestmentTransactions
+export const PLAID_GET_TRANSACTIONS = gql`
+query getTransactions($startDate: String, $endDate: String) {
+  getTransactions(startDate: $startDate, endDate: $endDate) {
+    name
+    amount
+    date
+    category
+    iso_currency
   }
+}
+`
+
+export const PLAID_GET_INVESTMENT_TRANSACTIONS = gql`
+query getInvestTransactions($startDate: String, $endDate: String) {
+  getInvestTransactions(startDate: $startDate, endDate: $endDate) {
+    name
+    amount
+    date
+    type
+    iso_currency
+  }
+}
 `
 export const PLAID_GET_BALANCE = gql`
   query getBalance {
