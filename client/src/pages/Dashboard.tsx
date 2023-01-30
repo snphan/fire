@@ -1,21 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { NavBar } from '@/components/NavBar';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import {
   IS_BANKACCOUNT_LINKED,
-  PLAID_CREATE_LINK_TOKEN,
-  PLAID_GET_ACCOUNTS,
   PLAID_GET_BALANCE,
-  PLAID_GET_BANK_NAMES,
-  PLAID_GET_INSTITUTION_BY_NAME,
   PLAID_GET_INVESTMENT_TRANSACTIONS,
   PLAID_GET_TRANSACTIONS,
 } from '@/queries';
-import { PLAID_EXCHANGE_TOKEN, PLAID_UNLINK_BANK, SYNC_TRANSACTIONS } from '@/mutations';
-import { apolloClient } from '..';
-import { Button, Chip, Dialog, DialogBody, DialogFooter, DialogHeader, Tooltip } from '@material-tailwind/react';
-import { PlaidLinkOptions, usePlaidLink } from 'react-plaid-link';
-import { Loading } from '@/components/Loading';
+import { SYNC_TRANSACTIONS } from '@/mutations';
+import { Button, Tooltip } from '@material-tailwind/react';
 import { PlaidLinkPrompt } from '@/components/Plaid/PlaidLinkPrompt';
 import { PlaidUnlinkPrompt } from '@/components/Plaid/PlaidUnlinkPrompt';
 import { TotalBalance } from '@/components/Dashboard/TotalBalance';
