@@ -38,7 +38,6 @@ export class TransactionResolver extends TransactionRepository {
     } catch (err) {
       throw new HttpException(400, 'Wrong input for start or end date');
     }
-    console.log(parsedStartDate);
 
     const plaidInfos = await user.plaidInfoConnection;
     if (!plaidInfos.length) throw new HttpException(409, "User has not connected to an Account through Plaid");

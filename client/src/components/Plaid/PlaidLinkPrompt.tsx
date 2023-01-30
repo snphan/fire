@@ -1,11 +1,13 @@
+import { DashboardQueriesContext } from '@/Context';
 import { PLAID_EXCHANGE_TOKEN } from '@/mutations';
-import { IS_BANKACCOUNT_LINKED, PLAID_CREATE_LINK_TOKEN, PLAID_GET_ACCOUNTS, PLAID_GET_BALANCE, PLAID_GET_BANK_NAMES, PLAID_SYNC_TRANSACTIONS } from '@/queries';
+import { IS_BANKACCOUNT_LINKED, PLAID_CREATE_LINK_TOKEN, PLAID_GET_ACCOUNTS, PLAID_GET_BALANCE, PLAID_GET_BANK_NAMES, PLAID_GET_TRANSACTIONS } from '@/queries';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { Button, Dialog, DialogBody, DialogFooter, DialogHeader } from '@material-tailwind/react';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { PlaidLinkOptions, usePlaidLink } from 'react-plaid-link';
 
 export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
+  const dashboardQueriesContext = useContext(DashboardQueriesContext);
   /* 
     Setup the plaid link like this so we can rerender the component and 
     fix the plaid link not opening on 2nd+ account connection request.
@@ -18,13 +20,7 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
   const [linkToken, setLinkToken] = useState<string | null>(null);
 
   const [exchangeLinkToken, { data: itemId }] = useMutation<any>(PLAID_EXCHANGE_TOKEN, {
-    refetchQueries: [
-      { query: IS_BANKACCOUNT_LINKED },
-      { query: PLAID_GET_ACCOUNTS },
-      { query: PLAID_GET_BALANCE },
-      { query: PLAID_SYNC_TRANSACTIONS },
-      { query: PLAID_GET_BANK_NAMES }
-    ]
+    refetchQueries: dashboardQueriesContext
   });
 
   const handleClickProduct = (product: string) => {

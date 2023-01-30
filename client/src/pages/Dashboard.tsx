@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { NavBar } from '@/components/NavBar';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import {
@@ -6,12 +6,12 @@ import {
   PLAID_CREATE_LINK_TOKEN,
   PLAID_GET_ACCOUNTS,
   PLAID_GET_BALANCE,
+  PLAID_GET_BANK_NAMES,
   PLAID_GET_INSTITUTION_BY_NAME,
   PLAID_GET_INVESTMENT_TRANSACTIONS,
   PLAID_GET_TRANSACTIONS,
-  PLAID_SYNC_TRANSACTIONS
 } from '@/queries';
-import { PLAID_EXCHANGE_TOKEN, PLAID_UNLINK_BANK } from '@/mutations';
+import { PLAID_EXCHANGE_TOKEN, PLAID_UNLINK_BANK, SYNC_TRANSACTIONS } from '@/mutations';
 import { apolloClient } from '..';
 import { Button, Chip, Dialog, DialogBody, DialogFooter, DialogHeader, Tooltip } from '@material-tailwind/react';
 import { PlaidLinkOptions, usePlaidLink } from 'react-plaid-link';
@@ -21,29 +21,47 @@ import { PlaidUnlinkPrompt } from '@/components/Plaid/PlaidUnlinkPrompt';
 import { TotalBalance } from '@/components/Dashboard/TotalBalance';
 import { TotalIncome } from '@/components/Dashboard/TotalIncome';
 import { ExpensesBreakdown } from '@/components/Dashboard/ExpensesBreadown';
+import { DashboardQueriesContext, TxnPeriodContext } from '@/Context';
 
 
 export function Dashboard({ }: any) {
 
-  const thisMonth = (new Date()).getUTCMonth() + 1;
-  const nextMonth = thisMonth + 1 > 12 ? 1 : thisMonth + 1;
-  const thisYear = (new Date()).getUTCFullYear();
-  const nextYear = thisMonth + 1 > 12 ? thisYear + 1 : thisYear;
+  const txnPeriodContext = useContext(TxnPeriodContext);
+  const dashboardQueriesContext = useContext(DashboardQueriesContext);
 
   const { data: isBankLinked } = useQuery<any>(IS_BANKACCOUNT_LINKED);
   const [openPlaidPrompt, setOpenPlaidPrompt] = useState<boolean>(false);
   const [openPlaidUnlink, setOpenPlaidUnlink] = useState<boolean>(false);
   const { data: balanceData, loading: loadingBalance } = useQuery<any>(PLAID_GET_BALANCE);
   const { data: transactionsData, loading: loadingTransactions } = useQuery<any>(PLAID_GET_TRANSACTIONS,
-    { variables: { startDate: `${thisYear}-${thisMonth}-01`, endDate: `${nextYear}-${nextMonth}-01` } });
+    {
+      variables: {
+        startDate: txnPeriodContext.startDate,
+        endDate: txnPeriodContext.endDate
+      }
+    });
   const { data: investmentTransactionsData } = useQuery<any>(PLAID_GET_INVESTMENT_TRANSACTIONS,
-    { variables: { startDate: `${thisYear}-${thisMonth}-01`, endDate: `${nextYear}-${nextMonth}-01` } });
+    {
+      variables: {
+        startDate: txnPeriodContext.startDate,
+        endDate: txnPeriodContext.endDate
+      }
+    });
+  const [syncUserTransactions, { data: syncSuccess, loading: syncLoading }] = useMutation(SYNC_TRANSACTIONS, {
+    refetchQueries: dashboardQueriesContext
+  });
+
 
   // DEBUG
   useEffect(() => {
+    console.log(transactionsData);
   }, [balanceData, transactionsData, investmentTransactionsData]);
 
 
+  /* Sync data on login */
+  useEffect(() => {
+    syncUserTransactions();
+  }, [])
 
   return (
     <div className="ml-24 flex flex-col min-h-screen min-w-0 max-w-full overflow-hidden">

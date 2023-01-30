@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Button,
   Checkbox,
@@ -7,23 +7,20 @@ import {
   DialogFooter,
   DialogHeader
 } from '@material-tailwind/react';
-import { IS_BANKACCOUNT_LINKED, PLAID_GET_ACCOUNTS, PLAID_GET_BALANCE, PLAID_GET_BANK_NAMES, PLAID_SYNC_TRANSACTIONS } from '@/queries';
+import { IS_BANKACCOUNT_LINKED, PLAID_GET_ACCOUNTS, PLAID_GET_BALANCE, PLAID_GET_BANK_NAMES, PLAID_GET_TRANSACTIONS } from '@/queries';
 import { PLAID_UNLINK_BANK } from '@/mutations';
 import { useMutation, useQuery } from '@apollo/client';
+import { DashboardQueriesContext } from '@/Context';
 
 
 export function PlaidUnlinkPrompt({ openPlaidUnlink, setOpenPlaidUnlink }: any) {
 
+  const dashboardQueriesContext = useContext(DashboardQueriesContext);
+
   const [unlinkBankNames, setUnlinkBankNames] = useState<string[]>([]);
   const { data: bankNames } = useQuery(PLAID_GET_BANK_NAMES);
   const [unlinkBankAccount] = useMutation<any>(PLAID_UNLINK_BANK, {
-    refetchQueries: [
-      { query: IS_BANKACCOUNT_LINKED },
-      { query: PLAID_GET_ACCOUNTS },
-      { query: PLAID_GET_BALANCE },
-      { query: PLAID_SYNC_TRANSACTIONS },
-      { query: PLAID_GET_BANK_NAMES }
-    ]
+    refetchQueries: dashboardQueriesContext
   });
 
   return (

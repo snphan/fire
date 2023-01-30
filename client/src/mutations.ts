@@ -84,3 +84,9 @@ mutation unlinkBank($bankNames: [String!]!) {
   unlinkBank(bankNames: $bankNames)
 }
 `
+
+export const SYNC_TRANSACTIONS = gql`
+  mutation syncTransactions {
+    syncUserTransactions
+  }
+`

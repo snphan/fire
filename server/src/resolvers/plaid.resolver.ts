@@ -204,4 +204,11 @@ export class PlaidResolver extends PlaidRepository {
     }
   }
 
+  @Authorized()
+  @Mutation(() => Boolean, {
+    description: 'Sync the user\'s transactions'
+  })
+  async syncUserTransactions(@Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi) {
+    return await this.syncTransactions(user, plaidClient);
+  }
 }

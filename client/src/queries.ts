@@ -62,11 +62,6 @@ query getAccounts {
   getAccounts
 }
 `
-export const PLAID_SYNC_TRANSACTIONS = gql`
-query syncTransactions {
-  syncTransactions
-}
-`
 
 export const PLAID_GET_TRANSACTIONS = gql`
 query getTransactions($startDate: String, $endDate: String) {

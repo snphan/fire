@@ -66,7 +66,7 @@ export default class PlaidRepository {
    */
   public async syncTransactions(user: User, plaidClient: PlaidApi) {
     const findPlaidInfo = await this.getPlaidInfoByUser(user);
-    if (!findPlaidInfo.length) { console.log("No plaid connection"); return; }
+    if (!findPlaidInfo.length) { console.log("No plaid connection"); return false; }
 
     const syncedTransactions: UpdatesFromPlaid = {};  // Store updates in memory until written to DB. 
 
@@ -128,13 +128,12 @@ export default class PlaidRepository {
         }
       } catch (err) {
         console.log(err.response.statusText);
-        return;
+        return false;
       }
     }
 
     // Write to DB
     console.log("Writing to the DB!");
-    console.log(syncedTransactions["TD Canada Trust"]["added"][0]);
     for (const institution_name of Object.keys(syncedTransactions)) {
       const { added, modified, removed, investment_transactions, txnCursor, investUpdateDate, plaidInfoId } = syncedTransactions[institution_name];
 
@@ -195,7 +194,10 @@ export default class PlaidRepository {
 
       } catch (err) {
         console.log(err);
+        return false;
       }
     }
+
+    return true;
   }
 }
