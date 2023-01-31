@@ -1,4 +1,4 @@
-import { Configuration, PlaidApi, Products, PlaidEnvironments, LinkTokenCreateRequest, ItemRemoveRequest, InstitutionsGetByIdRequest, CountryCode, InstitutionsGetRequest, AccountsGetRequest } from 'plaid';
+import { Configuration, PlaidApi, Products, PlaidEnvironments, LinkTokenCreateRequest, ItemRemoveRequest, InstitutionsGetByIdRequest, CountryCode, InstitutionsGetRequest, AccountsGetRequest, ItemRemoveResponse } from 'plaid';
 import { Arg, Ctx, Mutation, Query, Resolver, Authorized } from 'type-graphql';
 import { CreateUserDto } from '@dtos/users.dto';
 import UserRepository from '@repositories/users.repository';
@@ -10,6 +10,8 @@ import { HttpException } from '@/exceptions/HttpException';
 import GraphQLJSON, { GraphQLJSONObject } from 'graphql-type-json';
 import dayjs from 'dayjs';
 import PlaidRepository from '@/repositories/plaid.repository';
+import CryptoJS from 'crypto-js';
+import { AxiosResponse } from 'axios';
 
 @Resolver()
 export class PlaidResolver extends PlaidRepository {
@@ -163,26 +165,29 @@ export class PlaidResolver extends PlaidRepository {
   async unlinkBank(@Arg('bankNames', (type) => [String]) bankNames: string[], @Ctx('user') user: User, @Ctx('plaidClient') plaidClient: PlaidApi) {
     const findPlaidInfo = await this.getPlaidInfoByUser(user);
 
-    try {
-      for (const bankName of bankNames) {
-        const filteredPlaidInfo = findPlaidInfo.filter((plaidInfo) => plaidInfo.institution_name === bankName)
-        if (!findPlaidInfo.length) throw new HttpException(409, `${bankName} does not exist on this user`);
+    for (const bankName of bankNames) {
+      const filteredPlaidInfo = findPlaidInfo.filter((plaidInfo) => plaidInfo.institution_name === bankName)
+      if (!findPlaidInfo.length) throw new HttpException(409, `${bankName} does not exist on this user`);
 
-        console.log(filteredPlaidInfo)
-        const access_token = this.decryptAccessToken(filteredPlaidInfo[0].access_token)
-        const request: ItemRemoveRequest = {
-          access_token: access_token
-        }
-        console.log(request);
-        const response = await plaidClient.itemRemove(request);
-        console.log(response.data);
-        PlaidInfo.delete({ id: filteredPlaidInfo[0].id });
-        console.log(`Delete ${filteredPlaidInfo[0].id}`)
+      const access_token = this.decryptAccessToken(filteredPlaidInfo[0].access_token);
+      const request: ItemRemoveRequest = {
+        access_token: access_token
       }
-      return true;
-    } catch (error) {
-      return false;
+      let response: AxiosResponse<ItemRemoveResponse>;
+      try {
+        response = await plaidClient.itemRemove(request);
+      } catch (error) {
+        // Delete from DB if server crashes right after removing from plaid.
+        if (error.response.data.error_code === 'ITEM_NOT_FOUND') {
+          PlaidInfo.delete({ id: filteredPlaidInfo[0].id });
+          console.log(`Delete ${filteredPlaidInfo[0].id}`)
+          return true;
+        }
+        return false;
+      }
+      PlaidInfo.delete({ id: filteredPlaidInfo[0].id });
     }
+    return true;
   }
 
   @Authorized()
