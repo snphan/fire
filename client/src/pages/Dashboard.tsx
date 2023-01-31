@@ -88,7 +88,7 @@ export function Dashboard({ }: any) {
   return (
     <DashboardContext.Provider value={dashboardStore}>
       <div className="ml-24 flex flex-col min-h-screen min-w-0 max-w-full overflow-hidden">
-        {!isBankLinked?.bankAccountLinked ?
+        {(isBankLinked?.bankAccountLinked === false) ?
           <div className='grow flex justify-center items-center'>
             <Button onClick={() => setOpenPlaidPrompt(!openPlaidPrompt)} variant="gradient" size="lg">
               <div className="flex items-center">
