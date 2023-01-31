@@ -11,7 +11,9 @@ export class InvestmentTransaction extends BaseEntity {
   @PrimaryColumn({ unique: true })
   investment_transaction_id: string;
 
-  @ManyToOne((type) => PlaidInfo, plaidInfo => plaidInfo.investment_transactions)
+  @ManyToOne((type) => PlaidInfo, plaidInfo => plaidInfo.investment_transactions,
+    { onDelete: "CASCADE" }
+  )
   plaidInfo: Relation<PlaidInfo>;
 
   @Field()
