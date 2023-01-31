@@ -81,6 +81,14 @@ export function ExpensesBreakdown({ loading, transactions, className }: any) {
       top: '0%',
       left: 'center'
     },
+    graphic: {
+      elements: [
+        {
+          type: "group",
+          onclick: (e: any) => { console.log(e) }
+        }
+      ]
+    },
     series: [
       {
         name: 'Expenses',
@@ -120,6 +128,11 @@ export function ExpensesBreakdown({ loading, transactions, className }: any) {
     ]
   }
 
+  //TODO: Handle the click to filter some Transactionson our future Txn table viz.
+  const handleChartClick = (e: any) => {
+    console.log("Showing Transactions for ", e.name);
+  }
+
   return (
     <div className={className}>
       <div className="text-sm font-bold">Total {monthYearFormatter.format(new Date())} Expenses</div>
@@ -132,7 +145,7 @@ export function ExpensesBreakdown({ loading, transactions, className }: any) {
               {currencyFormatter.format(Object.entries(expenses).reduce((a: number, keyValue: any) => a - Math.abs(keyValue[1]), 0))}
             </div>
           </div>
-          <ReactECharts theme="my_theme" style={{ height: "100%" }} option={expensesOptions} />
+          <ReactECharts onEvents={{ click: handleChartClick }} theme="my_theme" style={{ height: "100%" }} option={expensesOptions} />
         </>
       }
     </div>
