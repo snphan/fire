@@ -66,13 +66,10 @@ export function IncomeByMonth({ className, allTxn }: any) {
     series: [
       {
         name: 'Fake Data',
-        type: 'line',
+        type: 'bar',
         symbol: 'none',
         sampling: 'lttb',
         itemStyle: {
-          color: '#9ccc65'
-        },
-        areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             {
               offset: 0,
