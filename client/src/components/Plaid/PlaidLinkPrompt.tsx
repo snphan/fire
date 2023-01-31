@@ -1,4 +1,4 @@
-import { DashboardQueriesContext } from '@/Context';
+import { DashboardContext } from '@/Context';
 import { PLAID_EXCHANGE_TOKEN } from '@/mutations';
 import { IS_BANKACCOUNT_LINKED, PLAID_CREATE_LINK_TOKEN, PLAID_GET_ACCOUNTS, PLAID_GET_BALANCE, PLAID_GET_BANK_NAMES, PLAID_GET_TRANSACTIONS } from '@/queries';
 import { useLazyQuery, useMutation } from '@apollo/client';
@@ -7,7 +7,7 @@ import React, { useContext, useState } from 'react';
 import { PlaidLinkOptions, usePlaidLink } from 'react-plaid-link';
 
 export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
-  const dashboardQueriesContext = useContext(DashboardQueriesContext);
+  const dashboardContext = useContext(DashboardContext);
   /* 
     Setup the plaid link like this so we can rerender the component and 
     fix the plaid link not opening on 2nd+ account connection request.
@@ -20,7 +20,7 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
   const [linkToken, setLinkToken] = useState<string | null>(null);
 
   const [exchangeLinkToken, { data: itemId }] = useMutation<any>(PLAID_EXCHANGE_TOKEN, {
-    refetchQueries: dashboardQueriesContext
+    refetchQueries: dashboardContext?.refetchQueries
   });
 
   const handleClickProduct = (product: string) => {
@@ -36,7 +36,7 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
     /* Exchange the PublicToken for a Permanent Access token */
     exchangeLinkToken({
       variables: { publicToken: publicToken, products: selectedProducts },
-      onCompleted: () => setSelectedProducts([])
+      onCompleted: () => { setSelectedProducts([]); dashboardContext?.sync() }
     });
     setLinkToken(null);
     setOpenPlaidPrompt(false);
@@ -63,25 +63,13 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
               [
                 "assets",
                 "auth",
-                "balance",
-                "identity",
                 "investments",
                 "liabilities",
-                "payment_initiation",
-                "identity_verification",
                 "transactions",
-                "credit_details",
-                "income",
-                "income_verification",
-                "deposit_switch",
-                "standing_orders",
-                "transfer",
-                "employment",
-                "recurring_transactions"
               ].map((product) => {
                 return <div
                   key={product}
-                  className={(selectedProducts.includes(product) ? "bg-sky-600" : "bg-zinc-800") + " hover:bg-zinc-500 hover:scale-105 shadow-xl cursor-pointer rounded-md p-2 text-sm font-bold"}
+                  className={(selectedProducts.includes(product) ? "bg-sky-600 hover:bg-sky-500" : "bg-zinc-900 hover:bg-zinc-500") + " hover:scale-105 shadow-xl cursor-pointer rounded-md p-2 text-sm font-bold"}
                   onClick={() => {
                     handleClickProduct(product);
                   }}
@@ -113,7 +101,6 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
               getLinkToken({
                 variables: {
                   products: selectedProducts
-
                 },
                 onCompleted: (res) => {
                   setLinkToken(res.createLinkToken['link_token']);

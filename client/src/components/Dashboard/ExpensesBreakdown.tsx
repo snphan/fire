@@ -4,14 +4,9 @@ import { Loading } from '../Loading';
 import * as echarts from 'echarts';
 import ReactECharts from 'echarts-for-react';
 import { fireTheme } from '@/config/echart.config';
-import { number } from 'echarts/core';
 
 
 echarts.registerTheme('my_theme', fireTheme);
-const CADFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD'
-})
 
 interface Expenses {
   travel: number;

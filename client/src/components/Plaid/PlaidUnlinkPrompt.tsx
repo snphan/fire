@@ -10,17 +10,17 @@ import {
 import { IS_BANKACCOUNT_LINKED, PLAID_GET_ACCOUNTS, PLAID_GET_BALANCE, PLAID_GET_BANK_NAMES, PLAID_GET_TRANSACTIONS } from '@/queries';
 import { PLAID_UNLINK_BANK } from '@/mutations';
 import { useMutation, useQuery } from '@apollo/client';
-import { DashboardQueriesContext } from '@/Context';
+import { DashboardContext } from '@/Context';
 
 
 export function PlaidUnlinkPrompt({ openPlaidUnlink, setOpenPlaidUnlink }: any) {
 
-  const dashboardQueriesContext = useContext(DashboardQueriesContext);
+  const dashboardContext = useContext(DashboardContext);
 
   const [unlinkBankNames, setUnlinkBankNames] = useState<string[]>([]);
   const { data: bankNames } = useQuery(PLAID_GET_BANK_NAMES);
   const [unlinkBankAccount] = useMutation<any>(PLAID_UNLINK_BANK, {
-    refetchQueries: dashboardQueriesContext
+    refetchQueries: dashboardContext?.refetchQueries
   });
 
   return (
