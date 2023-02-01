@@ -98,6 +98,17 @@ query getInvestTransactions($startDate: String, $endDate: String) {
 }
 `
 
+export const PLAID_GET_ALL_INVEST_TXN = gql`
+query getInvestTransactions {
+  getInvestTransactions {
+    name
+    amount
+    date
+    type
+    iso_currency
+  }
+}
+`
 
 export const PLAID_GET_BALANCE = gql`
   query getBalance {

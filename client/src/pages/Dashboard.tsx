@@ -3,6 +3,7 @@ import { DocumentNode, InternalRefetchQueriesInclude, useMutation, useQuery } fr
 import {
   IS_BANKACCOUNT_LINKED,
   PLAID_GET_ACCOUNTS,
+  PLAID_GET_ALL_INVEST_TXN,
   PLAID_GET_ALL_TRANSACTIONS,
   PLAID_GET_BALANCE,
   PLAID_GET_BANK_NAMES,
@@ -67,6 +68,7 @@ export function Dashboard({ }: any) {
     {
       variables: defaultPeriod
     });
+  const { data: allInvestTxnData, loading: loadingAllInvestTransactions } = useQuery<any>(PLAID_GET_ALL_INVEST_TXN);
   const [syncUserTransactions, { data: syncSuccess, loading: syncLoading }] = useMutation(SYNC_TRANSACTIONS, {
     refetchQueries: dashboardRefetchQueries
   });
@@ -79,7 +81,7 @@ export function Dashboard({ }: any) {
 
   // DEBUG
   useEffect(() => {
-  }, [balanceData, transactionsData, investmentTransactionsData]);
+  }, [balanceData, transactionsData, investmentTransactionsData, allInvestTxnData]);
 
 
   /* Sync data on login */
@@ -125,7 +127,12 @@ export function Dashboard({ }: any) {
             <div className="grow w-full grid xl:grid-cols-6 xl:grid-rows-6">
               <TotalBalance className="row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingBalance} balanceData={balanceData} />
               <TotalIncome className="row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
-              <IncomeByMonth className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} allIncome={allTransactionsData?.getTransactions.filter((item: any) => item.category === "INCOME")} />
+              <IncomeByMonth className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
+                loading={loadingTransactions}
+                allIncome={allTransactionsData?.getTransactions.filter((item: any) => item.category === "INCOME")}
+                allDividends={allInvestTxnData?.getInvestTransactions.filter((item: any) => item.type === "cash" && !item.name.match(/CONTRIBUTION/))}
+              />
+
               <TotalIncome className="col-span-2 row-span-6 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
               <ExpensesBreakdown className="row-span-4 col-span-2 flex flex-col bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
               <TotalIncome className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />

@@ -8,28 +8,45 @@ import { Tooltip } from "@material-tailwind/react";
 
 echarts.registerTheme('my_theme', fireTheme);
 
-export function IncomeByMonth({ className, allIncome }: any) {
+interface IIncome {
+  [key: string]: {
+    income: number;
+    dividend: number;
+  }
+}
+
+export function IncomeByMonth({ className, allIncome, allDividends }: any) {
 
   const [incomeData, setIncomeData] = useState({})
 
   useEffect(() => {
-    if (allIncome) {
+    if (allIncome && allDividends) {
       const today = new Date();
       const dates = allIncome.map((item: any) => new Date(item.date))
       const minDate = new Date(Math.min.apply(null, dates))
-      const newIncomeData: { [k: string]: number } = {};
+      const newIncomeData: IIncome = {};
       for (let now = minDate; now < today; now = new Date(now.setDate(now.getDate() + 1))) {
         const YYYYMMDD = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`;
-        newIncomeData[YYYYMMDD] = 0;
+        newIncomeData[YYYYMMDD] = { income: 0, dividend: 0 };
       }
+      // Income
       for (const income of allIncome) {
         const date = new Date(income.date);
         const YYYYMMDD = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-        newIncomeData[YYYYMMDD] = Math.abs(income.amount);
+        newIncomeData[YYYYMMDD].income += Math.abs(parseFloat(income.amount));
+        newIncomeData[YYYYMMDD].income = Math.round(newIncomeData[YYYYMMDD].income * 100) / 100;
+      }
+      // Dividends
+      for (const dividend of allDividends) {
+        const date = new Date(dividend.date);
+        const YYYYMMDD = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+        newIncomeData[YYYYMMDD].dividend += Math.abs(parseFloat(dividend.amount));
+        newIncomeData[YYYYMMDD].dividend = Math.round(newIncomeData[YYYYMMDD].dividend * 100) / 100;
+        console.log(newIncomeData[YYYYMMDD])
       }
       setIncomeData(newIncomeData);
     }
-  }, [allIncome])
+  }, [allIncome, allDividends])
 
 
   const option = {
@@ -37,6 +54,12 @@ export function IncomeByMonth({ className, allIncome }: any) {
       trigger: 'axis',
       position: function (pt: any) {
         return [pt[0], '10%'];
+      },
+      axisPointer: {
+        type: 'shadow',
+        label: {
+          show: true
+        }
       }
     },
     title: {
@@ -45,6 +68,10 @@ export function IncomeByMonth({ className, allIncome }: any) {
       textStyle: {
         fontSize: '0.875rem'
       }
+    },
+    legend: {
+      top: '0%',
+      left: 'center'
     },
     toolbox: {
       feature: {
@@ -62,7 +89,7 @@ export function IncomeByMonth({ className, allIncome }: any) {
     },
     yAxis: {
       type: 'value',
-      boundaryGap: [0, '100%']
+      boundaryGap: [0, '20%']
     },
     dataZoom: [
       {
@@ -93,7 +120,26 @@ export function IncomeByMonth({ className, allIncome }: any) {
             }
           ])
         },
-        data: Object.values(incomeData)
+        data: Object.values(incomeData).map((item: any) => item.income)
+      },
+      {
+        name: 'Dividends',
+        type: 'bar',
+        symbol: 'none',
+        sampling: 'lttb',
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            {
+              offset: 0,
+              color: '#fff59d'
+            },
+            {
+              offset: 1,
+              color: '#ff6f00'
+            }
+          ])
+        },
+        data: Object.values(incomeData).map((item: any) => item.dividend)
       }
     ]
   };
