@@ -17,32 +17,36 @@ interface IIncome {
 
 export function IncomeByMonth({ className, allIncome, allDividends }: any) {
 
-  const [incomeData, setIncomeData] = useState({})
+  const [incomeData, setIncomeData] = useState<IIncome>({ "1993/01": { income: 0, dividend: 0 } })
 
   useEffect(() => {
     if (allIncome && allDividends) {
       const today = new Date();
-      const dates = allIncome.map((item: any) => new Date(item.date))
+      const dates = allIncome.concat(allDividends).map((item: any) => new Date(item.date))
       const minDate = new Date(Math.min.apply(null, dates))
+      const begin = new Date(`${minDate.getFullYear()}/${minDate.getMonth() + 1}`)
       const newIncomeData: IIncome = {};
-      for (let now = minDate; now < today; now = new Date(now.setDate(now.getDate() + 1))) {
-        const YYYYMMDD = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`;
-        newIncomeData[YYYYMMDD] = { income: 0, dividend: 0 };
+      for (let now = begin; now < today; now = new Date(now.setMonth(now.getMonth() + 1))) {
+        const YYYYMM = `${now.getFullYear()}/${now.getMonth() + 1}`;
+        newIncomeData[YYYYMM] = { income: 0, dividend: 0 };
       }
       // Income
       for (const income of allIncome) {
         const date = new Date(income.date);
-        const YYYYMMDD = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-        newIncomeData[YYYYMMDD].income += Math.abs(parseFloat(income.amount));
-        newIncomeData[YYYYMMDD].income = Math.round(newIncomeData[YYYYMMDD].income * 100) / 100;
+        const YYYYMM = `${date.getFullYear()}/${date.getMonth() + 1}`;
+        console.log(income.amount);
+        console.log(YYYYMM);
+        console.log(newIncomeData[YYYYMM].income);
+        newIncomeData[YYYYMM].income += Math.abs(parseFloat(income.amount));
+        newIncomeData[YYYYMM].income = Math.round(newIncomeData[YYYYMM].income * 100) / 100;
       }
       // Dividends
       for (const dividend of allDividends) {
         const date = new Date(dividend.date);
-        const YYYYMMDD = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-        newIncomeData[YYYYMMDD].dividend += Math.abs(parseFloat(dividend.amount));
-        newIncomeData[YYYYMMDD].dividend = Math.round(newIncomeData[YYYYMMDD].dividend * 100) / 100;
-        console.log(newIncomeData[YYYYMMDD])
+        const YYYYMM = `${date.getFullYear()}/${date.getMonth() + 1}`;
+        newIncomeData[YYYYMM].dividend += Math.abs(parseFloat(dividend.amount));
+        newIncomeData[YYYYMM].dividend = Math.round(newIncomeData[YYYYMM].dividend * 100) / 100;
+        console.log(newIncomeData[YYYYMM])
       }
       setIncomeData(newIncomeData);
     }
@@ -84,7 +88,7 @@ export function IncomeByMonth({ className, allIncome, allDividends }: any) {
     },
     xAxis: {
       type: 'category',
-      boundaryGap: false,
+      boundaryGap: ['10%', '10%'],
       data: Object.keys(incomeData)
     },
     yAxis: {
