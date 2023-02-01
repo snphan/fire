@@ -3,6 +3,7 @@ import { DocumentNode, InternalRefetchQueriesInclude, useMutation, useQuery } fr
 import {
   IS_BANKACCOUNT_LINKED,
   PLAID_GET_ACCOUNTS,
+  PLAID_GET_ALL_TRANSACTIONS,
   PLAID_GET_BALANCE,
   PLAID_GET_BANK_NAMES,
   PLAID_GET_INVESTMENT_TRANSACTIONS,
@@ -61,6 +62,7 @@ export function Dashboard({ }: any) {
     {
       variables: defaultPeriod
     });
+  const { data: allTransactionsData, loading: loadingAllTransactions } = useQuery<any>(PLAID_GET_ALL_TRANSACTIONS);
   const { data: investmentTransactionsData } = useQuery<any>(PLAID_GET_INVESTMENT_TRANSACTIONS,
     {
       variables: defaultPeriod
@@ -123,7 +125,7 @@ export function Dashboard({ }: any) {
             <div className="grow w-full grid xl:grid-cols-6 xl:grid-rows-6">
               <TotalBalance className="row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingBalance} balanceData={balanceData} />
               <TotalIncome className="row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
-              <IncomeByMonth className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
+              <IncomeByMonth className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} allIncome={allTransactionsData?.getTransactions.filter((item: any) => item.category === "INCOME")} />
               <TotalIncome className="col-span-2 row-span-6 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
               <ExpensesBreakdown className="row-span-4 col-span-2 flex flex-col bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
               <TotalIncome className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />

@@ -74,6 +74,17 @@ query getTransactions($startDate: String, $endDate: String) {
   }
 }
 `
+export const PLAID_GET_ALL_TRANSACTIONS = gql`
+query getAllTransactions {
+  getTransactions {
+    name
+    amount
+    date
+    category
+    iso_currency
+  }
+}
+`
 
 export const PLAID_GET_INVESTMENT_TRANSACTIONS = gql`
 query getInvestTransactions($startDate: String, $endDate: String) {
@@ -86,6 +97,8 @@ query getInvestTransactions($startDate: String, $endDate: String) {
   }
 }
 `
+
+
 export const PLAID_GET_BALANCE = gql`
   query getBalance {
     getBalance

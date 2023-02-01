@@ -1,5 +1,5 @@
 import { MonthYearFormatContext } from "@/Context"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import React from 'react';
 import * as echarts from "echarts";
 import ReactECharts from 'echarts-for-react';
@@ -8,18 +8,30 @@ import { Tooltip } from "@material-tailwind/react";
 
 echarts.registerTheme('my_theme', fireTheme);
 
-export function IncomeByMonth({ className, allTxn }: any) {
-  let base = +new Date(1968, 9, 3);
-  let oneDay = 24 * 3600 * 1000;
-  let date = [];
+export function IncomeByMonth({ className, allIncome }: any) {
 
-  let data = [Math.random() * 300];
+  const [incomeData, setIncomeData] = useState({})
 
-  for (let i = 1; i < 20000; i++) {
-    var now = new Date((base += oneDay));
-    date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
-    data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
-  }
+  useEffect(() => {
+    if (allIncome) {
+      const today = new Date();
+      const dates = allIncome.map((item: any) => new Date(item.date))
+      const minDate = new Date(Math.min.apply(null, dates))
+      const newIncomeData: { [k: string]: number } = {};
+      for (let now = minDate; now < today; now = new Date(now.setDate(now.getDate() + 1))) {
+        const YYYYMMDD = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`;
+        newIncomeData[YYYYMMDD] = 0;
+      }
+      for (const income of allIncome) {
+        const date = new Date(income.date);
+        const YYYYMMDD = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+        newIncomeData[YYYYMMDD] = Math.abs(income.amount);
+      }
+      setIncomeData(newIncomeData);
+    }
+  }, [allIncome])
+
+
   const option = {
     tooltip: {
       trigger: 'axis',
@@ -46,7 +58,7 @@ export function IncomeByMonth({ className, allTxn }: any) {
     xAxis: {
       type: 'category',
       boundaryGap: false,
-      data: date
+      data: Object.keys(incomeData)
     },
     yAxis: {
       type: 'value',
@@ -65,7 +77,7 @@ export function IncomeByMonth({ className, allTxn }: any) {
     ],
     series: [
       {
-        name: 'Fake Data',
+        name: 'Income',
         type: 'bar',
         symbol: 'none',
         sampling: 'lttb',
@@ -81,7 +93,7 @@ export function IncomeByMonth({ className, allTxn }: any) {
             }
           ])
         },
-        data: data
+        data: Object.values(incomeData)
       }
     ]
   };
