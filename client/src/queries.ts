@@ -77,6 +77,7 @@ query getTransactions($startDate: String, $endDate: String) {
 export const PLAID_GET_ALL_TRANSACTIONS = gql`
 query getAllTransactions {
   getTransactions {
+    transaction_id
     name
     amount
     date

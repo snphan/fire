@@ -21,6 +21,7 @@ import { DashboardContext } from '@/Context';
 import dayjs from 'dayjs';
 import { IncomeByMonth } from '@/components/Dashboard/IncomeByMonth';
 import { ExpensesByMonth } from '@/components/Dashboard/ExpensesByMonth';
+import { TransactionsTable } from '@/components/Dashboard/TransactionsTable';
 
 export interface IDashboardContext {
   sync(): any;
@@ -134,7 +135,7 @@ export function Dashboard({ }: any) {
                 allDividends={allInvestTxnData?.getInvestTransactions.filter((item: any) => item.type === "cash" && !item.name.match(/CONTRIBUTION/))}
               />
 
-              <TotalIncome className="col-span-2 row-span-6 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
+              <TransactionsTable className="max-h-full col-span-2 row-span-6 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingAllTransactions} allTransactions={allTransactionsData?.getTransactions} />
               <ExpensesBreakdown className="row-span-4 col-span-2 flex flex-col bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
               <ExpensesByMonth className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
                 loading={loadingTransactions}
