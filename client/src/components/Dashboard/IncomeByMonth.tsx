@@ -34,9 +34,6 @@ export function IncomeByMonth({ className, allIncome, allDividends }: any) {
       for (const income of allIncome) {
         const date = new Date(income.date);
         const YYYYMM = `${date.getFullYear()}/${date.getMonth() + 1}`;
-        console.log(income.amount);
-        console.log(YYYYMM);
-        console.log(newIncomeData[YYYYMM].income);
         newIncomeData[YYYYMM].income += Math.abs(parseFloat(income.amount));
         newIncomeData[YYYYMM].income = Math.round(newIncomeData[YYYYMM].income * 100) / 100;
       }
@@ -46,7 +43,6 @@ export function IncomeByMonth({ className, allIncome, allDividends }: any) {
         const YYYYMM = `${date.getFullYear()}/${date.getMonth() + 1}`;
         newIncomeData[YYYYMM].dividend += Math.abs(parseFloat(dividend.amount));
         newIncomeData[YYYYMM].dividend = Math.round(newIncomeData[YYYYMM].dividend * 100) / 100;
-        console.log(newIncomeData[YYYYMM])
       }
       setIncomeData(newIncomeData);
     }

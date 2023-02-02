@@ -33,9 +33,6 @@ export function ExpensesByMonth({ className, allExpenses }: any) {
       for (const income of allExpenses) {
         const date = new Date(income.date);
         const YYYYMM = `${date.getFullYear()}/${date.getMonth() + 1}`;
-        console.log(income.amount);
-        console.log(YYYYMM);
-        console.log(newExpensesData[YYYYMM].expense);
         newExpensesData[YYYYMM].expense += Math.abs(parseFloat(income.amount));
         newExpensesData[YYYYMM].expense = Math.round(newExpensesData[YYYYMM].expense * 100) / 100;
       }
