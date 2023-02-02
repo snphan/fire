@@ -95,6 +95,8 @@ export function ExpensesBreakdown({ loading, transactions, className }: any) {
         type: 'pie',
         radius: ['40%', '70%'],
         avoidLabelOverlap: true,
+        top: '10%',
+        bottom: '-10%',
         itemStyle: {
           borderRadius: 10,
           borderColor: '#fff',
