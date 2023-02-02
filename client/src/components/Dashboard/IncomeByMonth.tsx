@@ -117,8 +117,9 @@ export function IncomeByMonth({ className, allIncome, allDividends }: any) {
             {
               offset: 1,
               color: '#2e7d32'
-            }
-          ])
+            },
+          ]),
+          borderRadius: 5
         },
         data: Object.values(incomeData).map((item: any) => item.income)
       },
@@ -137,17 +138,23 @@ export function IncomeByMonth({ className, allIncome, allDividends }: any) {
               offset: 1,
               color: '#ff6f00'
             }
-          ])
+          ]),
+          borderRadius: 5
         },
         data: Object.values(incomeData).map((item: any) => item.dividend)
       }
     ]
   };
 
+  //TODO: Handle the click to filter some Transactionson our future Txn table viz.
+  const handleChartClick = (e: any) => {
+    console.log("Showing Transactions for ", e.seriesName, e.name);
+  }
+
   return (
     <Tooltip content={"Income from Accounts + Dividends"} className="capitalize bg-zinc-900 p-2">
       <button className={className}>
-        <ReactECharts theme="my_theme" style={{ height: "100%" }} option={option} />
+        <ReactECharts onEvents={{ click: handleChartClick }} theme="my_theme" style={{ height: "100%" }} option={option} />
       </button>
     </Tooltip>
   )

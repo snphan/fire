@@ -80,8 +80,7 @@ export function ExpensesByMonth({ className, allExpenses }: any) {
       data: Object.keys(expenseData)
     },
     yAxis: {
-      type: 'value',
-      boundaryGap: [0, '20%']
+      type: 'value', boundaryGap: [0, '20%']
     },
     dataZoom: [
       {
@@ -110,17 +109,23 @@ export function ExpensesByMonth({ className, allExpenses }: any) {
               offset: 1,
               color: '#e91e63'
             }
-          ])
+          ]),
+          borderRadius: 5
         },
         data: Object.values(expenseData).map((item: any) => item.expense)
       }
     ]
   };
 
+  //TODO: Handle the click to filter some Transactionson our future Txn table viz.
+  const handleChartClick = (e: any) => {
+    console.log("Showing Transactions for ", e.seriesName, e.name);
+  }
+
   return (
     <Tooltip content={"Expenses Excluding Transfers"} className="capitalize bg-zinc-900 p-2">
       <button className={className}>
-        <ReactECharts theme="my_theme" style={{ height: "100%" }} option={option} />
+        <ReactECharts onEvents={{ click: handleChartClick }} theme="my_theme" style={{ height: "100%" }} option={option} />
       </button>
     </Tooltip>
   )
