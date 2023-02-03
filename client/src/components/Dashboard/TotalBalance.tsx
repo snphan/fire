@@ -9,7 +9,6 @@ export function TotalBalance({ loading, balanceData, className }: any) {
   const currencyFormatter = useContext(CurrencyContext);
 
   useEffect(() => {
-    console.log(balanceData);
     if (balanceData) {
       setTotalBalance(balanceData.getAccounts.accounts.reduce(
         (a: number, b: any) => {
