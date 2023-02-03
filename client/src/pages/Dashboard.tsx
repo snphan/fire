@@ -5,7 +5,6 @@ import {
   PLAID_GET_ACCOUNTS,
   PLAID_GET_ALL_INVEST_TXN,
   PLAID_GET_ALL_TRANSACTIONS,
-  PLAID_GET_BALANCE,
   PLAID_GET_BANK_NAMES,
   PLAID_GET_INVESTMENT_TRANSACTIONS,
   PLAID_GET_TRANSACTIONS,
@@ -63,7 +62,6 @@ export function Dashboard({ }: any) {
   const dashboardRefetchQueries = [
     { query: IS_BANKACCOUNT_LINKED },
     { query: PLAID_GET_ACCOUNTS },
-    { query: PLAID_GET_BALANCE },
     {
       query: PLAID_GET_TRANSACTIONS, variables: defaultPeriod
     },
@@ -76,7 +74,7 @@ export function Dashboard({ }: any) {
   const { data: isBankLinked } = useQuery<any>(IS_BANKACCOUNT_LINKED);
   const [openPlaidPrompt, setOpenPlaidPrompt] = useState<boolean>(false);
   const [openPlaidUnlink, setOpenPlaidUnlink] = useState<boolean>(false);
-  const { data: balanceData, loading: loadingBalance } = useQuery<any>(PLAID_GET_BALANCE);
+  const { data: balanceData, loading: loadingBalance } = useQuery<any>(PLAID_GET_ACCOUNTS);
   const { data: transactionsData, loading: loadingTransactions } = useQuery<any>(PLAID_GET_TRANSACTIONS,
     {
       variables: defaultPeriod

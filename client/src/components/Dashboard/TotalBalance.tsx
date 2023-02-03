@@ -9,14 +9,14 @@ export function TotalBalance({ loading, balanceData, className }: any) {
   const currencyFormatter = useContext(CurrencyContext);
 
   useEffect(() => {
+    console.log(balanceData);
     if (balanceData) {
-      setTotalBalance(balanceData.getBalance.balance.reduce(
+      setTotalBalance(balanceData.getAccounts.accounts.reduce(
         (a: number, b: any) => {
-          if (b.balances.iso_currency_code === 'USD') {
-            return a + b.balances.current * 1.3;
-          } else {
-            return a + b.balances.current;
-          }
+          let total = b.balances.current;
+          if (b.balances.iso_currency_code === 'USD') total *= 1.3;
+          if (b.type === "credit") total *= -1;
+          return a + total;
         }, 0));
     }
   })
