@@ -35,6 +35,15 @@ export interface IDashboardContext {
     startDate: string;
     endDate: string;
   };
+  txnTableFilters: {
+    state: {
+      startDate: string | null;
+      endDate: string | null;
+      categories: string[] | null;
+      notCategories: string[] | null;
+    };
+    set: any;
+  }
 }
 
 export function Dashboard({ }: any) {
@@ -43,6 +52,13 @@ export function Dashboard({ }: any) {
     startDate: dayjs().format('YYYY-MM'),
     endDate: dayjs().add(1, 'month').format('YYYY-MM')
   }
+
+  const [TxnTableFilters, setTxnTableFilters] = useState({
+    startDate: null,
+    endDate: null,
+    categories: null,
+    notCategories: null
+  });
 
   const dashboardRefetchQueries = [
     { query: IS_BANKACCOUNT_LINKED },
@@ -78,7 +94,11 @@ export function Dashboard({ }: any) {
   const dashboardStore: IDashboardContext = {
     sync: syncUserTransactions,
     refetchQueries: dashboardRefetchQueries,
-    defaultPeriod: defaultPeriod
+    defaultPeriod: defaultPeriod,
+    txnTableFilters: {
+      state: TxnTableFilters,
+      set: setTxnTableFilters
+    }
   }
 
   // DEBUG
@@ -140,9 +160,7 @@ export function Dashboard({ }: any) {
               <ExpensesByMonth className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
                 loading={loadingTransactions}
                 allExpenses={allTransactionsData?.getTransactions.filter((item: any) =>
-                  item.category !== "INCOME"
-                  && item.category !== "TRANSFER_IN"
-                  && item.category !== "TRANSFER_OUT"
+                  !["INCOME", "TRANSFER_IN", "TRANSFER_OUT", "LOAN_PAYMENTS"].includes(item.category)
                 )}
               />
             </div>

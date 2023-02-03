@@ -1,10 +1,11 @@
-import { MonthYearFormatContext } from "@/Context"
+import { DashboardContext, MonthYearFormatContext } from "@/Context"
 import { useContext, useEffect, useState } from "react"
 import React from 'react';
 import * as echarts from "echarts";
 import ReactECharts from 'echarts-for-react';
 import { fireTheme } from "@/config/echart.config";
 import { Tooltip } from "@material-tailwind/react";
+import dayjs from "dayjs";
 
 echarts.registerTheme('my_theme', fireTheme);
 
@@ -18,6 +19,7 @@ interface IIncome {
 export function IncomeByMonth({ className, allIncome, allDividends }: any) {
 
   const [incomeData, setIncomeData] = useState<IIncome>({ "1993/01": { income: 0, dividend: 0 } })
+  const dashboardContext = useContext(DashboardContext);
 
   useEffect(() => {
     if (allIncome && allDividends) {
@@ -148,13 +150,25 @@ export function IncomeByMonth({ className, allIncome, allDividends }: any) {
 
   //TODO: Handle the click to filter some Transactionson our future Txn table viz.
   const handleChartClick = (e: any) => {
-    console.log("Showing Transactions for ", e.seriesName, e.name);
+    if (dashboardContext) {
+      const { txnTableFilters } = dashboardContext;
+      txnTableFilters.set({
+        startDate: dayjs(e.name).format('YYYY/MM/DD'),
+        endDate: dayjs(e.name).add(1, 'month').format('YYYY/MM/DD'),
+        categories: ['INCOME'],
+        notCategories: null
+      })
+    }
   }
 
   return (
     <Tooltip content={"Income from Accounts + Dividends"} className="capitalize bg-zinc-900 p-2">
       <button className={className}>
-        <ReactECharts onEvents={{ click: handleChartClick }} theme="my_theme" style={{ height: "100%" }} option={option} />
+        <ReactECharts
+          onEvents={{ click: handleChartClick }}
+          theme="my_theme" style={{ height: "100%" }}
+          option={option}
+        />
       </button>
     </Tooltip>
   )
