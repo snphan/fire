@@ -124,8 +124,8 @@ export function ExpensesByMonth({ className, allExpenses }: any) {
     if (dashboardContext) {
       const { txnTableFilters } = dashboardContext;
       txnTableFilters.set({
-        startDate: dayjs(e.name).format('YYYY/MM/DD'),
-        endDate: dayjs(e.name).add(1, 'month').format('YYYY/MM/DD'),
+        startDate: dayjs(e.name).format('YYYY-MM-DD'),
+        endDate: dayjs(e.name).add(1, 'month').format('YYYY-MM-DD'),
         categories: null,
         notCategories: ['INCOME', 'TRANSFER_IN', 'TRANSFER_OUT', 'LOAN_PAYMENTS']
       })

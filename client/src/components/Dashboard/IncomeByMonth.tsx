@@ -153,8 +153,8 @@ export function IncomeByMonth({ className, allIncome, allDividends }: any) {
     if (dashboardContext) {
       const { txnTableFilters } = dashboardContext;
       txnTableFilters.set({
-        startDate: dayjs(e.name).format('YYYY/MM/DD'),
-        endDate: dayjs(e.name).add(1, 'month').format('YYYY/MM/DD'),
+        startDate: dayjs(e.name).format('YYYY-MM-DD'),
+        endDate: dayjs(e.name).add(1, 'month').format('YYYY-MM-DD'),
         categories: ['INCOME'],
         notCategories: null
       })

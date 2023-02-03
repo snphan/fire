@@ -13,10 +13,10 @@ export function TransactionsTable({ className, allTransactions }: any) {
       const { txnTableFilters } = dashboardContext;
       const { startDate, endDate, categories, notCategories } = txnTableFilters.state;
       if (startDate) {
-        allTxn = allTxn.filter((txn: any) => new Date(txn.date) >= new Date(startDate));
+        allTxn = allTxn.filter((txn: any) => new Date(txn.date) >= new Date(startDate + "T00:00:00.000Z"));
       }
       if (endDate) {
-        allTxn = allTxn.filter((txn: any) => new Date(txn.date) <= new Date(endDate));
+        allTxn = allTxn.filter((txn: any) => new Date(txn.date) <= new Date(endDate + "T00:00:00.000Z"));
       }
       if (categories) {
         allTxn = allTxn.filter((txn: any) => categories.includes(txn.category));
