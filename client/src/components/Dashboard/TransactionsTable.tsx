@@ -8,7 +8,7 @@ export function TransactionsTable({ className, allTransactions, allInvestTransac
   const dashboardContext = useContext(DashboardContext);
 
   const getFilteredItems = () => {
-    let allTxn = allTransactions;
+    let allTxn = allTransactions.slice(); // Slice so that we can sort
     let allInvestTxn = allInvestTransactions;
     const { startDate, endDate, categories, notCategories } = filters;
     if (startDate) {
@@ -27,9 +27,7 @@ export function TransactionsTable({ className, allTransactions, allInvestTransac
     }
     if (categories?.includes('DIVIDENDS')) {
       allInvestTxn = allInvestTxn.filter((item: any) => item.type === "cash" && !item.name.match(/CONTRIBUTION/));
-      allTxn = allTxn.concat(allInvestTxn)
     }
-
 
     return allTxn.sort((a: any, b: any) => (new Date(b.date)).getTime() - (new Date(a.date)).getTime());
   }
