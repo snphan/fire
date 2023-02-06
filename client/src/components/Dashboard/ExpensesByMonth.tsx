@@ -23,7 +23,6 @@ export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExp
   useEffect(() => {
     if (allExpenses()) {
       const today = new Date();
-      console.log(today)
       const dates = allExpenses().map((item: any) => new Date(item.date))
       const minDate = new Date(Math.min.apply(null, dates))
       const begin = new Date(`${minDate.getUTCFullYear()}/${minDate.getUTCMonth() + 1}`)
@@ -38,9 +37,6 @@ export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExp
       for (const expense of allExpenses()) {
         const date = new Date(expense.date);
         const YYYYMM = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}`;
-        if (expense.name === "TENSHI-NO-TAMAGO.CO.J") {
-          console.log(expense); console.log(YYYYMM); console.log(date);
-        }
         newExpensesData[YYYYMM].expense += Math.abs(parseFloat(expense.amount));
         newExpensesData[YYYYMM].expense = Math.round(newExpensesData[YYYYMM].expense * 100) / 100;
       }

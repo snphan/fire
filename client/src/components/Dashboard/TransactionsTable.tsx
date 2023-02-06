@@ -51,7 +51,11 @@ export function TransactionsTable({ className, allTransactions, allInvestTransac
                 {(allTransactions && allInvestTransactions) && getFilteredItems().map((txn: any) => {
                   return (
                     <tr key={txn.transaction_id || txn.investment_transaction_id} className="transition-all duration-300 hover:bg-sky-200 hover:bg-opacity-10">
-                      <td className="w-5/12 border-b border-zinc-700 p-3">{txn.name}</td>
+                      <td className="w-5/12 border-b border-zinc-700 p-3">
+                        <Tooltip content={txn.category.split('_').map((substring: string) => substring[0].toUpperCase() + substring.slice(1).toLowerCase()).join(" ")} className="capitalize bg-gray-900 p-2">
+                          {txn.name}
+                        </Tooltip>
+                      </td>
                       <td className="w-3/12 border-b border-zinc-700 p-3">{txn.date.split("T")[0]}</td>
                       <td className="w-4/12 border-b border-zinc-700 p-3">{currencyFormatter.format(Math.abs(txn.amount))}</td>
                     </tr>
