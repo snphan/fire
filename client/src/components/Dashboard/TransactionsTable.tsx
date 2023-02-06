@@ -19,17 +19,19 @@ export function TransactionsTable({ className, allTransactions, allInvestTransac
       allTxn = allTxn.filter((txn: any) => new Date(txn.date) <= new Date(endDate + "T00:00:00.000Z"));
       allInvestTxn = allInvestTxn.filter((txn: any) => new Date(txn.date) <= new Date(endDate + "T00:00:00.000Z"));
     }
-    if (categories?.includes('DIVIDENDS')) {
-      allInvestTxn = allInvestTxn.filter((item: any) => item.type === "cash" && !item.name.match(/CONTRIBUTION/));
-    }
     if (categories) {
       allTxn = allTxn.filter((txn: any) => categories.includes(txn.category));
     }
     if (notCategories) {
       allTxn = allTxn.filter((txn: any) => !notCategories.includes(txn.category))
     }
+    if (categories?.includes('DIVIDENDS')) {
+      allInvestTxn = allInvestTxn.filter((item: any) => item.type === "cash" && !item.name.match(/CONTRIBUTION/));
+      allTxn = allTxn.concat(allInvestTxn)
+    }
 
-    return allTxn.concat(allInvestTxn).sort((a: any, b: any) => (new Date(b.date)).getTime() - (new Date(a.date)).getTime());
+
+    return allTxn.sort((a: any, b: any) => (new Date(b.date)).getTime() - (new Date(a.date)).getTime());
   }
 
 
