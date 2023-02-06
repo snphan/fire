@@ -23,18 +23,24 @@ export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExp
   useEffect(() => {
     if (allExpenses()) {
       const today = new Date();
+      console.log(today)
       const dates = allExpenses().map((item: any) => new Date(item.date))
       const minDate = new Date(Math.min.apply(null, dates))
-      const begin = new Date(`${minDate.getFullYear()}/${minDate.getMonth() + 1}`)
+      const begin = new Date(`${minDate.getUTCFullYear()}/${minDate.getUTCMonth() + 1}`)
       const newExpensesData: IExpenses = {};
-      for (let now = begin; now < today; now = new Date(now.setMonth(now.getMonth() + 1))) {
-        const YYYYMM = `${now.getFullYear()}/${now.getMonth() + 1}`;
+      for (let now = begin; now < today; now = new Date(now.setMonth(now.getUTCMonth() + 1))) {
+        const YYYYMM = `${now.getUTCFullYear()}/${now.getUTCMonth() + 1}`;
         newExpensesData[YYYYMM] = { expense: 0 };
       }
-      // Income
+      // Expense
+      let total = 0;
+      let txn = [];
       for (const expense of allExpenses()) {
         const date = new Date(expense.date);
-        const YYYYMM = `${date.getFullYear()}/${date.getMonth() + 1}`;
+        const YYYYMM = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}`;
+        if (expense.name === "TENSHI-NO-TAMAGO.CO.J") {
+          console.log(expense); console.log(YYYYMM); console.log(date);
+        }
         newExpensesData[YYYYMM].expense += Math.abs(parseFloat(expense.amount));
         newExpensesData[YYYYMM].expense = Math.round(newExpensesData[YYYYMM].expense * 100) / 100;
       }
@@ -121,7 +127,6 @@ export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExp
 
   //TODO: Handle the click to filter some Transactionson our future Txn table viz.
   const handleChartClick = (e: any) => {
-    console.log(setTxnTableFiltersCallback);
     setTxnTableFiltersCallback({
       startDate: dayjs(e.name).format('YYYY-MM-DD'),
       endDate: dayjs(e.name).add(1, 'month').format('YYYY-MM-DD'),
