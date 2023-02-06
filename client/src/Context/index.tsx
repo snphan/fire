@@ -10,4 +10,4 @@ export const MonthYearFormatContext = createContext(
   new Intl.DateTimeFormat('en-us', { month: 'short', year: 'numeric' })
 )
 
-export const DashboardContext = createContext<IDashboardContext | null>(null);
+export const DashboardContext = createContext<any>(null);

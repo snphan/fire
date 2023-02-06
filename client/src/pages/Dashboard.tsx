@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { DocumentNode, InternalRefetchQueriesInclude, useMutation, useQuery } from '@apollo/client';
 import {
   IS_BANKACCOUNT_LINKED,
@@ -34,15 +34,6 @@ export interface IDashboardContext {
     startDate: string;
     endDate: string;
   };
-  txnTableFilters: {
-    state: {
-      startDate: string | null;
-      endDate: string | null;
-      categories: string[] | null;
-      notCategories: string[] | null;
-    };
-    set: any;
-  }
 }
 
 export function Dashboard({ }: any) {
@@ -89,15 +80,25 @@ export function Dashboard({ }: any) {
     refetchQueries: dashboardRefetchQueries
   });
 
-  const dashboardStore: IDashboardContext = {
+  /* Use Callbacks so that the eCharts do not need to rerender (DataZoom position gets reset) */
+
+  const getAllExpenses = useCallback(() => allTransactionsData?.getTransactions.filter((item: any) =>
+    !["INCOME", "TRANSFER_IN", "TRANSFER_OUT", "LOAN_PAYMENTS"].includes(item.category)
+  ), [allTransactionsData])
+
+  const getAllIncome = useCallback(() => allTransactionsData?.getTransactions.filter((item: any) => item.category === "INCOME"
+  ), [allTransactionsData])
+
+  const getAllDividend = useCallback(() => allInvestTxnData?.getInvestTransactions.filter((item: any) => item.type === "cash" && !item.name.match(/CONTRIBUTION/)
+  ), [allInvestTxnData])
+
+  const setTxnTableFiltersCallback = useCallback((filters: any) => setTxnTableFilters(filters), []);
+
+  const getDashboardStore = useCallback(() => ({
     sync: syncUserTransactions,
     refetchQueries: dashboardRefetchQueries,
     defaultPeriod: defaultPeriod,
-    txnTableFilters: {
-      state: TxnTableFilters,
-      set: setTxnTableFilters
-    }
-  }
+  }), []);
 
   // DEBUG
   useEffect(() => {
@@ -110,7 +111,7 @@ export function Dashboard({ }: any) {
   }, [])
 
   return (
-    <DashboardContext.Provider value={dashboardStore}>
+    <DashboardContext.Provider value={getDashboardStore}>
       <div className="ml-24 flex flex-col min-h-screen min-w-0 max-w-full overflow-hidden">
         {(isBankLinked?.bankAccountLinked === false) ?
           <div className='grow flex justify-center items-center'>
@@ -145,21 +146,32 @@ export function Dashboard({ }: any) {
 
             {/* Dashboard Viz Components */}
             <div className="grow w-full grid xl:grid-cols-6 xl:grid-rows-6">
-              <TotalBalance className="row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingBalance} balanceData={balanceData} />
-              <TotalIncome className="row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
-              <IncomeByMonth className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
-                loading={loadingTransactions}
-                allIncome={allTransactionsData?.getTransactions.filter((item: any) => item.category === "INCOME")}
-                allDividends={allInvestTxnData?.getInvestTransactions.filter((item: any) => item.type === "cash" && !item.name.match(/CONTRIBUTION/))}
+              <TotalBalance className="row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
+                loading={loadingBalance}
+                balanceData={balanceData}
               />
-
-              <TransactionsTable className="max-h-full col-span-2 row-span-6 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingAllTransactions} allTransactions={allTransactionsData?.getTransactions} />
-              <ExpensesBreakdown className="row-span-4 col-span-2 flex flex-col bg-zinc-900 p-3 m-4 rounded-xl shadow-xl" loading={loadingTransactions} transactions={transactionsData} />
-              <ExpensesByMonth className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
+              <TotalIncome className="row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
                 loading={loadingTransactions}
-                allExpenses={allTransactionsData?.getTransactions.filter((item: any) =>
-                  !["INCOME", "TRANSFER_IN", "TRANSFER_OUT", "LOAN_PAYMENTS"].includes(item.category)
-                )}
+                transactions={transactionsData}
+              />
+              <IncomeByMonth className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
+                allIncome={getAllIncome}
+                allDividends={getAllDividend}
+                setTxnTableFiltersCallback={setTxnTableFiltersCallback}
+              />
+              <TransactionsTable className="max-h-full col-span-2 row-span-6 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
+                loading={loadingAllTransactions}
+                allTransactions={allTransactionsData?.getTransactions}
+                allInvestTransactions={allInvestTxnData?.getInvestTransactions}
+                filters={TxnTableFilters}
+              />
+              <ExpensesBreakdown className="row-span-4 col-span-2 flex flex-col bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
+                loading={loadingTransactions}
+                transactions={transactionsData}
+              />
+              <ExpensesByMonth className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
+                allExpenses={getAllExpenses}
+                setTxnTableFiltersCallback={setTxnTableFiltersCallback}
               />
             </div>
           </>

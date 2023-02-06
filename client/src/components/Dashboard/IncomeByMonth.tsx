@@ -1,5 +1,5 @@
 import { DashboardContext, MonthYearFormatContext } from "@/Context"
-import { useContext, useEffect, useState } from "react"
+import { memo, useContext, useEffect, useState } from "react"
 import React from 'react';
 import * as echarts from "echarts";
 import ReactECharts from 'echarts-for-react';
@@ -16,15 +16,15 @@ interface IIncome {
   }
 }
 
-export function IncomeByMonth({ className, allIncome, allDividends }: any) {
+export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome, allDividends, setTxnTableFiltersCallback }: any) {
 
   const [incomeData, setIncomeData] = useState<IIncome>({ "1993/01": { income: 0, dividend: 0 } })
   const dashboardContext = useContext(DashboardContext);
 
   useEffect(() => {
-    if (allIncome && allDividends) {
+    if (allIncome() && allDividends()) {
       const today = new Date();
-      const dates = allIncome.concat(allDividends).map((item: any) => new Date(item.date))
+      const dates = allIncome().concat(allDividends()).map((item: any) => new Date(item.date))
       const minDate = new Date(Math.min.apply(null, dates))
       const begin = new Date(`${minDate.getFullYear()}/${minDate.getMonth() + 1}`)
       const newIncomeData: IIncome = {};
@@ -33,14 +33,14 @@ export function IncomeByMonth({ className, allIncome, allDividends }: any) {
         newIncomeData[YYYYMM] = { income: 0, dividend: 0 };
       }
       // Income
-      for (const income of allIncome) {
+      for (const income of allIncome()) {
         const date = new Date(income.date);
         const YYYYMM = `${date.getFullYear()}/${date.getMonth() + 1}`;
         newIncomeData[YYYYMM].income += Math.abs(parseFloat(income.amount));
         newIncomeData[YYYYMM].income = Math.round(newIncomeData[YYYYMM].income * 100) / 100;
       }
       // Dividends
-      for (const dividend of allDividends) {
+      for (const dividend of allDividends()) {
         const date = new Date(dividend.date);
         const YYYYMM = `${date.getFullYear()}/${date.getMonth() + 1}`;
         newIncomeData[YYYYMM].dividend += Math.abs(parseFloat(dividend.amount));
@@ -150,15 +150,12 @@ export function IncomeByMonth({ className, allIncome, allDividends }: any) {
 
   //TODO: Handle the click to filter some Transactionson our future Txn table viz.
   const handleChartClick = (e: any) => {
-    if (dashboardContext) {
-      const { txnTableFilters } = dashboardContext;
-      txnTableFilters.set({
-        startDate: dayjs(e.name).format('YYYY-MM-DD'),
-        endDate: dayjs(e.name).add(1, 'month').format('YYYY-MM-DD'),
-        categories: ['INCOME'],
-        notCategories: null
-      })
-    }
+    setTxnTableFiltersCallback({
+      startDate: dayjs(e.name).format('YYYY-MM-DD'),
+      endDate: dayjs(e.name).add(1, 'month').format('YYYY-MM-DD'),
+      categories: ['INCOME', 'DIVIDENDS'],
+      notCategories: null
+    })
   }
 
   return (
@@ -172,4 +169,4 @@ export function IncomeByMonth({ className, allIncome, allDividends }: any) {
       </button>
     </Tooltip>
   )
-}
+});

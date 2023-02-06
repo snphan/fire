@@ -1,5 +1,5 @@
 import { DashboardContext, MonthYearFormatContext } from "@/Context"
-import { useContext, useEffect, useState } from "react"
+import { memo, useContext, useEffect, useState } from "react"
 import React from 'react';
 import * as echarts from "echarts";
 import ReactECharts from 'echarts-for-react';
@@ -15,15 +15,15 @@ interface IExpenses {
   }
 }
 
-export function ExpensesByMonth({ className, allExpenses }: any) {
+export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExpenses, setTxnTableFiltersCallback }: any) {
 
   const [expenseData, setExpenseData] = useState<IExpenses>({ "1993/01": { expense: 0 } })
   const dashboardContext = useContext(DashboardContext);
 
   useEffect(() => {
-    if (allExpenses) {
+    if (allExpenses()) {
       const today = new Date();
-      const dates = allExpenses.map((item: any) => new Date(item.date))
+      const dates = allExpenses().map((item: any) => new Date(item.date))
       const minDate = new Date(Math.min.apply(null, dates))
       const begin = new Date(`${minDate.getFullYear()}/${minDate.getMonth() + 1}`)
       const newExpensesData: IExpenses = {};
@@ -32,10 +32,10 @@ export function ExpensesByMonth({ className, allExpenses }: any) {
         newExpensesData[YYYYMM] = { expense: 0 };
       }
       // Income
-      for (const income of allExpenses) {
-        const date = new Date(income.date);
+      for (const expense of allExpenses()) {
+        const date = new Date(expense.date);
         const YYYYMM = `${date.getFullYear()}/${date.getMonth() + 1}`;
-        newExpensesData[YYYYMM].expense += Math.abs(parseFloat(income.amount));
+        newExpensesData[YYYYMM].expense += Math.abs(parseFloat(expense.amount));
         newExpensesData[YYYYMM].expense = Math.round(newExpensesData[YYYYMM].expense * 100) / 100;
       }
       setExpenseData(newExpensesData);
@@ -121,15 +121,14 @@ export function ExpensesByMonth({ className, allExpenses }: any) {
 
   //TODO: Handle the click to filter some Transactionson our future Txn table viz.
   const handleChartClick = (e: any) => {
-    if (dashboardContext) {
-      const { txnTableFilters } = dashboardContext;
-      txnTableFilters.set({
-        startDate: dayjs(e.name).format('YYYY-MM-DD'),
-        endDate: dayjs(e.name).add(1, 'month').format('YYYY-MM-DD'),
-        categories: null,
-        notCategories: ['INCOME', 'TRANSFER_IN', 'TRANSFER_OUT', 'LOAN_PAYMENTS']
-      })
-    }
+    console.log(setTxnTableFiltersCallback);
+    setTxnTableFiltersCallback({
+      startDate: dayjs(e.name).format('YYYY-MM-DD'),
+      endDate: dayjs(e.name).add(1, 'month').format('YYYY-MM-DD'),
+      categories: null,
+      notCategories: ['INCOME', 'TRANSFER_IN', 'TRANSFER_OUT', 'LOAN_PAYMENTS']
+    })
+
   }
 
   return (
@@ -139,4 +138,4 @@ export function ExpensesByMonth({ className, allExpenses }: any) {
       </button>
     </Tooltip>
   )
-}
+});

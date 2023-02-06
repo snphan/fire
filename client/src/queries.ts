@@ -102,6 +102,7 @@ query getInvestTransactions($startDate: String, $endDate: String) {
 export const PLAID_GET_ALL_INVEST_TXN = gql`
 query getInvestTransactions {
   getInvestTransactions {
+    investment_transaction_id
     name
     amount
     date
