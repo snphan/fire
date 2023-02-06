@@ -19,7 +19,7 @@ export function TransactionsTable({ className, allTransactions, allInvestTransac
       allTxn = allTxn.filter((txn: any) => new Date(txn.date) <= new Date(endDate + "T00:00:00.000Z"));
       allInvestTxn = allInvestTxn.filter((txn: any) => new Date(txn.date) <= new Date(endDate + "T00:00:00.000Z"));
     }
-    if (categories && categories.includes('DIVIDENDS')) {
+    if (categories?.includes('DIVIDENDS')) {
       allInvestTxn = allInvestTxn.filter((item: any) => item.type === "cash" && !item.name.match(/CONTRIBUTION/));
     }
     if (categories) {
