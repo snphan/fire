@@ -36,7 +36,7 @@ export function TransactionsTable({ className, allTransactions, allInvestTransac
 
   useEffect(() => {
     if (allTransactions && allInvestTransactions) setFilteredTxn(getFilteredItems());
-  }, [filters])
+  }, [filters, allTransactions, allInvestTransactions])
 
   const getTotal = () => {
     return filteredTxn?.reduce((a: number, b: any) => a + Math.abs(parseFloat(b.amount)), 0)
