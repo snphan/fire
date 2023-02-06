@@ -81,6 +81,7 @@ export function Dashboard({ }: any) {
   });
 
   /* Use Callbacks so that the eCharts do not need to rerender (DataZoom position gets reset) */
+  const getCurrentMonthTransactions = useCallback(() => transactionsData?.getTransactions, [transactionsData]);
 
   const getAllExpenses = useCallback(() => allTransactionsData?.getTransactions.filter((item: any) =>
     !["INCOME", "TRANSFER_IN", "TRANSFER_OUT", "LOAN_PAYMENTS"].includes(item.category)
@@ -167,7 +168,8 @@ export function Dashboard({ }: any) {
               />
               <ExpensesBreakdown className="row-span-4 col-span-2 flex flex-col bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
                 loading={loadingTransactions}
-                transactions={transactionsData}
+                transactions={getCurrentMonthTransactions}
+                setTxnTableFiltersCallback={setTxnTableFiltersCallback}
               />
               <ExpensesByMonth className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
                 allExpenses={getAllExpenses}

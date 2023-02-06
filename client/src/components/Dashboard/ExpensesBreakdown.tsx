@@ -1,9 +1,10 @@
 import { CurrencyContext, MonthYearFormatContext } from '@/Context';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { memo, useContext, useEffect, useState } from 'react';
 import { Loading } from '../Loading';
 import * as echarts from 'echarts';
 import ReactECharts from 'echarts-for-react';
 import { fireTheme } from '@/config/echart.config';
+import dayjs from 'dayjs';
 
 
 echarts.registerTheme('my_theme', fireTheme);
@@ -17,7 +18,6 @@ interface Expenses {
   general_services: number;
   government: number;
   home_improvement: number;
-  loan_payments: number;
   medical: number;
   personal_care: number;
   rent_and_utilities: number;
@@ -25,7 +25,7 @@ interface Expenses {
 
 }
 
-export function ExpensesBreakdown({ loading, transactions, className }: any) {
+export const ExpensesBreakdown = memo(function ExpensesBreakdown({ loading, transactions, className, setTxnTableFiltersCallback }: any) {
 
   const monthYearFormatter = useContext(MonthYearFormatContext);
 
@@ -38,7 +38,6 @@ export function ExpensesBreakdown({ loading, transactions, className }: any) {
     general_services: 0,
     government: 0,
     home_improvement: 0,
-    loan_payments: 0,
     medical: 0,
     personal_care: 0,
     rent_and_utilities: 0,
@@ -46,13 +45,13 @@ export function ExpensesBreakdown({ loading, transactions, className }: any) {
   });
 
   const totalExpenseForCategory = (CATEGORY: string) => {
-    const filteredTransactions = transactions.getTransactions.filter((item: any) => item.category === CATEGORY);
+    const filteredTransactions = transactions().filter((item: any) => item.category === CATEGORY);
     return filteredTransactions.reduce((a: number, b: any) => a + Math.abs(parseFloat(b.amount)), 0)
   }
-
   const currencyFormatter = useContext(CurrencyContext);
+
   useEffect(() => {
-    if (transactions) {
+    if (transactions()) {
       const calculateExpenses = {
         travel: totalExpenseForCategory("TRAVEL"),
         food_and_drink: totalExpenseForCategory("FOOD_AND_DRINK"),
@@ -62,7 +61,6 @@ export function ExpensesBreakdown({ loading, transactions, className }: any) {
         general_services: totalExpenseForCategory("GENERAL_SERVICES"),
         government: totalExpenseForCategory("GOVERNMENT_AND_NON_PROFIT"),
         home_improvement: totalExpenseForCategory("HOME_IMPROVEMENT"),
-        loan_payments: totalExpenseForCategory("LOAN_PAYMENTS"),
         medical: totalExpenseForCategory("MEDICAL"),
         personal_care: totalExpenseForCategory("PERSONAL_CARE"),
         rent_and_utilities: totalExpenseForCategory("RENT_AND_UTILITIES"),
@@ -132,7 +130,13 @@ export function ExpensesBreakdown({ loading, transactions, className }: any) {
 
   //TODO: Handle the click to filter some Transactionson our future Txn table viz.
   const handleChartClick = (e: any) => {
-    console.log("Showing Transactions for ", e.name);
+    const category = e.name.split(" ").join("_").toUpperCase();
+    setTxnTableFiltersCallback({
+      startDate: dayjs().format('YYYY-MM'),
+      endDate: dayjs().add(1, 'month').format('YYYY-MM'),
+      categories: [category],
+      notCategories: null,
+    })
   }
 
   return (
@@ -152,4 +156,4 @@ export function ExpensesBreakdown({ loading, transactions, className }: any) {
       }
     </div>
   )
-}
+})
