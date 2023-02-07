@@ -6,6 +6,8 @@ import { Products } from 'plaid';
 import dayjs from 'dayjs';
 import { Transaction } from './transactions.entity';
 import { InvestmentTransaction } from './investment_transactions.entity';
+import { EncryptionTransformer } from 'typeorm-encrypted';
+import { DB_ENCRYPTION_KEY } from '@/config';
 
 @ObjectType()
 @Entity()
@@ -19,7 +21,16 @@ export class PlaidInfo extends BaseEntity {
   user: Relation<User>;
 
   @Field()
-  @Column({ nullable: true })
+  @Column({
+    type: "varchar",
+    nullable: false,
+    transformer: new EncryptionTransformer({
+      key: DB_ENCRYPTION_KEY,
+      algorithm: 'aes-256-gcm',
+      ivLength: 16,
+    }),
+    default: ""
+  })
   access_token: string;
 
   @Field()
@@ -31,11 +42,29 @@ export class PlaidInfo extends BaseEntity {
   products: Products[];
 
   @Field()
-  @Column({ default: "" })
+  @Column({
+    type: "varchar",
+    nullable: false,
+    transformer: new EncryptionTransformer({
+      key: DB_ENCRYPTION_KEY,
+      algorithm: 'aes-256-gcm',
+      ivLength: 16,
+    }),
+    default: ""
+  })
   institution_id: string;
 
   @Field()
-  @Column({ default: "" })
+  @Column({
+    type: "varchar",
+    nullable: false,
+    transformer: new EncryptionTransformer({
+      key: DB_ENCRYPTION_KEY,
+      algorithm: 'aes-256-gcm',
+      ivLength: 16,
+    }),
+    default: ""
+  })
   institution_name: string;
 
   @Field({ nullable: true })
