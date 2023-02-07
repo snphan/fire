@@ -5,6 +5,9 @@ import { DataSource } from "typeorm";
 /* Command to run: 
   NODE_ENV=development npx ts-node -r tsconfig-paths/register convert_to_encrypted.ts 
 
+  ********NOTE********
+  THIS SCRIPT REQUIRES THAT AN .env.development.local BE DEFINED in this folder
+
 
   Steps
   1. Add a new column (col B) to the table. Configure the column to be encrypted. Remove the transformer from the original column (col A).
