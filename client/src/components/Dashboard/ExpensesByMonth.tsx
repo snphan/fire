@@ -1,5 +1,4 @@
-import { DashboardContext, MonthYearFormatContext } from "@/Context"
-import { memo, useContext, useEffect, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import React from 'react';
 import * as echarts from "echarts";
 import ReactECharts from 'echarts-for-react';
@@ -18,7 +17,6 @@ interface IExpenses {
 export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExpenses, setTxnTableFiltersCallback }: any) {
 
   const [expenseData, setExpenseData] = useState<IExpenses>({ "1993/01": { expense: 0 } })
-  const dashboardContext = useContext(DashboardContext);
 
   useEffect(() => {
     if (allExpenses()) {

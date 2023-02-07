@@ -1,6 +1,6 @@
 import { DashboardContext } from '@/Context';
 import { PLAID_EXCHANGE_TOKEN } from '@/mutations';
-import { IS_BANKACCOUNT_LINKED, PLAID_CREATE_LINK_TOKEN, PLAID_GET_ACCOUNTS, PLAID_GET_BALANCE, PLAID_GET_BANK_NAMES, PLAID_GET_TRANSACTIONS } from '@/queries';
+import { PLAID_CREATE_LINK_TOKEN } from '@/queries';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { Button, Dialog, DialogBody, DialogFooter, DialogHeader } from '@material-tailwind/react';
 import React, { useContext, useState } from 'react';
@@ -20,7 +20,7 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
   const [linkToken, setLinkToken] = useState<string | null>(null);
 
   const [exchangeLinkToken, { data: itemId }] = useMutation<any>(PLAID_EXCHANGE_TOKEN, {
-    refetchQueries: dashboardContext?.refetchQueries
+    refetchQueries: dashboardContext()?.refetchQueries
   });
 
   const handleClickProduct = (product: string) => {
@@ -36,7 +36,7 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
     /* Exchange the PublicToken for a Permanent Access token */
     exchangeLinkToken({
       variables: { publicToken: publicToken, products: selectedProducts },
-      onCompleted: () => { setSelectedProducts([]); dashboardContext?.sync() }
+      onCompleted: () => { setSelectedProducts([]); dashboardContext()?.sync() }
     });
     setLinkToken(null);
     setOpenPlaidPrompt(false);

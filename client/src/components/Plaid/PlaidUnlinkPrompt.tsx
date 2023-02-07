@@ -7,7 +7,7 @@ import {
   DialogFooter,
   DialogHeader
 } from '@material-tailwind/react';
-import { IS_BANKACCOUNT_LINKED, PLAID_GET_ACCOUNTS, PLAID_GET_BALANCE, PLAID_GET_BANK_NAMES, PLAID_GET_TRANSACTIONS } from '@/queries';
+import { PLAID_GET_BANK_NAMES } from '@/queries';
 import { PLAID_UNLINK_BANK } from '@/mutations';
 import { useMutation, useQuery } from '@apollo/client';
 import { DashboardContext } from '@/Context';
@@ -20,7 +20,7 @@ export function PlaidUnlinkPrompt({ openPlaidUnlink, setOpenPlaidUnlink }: any) 
   const [unlinkBankNames, setUnlinkBankNames] = useState<string[]>([]);
   const { data: bankNames } = useQuery(PLAID_GET_BANK_NAMES);
   const [unlinkBankAccount] = useMutation<any>(PLAID_UNLINK_BANK, {
-    refetchQueries: dashboardContext?.refetchQueries
+    refetchQueries: dashboardContext()?.refetchQueries
   });
 
   return (
@@ -60,7 +60,10 @@ export function PlaidUnlinkPrompt({ openPlaidUnlink, setOpenPlaidUnlink }: any) 
           variant="gradient"
           color="green"
           onClick={() => {
-            unlinkBankAccount({ variables: { bankNames: unlinkBankNames } })
+            unlinkBankAccount({
+              variables: { bankNames: unlinkBankNames },
+              onCompleted: dashboardContext()?.sync()
+            })
             setOpenPlaidUnlink(false);
             setUnlinkBankNames([]);
           }}

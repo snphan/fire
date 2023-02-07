@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { CurrencyContext, DashboardContext } from '@/Context';
+import { CurrencyContext } from '@/Context';
 import { Tooltip } from '@material-tailwind/react';
 
 export function TransactionsTable({ className, allTransactions, allInvestTransactions, filters }: any) {

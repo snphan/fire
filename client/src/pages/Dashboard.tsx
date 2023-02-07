@@ -56,6 +56,8 @@ export function Dashboard({ }: any) {
     {
       query: PLAID_GET_TRANSACTIONS, variables: defaultPeriod
     },
+    { query: PLAID_GET_ALL_TRANSACTIONS },
+    { query: PLAID_GET_ALL_INVEST_TXN },
     {
       query: PLAID_GET_INVESTMENT_TRANSACTIONS, variables: defaultPeriod
     },
