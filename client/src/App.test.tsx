@@ -16,4 +16,7 @@ test('renders app', () => {
       <App />
     </ApolloProvider>
   );
+  const logo = screen.getAllByRole("img");
+  expect(logo).toHaveLength(1);
+  expect(logo[0].id).toBe("fire-logo");
 });
