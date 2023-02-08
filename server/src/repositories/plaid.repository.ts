@@ -9,7 +9,7 @@ import CryptoJS from 'crypto-js';
 import dayjs from "dayjs";
 import { Transaction } from "@/entities/transactions.entity";
 import { InvestmentTransaction } from "@/entities/investment_transactions.entity";
-import { app } from "@/server";
+import { dataSource } from "@/databases";
 
 interface UpdatesFromPlaid {
   [key: string]: {
@@ -139,7 +139,7 @@ export default class PlaidRepository {
 
       try {
         if (added)
-          await app.appDataSource
+          await dataSource
             .createQueryBuilder()
             .insert()
             .into(Transaction)
@@ -152,7 +152,7 @@ export default class PlaidRepository {
             .execute();
 
         if (modified)
-          await app.appDataSource
+          await dataSource
             .createQueryBuilder()
             .insert()
             .into(Transaction)
@@ -165,7 +165,7 @@ export default class PlaidRepository {
             .execute()
 
         if (removed)
-          await app.appDataSource
+          await dataSource
             .createQueryBuilder()
             .delete()
             .from(Transaction)
@@ -176,7 +176,7 @@ export default class PlaidRepository {
         if (txnCursor) await PlaidInfo.update(plaidInfoId, { txn_cursor: txnCursor });
 
         if (investment_transactions)
-          await app.appDataSource
+          await dataSource
             .createQueryBuilder()
             .insert()
             .into(InvestmentTransaction)

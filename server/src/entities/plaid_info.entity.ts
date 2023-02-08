@@ -38,7 +38,7 @@ export class PlaidInfo extends BaseEntity {
   item_id: string;
 
   @Field((type) => [Products])
-  @Column("text", { array: true })
+  @Column("text", { array: true, default: [] })
   products: Products[];
 
   @Field()

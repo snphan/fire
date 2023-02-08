@@ -12,7 +12,7 @@ import hpp from 'hpp';
 import { buildSchema } from 'type-graphql';
 import { DataSource } from 'typeorm';
 import { NODE_ENV, PORT, ORIGIN, CREDENTIALS, PLAID_ENV, PLAID_CLIENT_ID, PLAID_SECRET, PLAID_PRODUCTS, PLAID_COUNTRY_CODES, PLAID_REDIRECT_URI, PLAID_ANDROID_PACKAGE_NAME } from '@config';
-import { dbConnection } from '@databases';
+import { dataSource } from '@databases';
 import { authMiddleware, authChecker } from '@middlewares/auth.middleware';
 import errorMiddleware from '@middlewares/error.middleware';
 import { logger, responseLogger, errorLogger } from '@utils/logger';
@@ -29,19 +29,21 @@ class App {
   public env: string;
   public port: string | number;
   public plaidClient: PlaidApi;
-  public appDataSource: DataSource;
   private plaidSyncRate: string;
 
-  constructor(resolvers, plaidSyncRate: string) {
+  constructor(plaidSyncRate: string) {
     this.app = express();
     this.env = NODE_ENV || 'development';
     this.port = PORT || 3000;
     this.plaidSyncRate = plaidSyncRate;
+  }
 
-    this.connectToDatabase();
+  public async init(resolvers) {
+    /* Use the init pattern to permit top-level async */
+    await this.connectToDatabase();
     this.initializeMiddlewares();
-    this.initPlaid();
-    this.initApolloServer(resolvers);
+    await this.initPlaid();
+    await this.initApolloServer(resolvers);
     this.initializeErrorHandling();
   }
 
@@ -94,8 +96,7 @@ class App {
   }
 
   private async connectToDatabase() {
-    this.appDataSource = new DataSource(dbConnection);
-    await this.appDataSource.initialize();
+    await dataSource.initialize();
   }
 
   private initializeMiddlewares() {
