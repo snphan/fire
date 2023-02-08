@@ -45,9 +45,16 @@ export const GET_USER_BY_ID = gql`
     }
   }
 `
+
+export const IS_BANKACCOUNT_LINKED = gql`
+  query bankAccountLinked {
+    bankAccountLinked
+  }
+`
+
 export const PLAID_CREATE_LINK_TOKEN = gql`
-query createLinkToken {
-  createLinkToken
+query createLinkToken($products: [String!]!) {
+  createLinkToken(products: $products)
 }
 `
 export const PLAID_GET_ACCOUNTS = gql`
@@ -55,19 +62,70 @@ query getAccounts {
   getAccounts
 }
 `
+
 export const PLAID_GET_TRANSACTIONS = gql`
-query getTransactions {
-  getTransactions
+query getTransactions($startDate: String, $endDate: String) {
+  getTransactions(startDate: $startDate, endDate: $endDate) {
+    name
+    amount
+    date
+    category
+    iso_currency
+  }
+}
+`
+export const PLAID_GET_ALL_TRANSACTIONS = gql`
+query getAllTransactions {
+  getTransactions {
+    transaction_id
+    name
+    amount
+    date
+    category
+    iso_currency
+  }
 }
 `
 
 export const PLAID_GET_INVESTMENT_TRANSACTIONS = gql`
-  query getInvestmentTransactions {
-    getInvestmentTransactions
+query getInvestTransactions($startDate: String, $endDate: String) {
+  getInvestTransactions(startDate: $startDate, endDate: $endDate) {
+    name
+    amount
+    date
+    type
+    iso_currency
   }
+}
 `
+
+export const PLAID_GET_ALL_INVEST_TXN = gql`
+query getInvestTransactions {
+  getInvestTransactions {
+    investment_transaction_id
+    name
+    amount
+    date
+    type
+    iso_currency
+  }
+}
+`
+
 export const PLAID_GET_BALANCE = gql`
   query getBalance {
     getBalance
+  }
+`
+
+export const PLAID_GET_INSTITUTION_BY_NAME = gql`
+  query searchInstitution($query: String!) {
+    searchInstitution(query: $query)
+  }
+`
+
+export const PLAID_GET_BANK_NAMES = gql`
+  query getBankNames {
+    getBankNames
   }
 `

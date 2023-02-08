@@ -110,7 +110,7 @@ export function ProspectiveRealEstate({ userID }: any) {
               </Tooltip>
             </div>
             {loading ?
-              <Loading />
+              <Loading className="w-36 h-36" />
               :
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
                 {REAssetData?.getUserById.re_asset.map((item: any) => {

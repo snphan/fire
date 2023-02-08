@@ -3,27 +3,36 @@ import App from '@/app';
 import { CreateUserDto, UserLoginDto } from '@dtos/users.dto';
 import { authResolver } from '@/resolvers/auth.resolver';
 import { userResolver } from '@/resolvers/users.resolver';
-import { getConnection } from 'typeorm';
+import { REAssetResolver } from '@/resolvers/re_analysis.resolver';
+import { PlaidResolver } from '@/resolvers/plaid.resolver';
+import { TransactionResolver } from '@/resolvers/transactions.resolver';
+import { dataSource } from '@/databases';
 
 let app: App;
 let userId: number;
 let authCookie: string;
 
 beforeAll(async () => {
-  app = new App([authResolver, userResolver]);
+  app = new App(
+    '0 1 * * *' // Everday at 1 am
+  );
 
   /* 
     No Entity error occurs because the App doesn't have enough time to 
     connect to the test database. We wait here so that the app can connect. 
   */
   await new Promise<void>(resolve => setTimeout(() => resolve(), 500));
+  await app.init(
+    [authResolver, userResolver, REAssetResolver, PlaidResolver, TransactionResolver]
+  )
+
 })
 
 afterAll(async () => {
   /* Clean up the database after the test is done */
-  const entities = getConnection().entityMetadatas;
+  const entities = dataSource.entityMetadatas;
   entities.forEach(async entity => {
-    const repository = getConnection().getRepository(entity.name);
+    const repository = dataSource.getRepository(entity.name);
     await repository.delete({});
   })
   await new Promise<void>(resolve => setTimeout(() => resolve(), 500));

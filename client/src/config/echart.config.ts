@@ -61,7 +61,7 @@ export const fireTheme = {
   },
   textStyle: {
     color: contrastColor,
-    fontFamily: "Ubuntu"
+    fontFamily: ["Ubuntu", "Roboto"]
   },
   title: {
     textStyle: {

@@ -8,6 +8,7 @@ import { ProspectiveRealEstate } from '@/pages/ProspectiveRealEstate';
 import { Dashboard } from '@/pages/Dashboard';
 import { NavBar } from './components/NavBar';
 import { ThemeProvider } from '@material-tailwind/react';
+import { apolloClient } from '.';
 
 declare global {
   /* google variable is loaded from script in public/index.html */
@@ -37,6 +38,7 @@ function App() {
     setUserID(undefined);
     setUserInfo(undefined);
     setAppState("auth");
+    apolloClient.clearStore();
   }
 
   const renderState = (appState: string) => {

@@ -10,33 +10,57 @@ import express from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import { buildSchema } from 'type-graphql';
-import { createConnection } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { NODE_ENV, PORT, ORIGIN, CREDENTIALS, PLAID_ENV, PLAID_CLIENT_ID, PLAID_SECRET, PLAID_PRODUCTS, PLAID_COUNTRY_CODES, PLAID_REDIRECT_URI, PLAID_ANDROID_PACKAGE_NAME } from '@config';
-import { dbConnection } from '@databases';
+import { dataSource } from '@databases';
 import { authMiddleware, authChecker } from '@middlewares/auth.middleware';
 import errorMiddleware from '@middlewares/error.middleware';
 import { logger, responseLogger, errorLogger } from '@utils/logger';
 import { createREAssetLoader } from '@utils/REAssetLoader';
 import { createREReceiptLoader } from './utils/REReceiptLoader';
 import { Configuration, LinkTokenCreateRequest, PlaidApi, PlaidEnvironments } from 'plaid';
+import { User } from './entities/users.entity';
+import PlaidRepository from './repositories/plaid.repository';
+import UserRepository from './repositories/users.repository';
+import cron from 'node-cron';
 
 class App {
   public app: express.Application;
   public env: string;
   public port: string | number;
   public plaidClient: PlaidApi;
+  private plaidSyncRate: string;
 
-  constructor(resolvers) {
+  constructor(plaidSyncRate: string) {
     this.app = express();
     this.env = NODE_ENV || 'development';
     this.port = PORT || 3000;
+    this.plaidSyncRate = plaidSyncRate;
+  }
 
-    this.connectToDatabase();
+  public async init(resolvers) {
+    /* Use the init pattern to permit top-level async */
+    await this.connectToDatabase();
     this.initializeMiddlewares();
-    this.initPlaid();
-    this.initApolloServer(resolvers);
+    await this.initPlaid();
+    await this.initApolloServer(resolvers);
     this.initializeErrorHandling();
   }
+
+  // Sync Plaid
+  syncPlaid = async () => {
+    logger.info("Running Sync Plaid Scheduled Job");
+    const userRepo = new UserRepository;
+    const plaidRepo = new PlaidRepository;
+
+    const findUsers = await User.find();
+    for (const user of findUsers) {
+      console.log(user);
+      await plaidRepo.syncTransactions(user, this.plaidClient);
+    }
+
+    logger.info("Plaid Information Synced");
+  };
 
   public async listen() {
     if (this.env === "production") {
@@ -52,6 +76,7 @@ class App {
         logger.info(`🚀 App listening on the port ${this.port}`);
         logger.info(`🎮 https://localhost:${this.port}/api/graphql`);
         logger.info(`=================================`);
+        cron.schedule(this.plaidSyncRate, async () => this.syncPlaid());
       });
     } else {
       this.app.listen(this.port, () => {
@@ -60,6 +85,8 @@ class App {
         logger.info(`🚀 App listening on the port ${this.port}`);
         logger.info(`🎮 http://localhost:${this.port}/api/graphql`);
         logger.info(`=================================`);
+
+        cron.schedule(this.plaidSyncRate, async () => this.syncPlaid());
       });
     }
   }
@@ -69,7 +96,7 @@ class App {
   }
 
   private async connectToDatabase() {
-    await createConnection(dbConnection);
+    await dataSource.initialize();
   }
 
   private initializeMiddlewares() {

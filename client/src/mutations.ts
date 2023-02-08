@@ -74,7 +74,19 @@ mutation deleteREAsset($reAssetId: Float!) {
 `
 
 export const PLAID_EXCHANGE_TOKEN = gql`
-mutation exchangePublicToken($publicToken: String!) {
-  exchangePublicToken(publicToken: $publicToken)
+mutation exchangePublicToken($publicToken: String!, $products: [String!]!) {
+  exchangePublicToken(publicToken: $publicToken, products: $products)
 }
+`
+
+export const PLAID_UNLINK_BANK = gql`
+mutation unlinkBank($bankNames: [String!]!) {
+  unlinkBank(bankNames: $bankNames)
+}
+`
+
+export const SYNC_TRANSACTIONS = gql`
+  mutation syncTransactions {
+    syncUserTransactions
+  }
 `
