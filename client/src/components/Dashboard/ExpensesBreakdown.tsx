@@ -107,7 +107,7 @@ export const ExpensesBreakdown = memo(function ExpensesBreakdown({ loading, tran
         emphasis: {
           label: {
             show: true,
-            fontSize: 40,
+            fontSize: '1rem',
             fontWeight: 'bold'
           }
         },
@@ -141,13 +141,18 @@ export const ExpensesBreakdown = memo(function ExpensesBreakdown({ loading, tran
 
   return (
     <div className={className}>
-      <div className="text-sm font-bold">Total {monthYearFormatter.format(new Date())} Expenses</div>
+      <div className="lg:w-full flex justify-between">
+        <div className="text-xs lg:text-sm font-bold">Total {monthYearFormatter.format(new Date())} Expenses</div>
+        <div className="lg:hidden text-lg lg:text-4xl font-bold text-pink-400 lg:my-5">
+          {currencyFormatter.format(Object.entries(expenses).reduce((a: number, keyValue: any) => a - Math.abs(keyValue[1]), 0))}
+        </div>
+      </div>
       {loading ?
         <Loading className="w-12 h-12"></Loading>
         :
         <>
           <div className="flex justify-center">
-            <div className="text-4xl font-bold text-pink-400 my-5">
+            <div className="hidden lg:block text-lg lg:text-4xl font-bold text-pink-400 lg:my-5">
               {currencyFormatter.format(Object.entries(expenses).reduce((a: number, keyValue: any) => a - Math.abs(keyValue[1]), 0))}
             </div>
           </div>
