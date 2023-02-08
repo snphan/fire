@@ -26,7 +26,7 @@ export function NavBar({ setAppState, endSession, currState }: any) {
             { name: "real_estate_agent", state: "prospective-real-estate" }
           ]).map((icon) => (
             <Tooltip key={icon.name} content={icon.state.replaceAll("-", " ")} className="capitalize bg-gray-900 p-2">
-              <li onClick={() => setAppState(icon.state)} className={((currState === icon.state) ? "bg-light-blue-500 " : "") + ("cursor-pointer hover:bg-zinc-800 rounded-lg flex justify-start lg:justify-center items-center lg:w-14 h-14 m-3")}>
+              <li onClick={() => { setAppState(icon.state); setHideNavBar(true) }} className={((currState === icon.state) ? "bg-light-blue-500 " : "") + ("cursor-pointer hover:bg-zinc-800 rounded-lg flex justify-start lg:justify-center items-center lg:w-14 h-14 m-3")}>
                 <span className="text-3xl material-icons material-symbols-outlined mx-3">{icon.name}</span>
                 <div className="lg:hidden text-zinc-200 mx-3">{icon.state.split("-").map((sub: string) => sub[0].toUpperCase() + sub.slice(1).toLowerCase()).join(" ")}</div>
               </li>
