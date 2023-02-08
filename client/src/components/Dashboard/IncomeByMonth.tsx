@@ -51,7 +51,7 @@ export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome,
 
 
   const option = {
-    tooltip: {
+    tooltip: (window.screen.width > 1024) ? { // lg screen breakpoint, tooltip was increasing width
       trigger: 'axis',
       position: function (pt: any) {
         return [pt[0], '10%'];
@@ -62,7 +62,7 @@ export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome,
           show: true
         }
       }
-    },
+    } : undefined,
     title: {
       left: 'left',
       text: 'Income History',
