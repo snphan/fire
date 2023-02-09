@@ -14,7 +14,7 @@ interface IExpenses {
   }
 }
 
-export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExpenses, setTxnTableFiltersCallback }: any) {
+export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExpenses, setTxnTableFiltersCallback, openTxnTable }: any) {
 
   const [expenseData, setExpenseData] = useState<IExpenses>({ "1993/01": { expense: 0 } })
 
@@ -143,7 +143,7 @@ export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExp
       categories: null,
       notCategories: ['INCOME', 'TRANSFER_IN', 'TRANSFER_OUT', 'LOAN_PAYMENTS']
     })
-
+    openTxnTable();
   }
 
   return (

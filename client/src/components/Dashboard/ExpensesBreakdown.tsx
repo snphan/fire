@@ -25,7 +25,7 @@ interface Expenses {
 
 }
 
-export const ExpensesBreakdown = memo(function ExpensesBreakdown({ loading, transactions, className, setTxnTableFiltersCallback }: any) {
+export const ExpensesBreakdown = memo(function ExpensesBreakdown({ loading, transactions, className, setTxnTableFiltersCallback, openTxnTable }: any) {
 
   const monthYearFormatter = useContext(MonthYearFormatContext);
 
@@ -137,6 +137,7 @@ export const ExpensesBreakdown = memo(function ExpensesBreakdown({ loading, tran
       categories: [category],
       notCategories: null,
     })
+    openTxnTable();
   }
 
   return (

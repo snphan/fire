@@ -16,7 +16,7 @@ interface IIncome {
   }
 }
 
-export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome, allDividends, setTxnTableFiltersCallback }: any) {
+export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome, allDividends, setTxnTableFiltersCallback, openTxnTable }: any) {
 
   const [incomeData, setIncomeData] = useState<IIncome>({ "1993/01": { income: 0, dividend: 0 } })
 
@@ -42,10 +42,8 @@ export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome,
       for (const dividend of allDividends()) {
         const date = new Date(dividend.date);
         const YYYYMM = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}`;
-        newIncomeData[YYYYMM].dividend += Math.abs(parseFloat(dividend.amount));
-        newIncomeData[YYYYMM].dividend = Math.round(newIncomeData[YYYYMM].dividend * 100) / 100;
-      }
-      setIncomeData(newIncomeData);
+        newIncomeData[YYYYMM].dividend += Math.abs(parseFloat(dividend.amount)); newIncomeData[YYYYMM].dividend = Math.round(newIncomeData[YYYYMM].dividend * 100) / 100;
+      } setIncomeData(newIncomeData);
     }
   }, [allIncome, allDividends])
 
@@ -170,6 +168,7 @@ export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome,
       categories: ['INCOME', 'DIVIDENDS'],
       notCategories: null
     })
+    openTxnTable();
   }
 
   return (

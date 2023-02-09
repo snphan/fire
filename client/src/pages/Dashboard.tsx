@@ -64,6 +64,7 @@ export function Dashboard({ }: any) {
     { query: PLAID_GET_BANK_NAMES },
   ]
 
+  const [hideTxnTable, setHideTxnTable] = useState<boolean>(true);
   const { data: isBankLinked } = useQuery<any>(IS_BANKACCOUNT_LINKED);
   const [openPlaidPrompt, setOpenPlaidPrompt] = useState<boolean>(false);
   const [openPlaidUnlink, setOpenPlaidUnlink] = useState<boolean>(false);
@@ -102,6 +103,9 @@ export function Dashboard({ }: any) {
     refetchQueries: dashboardRefetchQueries,
     defaultPeriod: defaultPeriod,
   }), []);
+
+  const openTxnTable = useCallback(() => setHideTxnTable(false), [])
+  const closeTxnTable = useCallback(() => setHideTxnTable(true), [])
 
   // DEBUG
   useEffect(() => {
@@ -160,21 +164,26 @@ export function Dashboard({ }: any) {
                 loading={loadingTransactions}
                 transactions={getCurrentMonthTransactions}
                 setTxnTableFiltersCallback={setTxnTableFiltersCallback}
+                openTxnTable={openTxnTable}
               />
               <IncomeByMonth className="h-60 lg:h-auto lg:order-3 col-span-2 lg:row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 m-2 p-2 rounded-xl shadow-xl"
                 allIncome={getAllIncome}
                 allDividends={getAllDividend}
                 setTxnTableFiltersCallback={setTxnTableFiltersCallback}
+                openTxnTable={openTxnTable}
               />
               <ExpensesByMonth className="h-60 lg:h-auto lg:order-6 col-span-2 lg:row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 m-2 p-2 rounded-xl shadow-xl"
                 allExpenses={getAllExpenses}
                 setTxnTableFiltersCallback={setTxnTableFiltersCallback}
+                openTxnTable={openTxnTable}
               />
-              <TransactionsTable className="hidden lg:block lg:order-4 max-h-full col-span-2 row-span-6 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 m-2 p-2 rounded-xl shadow-xl"
+              <TransactionsTable className={(hideTxnTable ? "top-full " : "top-1/4 z-20 ") + "h-3/4 w-full duration-500 lg:w-auto fixed lg:top-auto lg:h-auto lg:static lg:block lg:order-4 max-h-full col-span-2 row-span-6 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 p-4 lg:rounded-xl rounded-t-3xl shadow-xl"}
                 loading={loadingAllTransactions}
                 allTransactions={allTransactionsData?.getTransactions}
                 allInvestTransactions={allInvestTxnData?.getInvestTransactions}
                 filters={TxnTableFilters}
+                closeTxnTable={closeTxnTable}
+                hideTxnTable={hideTxnTable}
               />
             </div>
           </>
