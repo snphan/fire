@@ -24,12 +24,12 @@ export function TotalBalance({ loading, balanceData, className }: any) {
 
     <button className={className}>
       <div className="flex flex-col h-full items-start">
-        <div className="text-sm font-bold">Total Balance</div>
+        <div className="text-xs lg:text-sm font-bold">Total Balance</div>
         <div className="grow flex justify-center items-center w-full">
           {loading ?
-            <Loading className="w-12 h-12"></Loading>
+            <Loading className="m-2 w-10 h-10 lg:w-12 lg:h-12" />
             :
-            <div className="text-4xl font-bold text-sky-500">{typeof totalBalance !== undefined && currencyFormatter.format(totalBalance!)}</div>
+            <div className="text-xl lg:text-4xl font-bold text-sky-500">{typeof totalBalance !== undefined && currencyFormatter.format(totalBalance!)}</div>
           }
         </div>
       </div>

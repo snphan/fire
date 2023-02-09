@@ -148,11 +148,11 @@ export function Dashboard({ }: any) {
 
             {/* Dashboard Viz Components */}
             <div className="lg:h-auto lg:grow w-full grid grid-cols-2 lg:grid-cols-6 lg:grid-rows-6">
-              <TotalBalance className="lg:row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 m-2 p-2 rounded-xl shadow-xl"
+              <TotalBalance className="h-24 lg:h-auto lg:row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 m-2 p-2 rounded-xl shadow-xl"
                 loading={loadingBalance}
                 balanceData={balanceData}
               />
-              <TotalIncome className="lg:row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 m-2 p-2 rounded-xl shadow-xl"
+              <TotalIncome className="h-24 lg:h-auto lg:row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 m-2 p-2 rounded-xl shadow-xl"
                 loading={loadingTransactions}
                 transactions={transactionsData}
               />
