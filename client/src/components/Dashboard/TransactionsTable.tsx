@@ -54,7 +54,7 @@ export function TransactionsTable({ className, allTransactions, allInvestTransac
         <div className="p-4 flex flex-col grow h-10 w-full">
           <div className="grow w-full ">
             <table className="w-full h-full flex flex-col">
-              <thead className="rounded-tl-xl rounded-tr-xl sticky top-0 bg-zinc-800 w-full">
+              <thead id="txn-header" className="rounded-tl-xl rounded-tr-xl sticky top-0 bg-zinc-800 w-full">
                 <tr className="table text-zinc-500 text-left w-full">
                   <th className="w-5/12 p-3 py-4">Name</th>
                   <th className="w-3/12 p-3 py-4">Date</th>
@@ -65,7 +65,12 @@ export function TransactionsTable({ className, allTransactions, allInvestTransac
                 {filteredTxn?.map((txn: any) => {
                   return (
                     <tr key={txn.transaction_id || txn.investment_transaction_id} className="transition-all duration-300 hover:bg-sky-200 hover:bg-opacity-10">
-                      <td className="w-5/12 border-b border-zinc-700 p-3">
+                      <td className="border-b border-zinc-700 p-3"
+                        style={{
+                          width: `${document.getElementById("txn-header") && document.getElementById("txn-header")!.offsetWidth * 5 / 12
+                            }px`
+                        }}
+                      >
                         <Tooltip
                           content={
                             txn.category?.split('_').map((substring: string) => substring[0].toUpperCase() + substring.slice(1).toLowerCase()).join(" ")
@@ -85,6 +90,6 @@ export function TransactionsTable({ className, allTransactions, allInvestTransac
           </div>
         </div>
       </div>
-    </button>
+    </button >
   )
 }
