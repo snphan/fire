@@ -44,7 +44,7 @@ export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExp
 
 
   const option = {
-    tooltip: {
+    tooltip: (window.screen.width > 1024) ? { // lg screen breakpoint, tooltip was increasing width
       trigger: 'axis',
       position: function (pt: any) {
         return [pt[0], '10%'];
@@ -55,17 +55,22 @@ export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExp
           show: true
         }
       }
-    },
+    } : undefined,
     title: {
       left: 'left',
-      text: 'Expenses History',
+      text: 'Income History',
       textStyle: {
-        fontSize: '0.875rem'
+        fontSize: (window.screen.width > 1024) ? '0.875rem' : '0.75rem'
       }
     },
+    textStyle: {
+      fontSize: (window.screen.width > 1024) ? '0.875rem' : '0.75rem'
+    },
     legend: {
-      top: '0%',
-      left: 'center'
+      top: (window.screen.width > 1024) ? '0%' : '10%',
+      left: (window.screen.width > 1024) ? 'center' : 'left',
+      itemWidth: (window.screen.width > 1024) ? 25 : 18,
+      itemHeight: (window.screen.width > 1024) ? 14 : 10
     },
     toolbox: {
       feature: {
@@ -74,25 +79,36 @@ export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExp
         },
         restore: {},
         saveAsImage: {}
-      }
+      },
+      itemSize: (window.screen.width > 1024) ? 15 : 12
     },
     xAxis: {
       type: 'category',
       boundaryGap: ['10%', '10%'],
-      data: Object.keys(expenseData)
+      data: Object.keys(expenseData),
+      axisLabel: {
+        fontSize: (window.screen.width > 1024) ? 12 : 9
+      }
     },
     yAxis: {
-      type: 'value', boundaryGap: [0, '20%']
+      type: 'value',
+      boundaryGap: [0, '20%'],
+      axisLabel: {
+        fontSize: (window.screen.width > 1024) ? 12 : 9
+      }
     },
     dataZoom: [
       {
         type: 'inside',
-        start: 90,
+        start: 80,
         end: 100
       },
       {
-        start: 90,
-        end: 100
+        start: 80,
+        end: 100,
+        textStyle: {
+          fontSize: (window.screen.width > 1024) ? 12 : 9
+        },
       }
     ],
     series: [
