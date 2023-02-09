@@ -67,12 +67,17 @@ export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome,
       left: 'left',
       text: 'Income History',
       textStyle: {
-        fontSize: '0.875rem'
+        fontSize: (window.screen.width > 1024) ? '0.875rem' : '0.75rem'
       }
     },
+    textStyle: {
+      fontSize: (window.screen.width > 1024) ? '0.875rem' : '0.75rem'
+    },
     legend: {
-      top: '0%',
-      left: 'center'
+      top: (window.screen.width > 1024) ? '0%' : '10%',
+      left: (window.screen.width > 1024) ? 'center' : 'left',
+      itemWidth: (window.screen.width > 1024) ? 25 : 18,
+      itemHeight: (window.screen.width > 1024) ? 14 : 10
     },
     toolbox: {
       feature: {
@@ -81,26 +86,36 @@ export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome,
         },
         restore: {},
         saveAsImage: {}
-      }
+      },
+      itemSize: (window.screen.width > 1024) ? 15 : 12
     },
     xAxis: {
       type: 'category',
       boundaryGap: ['10%', '10%'],
-      data: Object.keys(incomeData)
+      data: Object.keys(incomeData),
+      axisLabel: {
+        fontSize: (window.screen.width > 1024) ? 12 : 9
+      }
     },
     yAxis: {
       type: 'value',
-      boundaryGap: [0, '20%']
+      boundaryGap: [0, '20%'],
+      axisLabel: {
+        fontSize: (window.screen.width > 1024) ? 12 : 9
+      }
     },
     dataZoom: [
       {
         type: 'inside',
-        start: 90,
+        start: 80,
         end: 100
       },
       {
-        start: 90,
-        end: 100
+        start: 80,
+        end: 100,
+        textStyle: {
+          fontSize: (window.screen.width > 1024) ? 12 : 9
+        },
       }
     ],
     series: [
@@ -161,6 +176,7 @@ export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome,
     <Tooltip content={"Income from Accounts + Dividends"} className="capitalize bg-zinc-900 p-2">
       <button className={className}>
         <ReactECharts
+          className=""
           onEvents={{ click: handleChartClick }}
           theme="my_theme" style={{ height: "100%" }}
           option={option}
