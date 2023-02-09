@@ -24,9 +24,9 @@ export function PlaidUnlinkPrompt({ openPlaidUnlink, setOpenPlaidUnlink }: any) 
   });
 
   return (
-    <Dialog open={openPlaidUnlink} handler={() => { setOpenPlaidUnlink(!openPlaidUnlink); setUnlinkBankNames([]) }} className="bg-zinc-800 max-h-screen overflow-auto">
+    <Dialog size={(window.screen.width > 1024) ? "sm" : "xl"} open={openPlaidUnlink} handler={() => { setOpenPlaidUnlink(!openPlaidUnlink); setUnlinkBankNames([]) }} className="bg-zinc-800 max-h-screen overflow-auto">
       <DialogHeader className="text-gray-100">Unlink Accounts</DialogHeader>
-      <DialogBody className="text-gray-200 grid grid-cols-2">
+      <DialogBody className="text-gray-200 grid grid-cols-1 lg:grid-cols-2">
         {bankNames ?
           bankNames.getBankNames.map((name: string) =>
             <Checkbox
@@ -44,7 +44,7 @@ export function PlaidUnlinkPrompt({ openPlaidUnlink, setOpenPlaidUnlink }: any) 
           <div>No banks to display</div>
         }
       </DialogBody>
-      <DialogFooter>
+      <DialogFooter className="flex justify-center items-center">
         <Button
           variant="text"
           color="red"
