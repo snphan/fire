@@ -72,9 +72,9 @@ export const ExpensesBreakdown = memo(function ExpensesBreakdown({ loading, tran
   }, [transactions]);
 
   const expensesOptions = {
-    tooltip: {
+    tooltip: (window.screen.width > 1024) ? {// lg screen breakpoint, tooltip was increasing width
       trigger: 'item'
-    },
+    } : undefined,
     legend: {
       top: '0%',
       left: 'center'

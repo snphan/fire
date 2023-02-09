@@ -177,7 +177,7 @@ export function Dashboard({ }: any) {
                 setTxnTableFiltersCallback={setTxnTableFiltersCallback}
                 openTxnTable={openTxnTable}
               />
-              <TransactionsTable className={(hideTxnTable ? "top-full " : "top-1/4 z-20 ") + "h-3/4 w-full duration-500 lg:w-auto fixed lg:top-auto lg:h-auto lg:static lg:block lg:order-4 max-h-full col-span-2 row-span-6 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 p-4 lg:rounded-xl rounded-t-3xl shadow-xl"}
+              <TransactionsTable className={(hideTxnTable ? "top-full " : "top-1/4 z-[1000] lg:z-auto ") + "h-3/4 w-full duration-500 lg:w-auto fixed lg:top-auto lg:h-auto lg:static lg:block lg:order-4 max-h-full col-span-2 row-span-6 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 p-4 lg:rounded-xl rounded-t-3xl shadow-xl"}
                 loading={loadingAllTransactions}
                 allTransactions={allTransactionsData?.getTransactions}
                 allInvestTransactions={allInvestTxnData?.getInvestTransactions}
