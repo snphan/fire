@@ -86,8 +86,8 @@ export default class PlaidRepository {
       try {
         if (plaidInfo.products.includes(Products.Transactions)) {
           let cursor = plaidInfo.txn_cursor;
-          let added: PlaidTransaction[] = [];       // New added txns
-          let modified: PlaidTransaction[] = [];    // Txns that were modified
+          let added: PlaidTransaction[] = [];         // New added txns
+          let modified: PlaidTransaction[] = [];      // Txns that were modified
           let removed: RemovedTransaction[] = [];     // Txns that were removed
           let hasMore = true;
           while (hasMore) {
@@ -99,7 +99,7 @@ export default class PlaidRepository {
               }
             };
             const response = await plaidClient.transactionsSync(request);
-            const data = response.data;
+            const data = response.data; // Sometimes data is not synced Plaid side and our client doesn't update.
             added = added.concat(data.added);
             modified = modified.concat(data.modified);
             removed = removed.concat(data.removed);
