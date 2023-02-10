@@ -71,7 +71,7 @@ export function AddREAssetForm({ open, handleOpen, userID }: any) {
   const [REAssetInfo, setREAssetInfo] = useState<REAsset>(JSON.parse(JSON.stringify(defaultREAsset)));
 
   return (
-    <Dialog size="lg" open={open} handler={handleOpen} className="bg-gray-800 max-h-screen overflow-auto">
+    <Dialog size="lg" open={open} handler={handleOpen} className="bg-gray-800 max-h-screen overflow-auto lg:w-auto w-full m-0 max-w-full">
       <DialogHeader className="text-gray-100">Add a Property</DialogHeader>
       <DialogBody className="text-gray-200 flex flex-col">
 
