@@ -44,7 +44,7 @@ export function TransactionsTable({ className, allTransactions, allInvestTransac
 
   return (
     <>
-      <button className={className}>
+      <div className={className}>
         <div className="lg:hidden relative">
           <button className={(hideTxnTable ? "top-0 " : "-top-7 ") + "animate-bounceMiddle absolute rounded-full p-2  bg-gradient-to-tr from-sky-400 to-sky-700 w-10 h-10 left-1/2 -translate-x-1/2 drop-shadow-strong"} onClick={() => closeTxnTable()}><span className="material-icons">arrow_downward</span></button>
         </div>
@@ -94,7 +94,7 @@ export function TransactionsTable({ className, allTransactions, allInvestTransac
             </div>
           </div>
         </div>
-      </button >
+      </div >
       <div className={(hideTxnTable ? "-z-10 bg-opacity-0 " : "z-10 bg-opacity-25 ") + "lg:hidden bg-white top-0 w-screen h-screen fixed transition-all duration-700 backdrop-blur-sm"}></div>
     </>
   )
