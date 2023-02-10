@@ -110,6 +110,14 @@ export function AddREAssetForm({ open, handleOpen, userID }: any) {
             type="text" name="" id="Address" value={REAssetInfo.address} onChange={(e) => setREAssetInfo(({ ...REAssetInfo, address: e.target.value }))} />
         </div>
 
+        <div className="flex flex-wrap mx-3 mb-6">
+          <label className="block uppercase tracking-wide text-zinc-500 text-xs font-bold mb-2"
+            htmlFor="PostalCode">Postal Code</label>
+          <input className="appearance-none block w-full text-lg bg-zinc-200 text-zinc-700 border border-zinc-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-zinc-500"
+            type="text" name="" id="PostalCode" value={REAssetInfo.postal_code} onChange={(e) => setREAssetInfo(({ ...REAssetInfo, postal_code: e.target.value }))} />
+        </div>
+
+
         <div className="flex">
           <div className="flex flex-wrap mx-3 mb-6">
             <label className="block uppercase tracking-wide text-zinc-500 text-xs font-bold mb-2"
