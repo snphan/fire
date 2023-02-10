@@ -18,17 +18,12 @@ code {
 
 @layer base {
     h1 {
-        @apply text-5xl;
-        @apply font-bold;
-        @apply m-5;
+        @apply text-base ml-14 lg:ml-5 lg:text-5xl font-bold m-5;
     }
     h3 {
-        @apply text-3xl;
-        @apply font-bold;
-        @apply m-2
+        @apply text-xl lg:text-3xl font-bold m-2;
     }
     h4 {
-        @apply text-xl;
-        @apply m-1;
+        @apply text-sm lg:text-xl m-1;
     }
 }

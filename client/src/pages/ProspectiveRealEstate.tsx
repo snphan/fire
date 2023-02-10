@@ -98,21 +98,21 @@ export function ProspectiveRealEstate({ userID }: any) {
 
   return (
     <>
-      <div className="ml-24 min-h-screen max-w-screen overflow-hidden">
+      <div className="lg:ml-24 min-h-screen max-w-screen lg:overflow-hidden">
         {!currentAsset ? // List View occurs if no REAsset is selected
           /* List view for Prospective Real Estate */
           <>
-            <div className="flex items-center ml-2">
-              <h1>Prospective Real Estate</h1>
+            <div className="flex items-between lg:items-center lg:ml-2">
+              <h1 className="text-base ml-14 lg:ml-5 lg:text-5xl ">Real Estate</h1>
               <div className="grow"></div>
               <Tooltip content={"Add"} className="capitalize bg-gray-900 p-2">
-                <span onClick={handleOpenAddREAsset} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer text-5xl material-icons material-symbols-outlined">add</span>
+                <span onClick={handleOpenAddREAsset} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer text-3xl lg:text-5xl material-icons material-symbols-outlined">add</span>
               </Tooltip>
             </div>
             {loading ?
               <Loading className="w-36 h-36" />
               :
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
                 {REAssetData?.getUserById.re_asset.map((item: any) => {
                   const { id } = item;
                   return (<REListItem
