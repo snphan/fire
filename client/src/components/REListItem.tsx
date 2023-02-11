@@ -15,8 +15,8 @@ export function REListItem({ REInfo, onClick, disabled, className }: any) {
           <span className="text-sm lg:text-xl material-icons">bathtub</span>
           <div className="text-sm lg:text-xl">{REInfo.bathrooms}</div>
         </div>
-        <h4 className={`truncate lg:w-auto`}
-          style={{ width: `calc(${window.screen.width * 0.9}px - 7rem)` }}
+        <h4 className={`truncate lg:whitespace-normal lg:w-auto`}
+          style={{ width: (window.screen.width < 1024) ? `calc(${window.screen.width * 0.9}px - 7rem)` : 'auto' }}
         >{REInfo.address}, {REInfo.city}, {REInfo.province}</h4>
       </div>
     </div>
