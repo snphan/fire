@@ -126,9 +126,10 @@ export function ProspectiveRealEstate({ userID }: any) {
             }
           </>
           :
-          /* Property Analysis SubPage */
+          /* Property Analysis Detail View */
           <div className="flex flex-col min-h-screen">
-            <div className="flex items-center">
+
+            <header className="flex items-center">
               <Tooltip content={"Back"} className="capitalize bg-gray-900 p-2">
                 <div className="mx-2 hover:bg-gray-700 hover:scale-105  rounded-full cursor-pointer w-12 h-12 flex justify-center items-center"
                   onClick={() => { /* Go Back to list view */ setAssetID(null); setCurrentAsset(null); }} >
@@ -146,24 +147,18 @@ export function ProspectiveRealEstate({ userID }: any) {
                   <span className="material-icons text-4xl">delete</span>
                 </div>
               </Tooltip>
-            </div>
+            </header>
 
-            <div className='flex'>
-              <div className="flex w-2/5 flex-col">
-                <Carousel className="bg-zinc-900 mx-5 rounded-xl p-2 h-96">
-                  {
-                    currentAsset?.picture_links.map((link: string, index: number) => {
-                      return (<Carousel.Item key={index} imgSrc={`${REACT_APP_MEDIA_HOST}/media/${link}`}>
-                      </Carousel.Item>)
-                    })
-                  }
-                </Carousel>
-                <REListItem
-                  className="items-center"
-                  REInfo={currentAsset} disabled
-                />
-              </div>
-              <div className="w-3/5 bg-zinc-900 mr-5 mb-5 rounded-xl drop-shadow-strong">
+            <div className='grid grid-cols-3'>
+              <Carousel className="col-span-1 row-span-3 bg-zinc-900 mx-5 rounded-xl p-2 h-96">
+                {
+                  currentAsset?.picture_links.map((link: string, index: number) => {
+                    return (<Carousel.Item key={index} imgSrc={`${REACT_APP_MEDIA_HOST}/media/${link}`}>
+                    </Carousel.Item>)
+                  })
+                }
+              </Carousel>
+              <div className="col-span-2 row-span-4 bg-zinc-900 mr-5 mb-5 rounded-xl drop-shadow-strong">
                 <div className="flex flex-col justify-between h-full">
                   <h4 className='font-bold m-2'>Projection</h4>
                   {currentAsset?.re_assumptions &&
@@ -217,6 +212,10 @@ export function ProspectiveRealEstate({ userID }: any) {
                   }
                 </div>
               </div>
+              <REListItem
+                className="col-span-1 row-span-1 items-center"
+                REInfo={currentAsset} disabled
+              />
             </div>
 
 
