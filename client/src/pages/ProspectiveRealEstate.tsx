@@ -39,6 +39,10 @@ export function ProspectiveRealEstate({ userID }: any) {
   const reAnalyzer = currentAsset?.re_assumptions && new REAnalyzer(currentAsset);
 
   const projectionOptions = currentAsset?.re_assumptions && {
+    grid: {
+      containLabel: true,
+      top: '20%'
+    },
     xAxis: {
       type: 'category',
       data: [...Array(currentAsset.re_assumptions.hold_length + 1).keys()].map((item) => {
@@ -48,14 +52,38 @@ export function ProspectiveRealEstate({ userID }: any) {
       }),
       name: "Date",
       nameGap: 30,
-      nameLocation: "center"
+      nameLocation: "center",
+      axisLabel: {
+        fontSize: (window.screen.width > 1024) ? 12 : 9
+      },
+      nameTextStyle: {
+        fontSize: (window.screen.width > 1024) ? 12 : 10,
+        fontWeight: 'bold'
+      },
+    },
+    legend: {
+      data: ['Stocks (8%)', 'RE Cumulative', 'RE Cashflow'],
+      top: '0%',
+      left: 'center',
+      itemWidth: (window.screen.width > 1024) ? 25 : 18,
+      itemHeight: (window.screen.width > 1024) ? 14 : 10,
+      textStyle: {
+        fontSize: (window.screen.width > 1024) ? 12 : 9
+      }
     },
     yAxis: {
       type: 'value',
-      name: 'Dollars ($)'
-    },
-    legend: {
-      data: ['Stocks (8%)', 'RE Cumulative Cashflow', 'RE Cashflow']
+      name: 'Dollars ($)',
+      splitLine: {
+        show: (window.screen.width < 1024) ? false : true
+      },
+      nameTextStyle: {
+        fontSize: (window.screen.width > 1024) ? 12 : 10,
+        fontWeight: 'bold'
+      },
+      axisLabel: {
+        fontSize: (window.screen.width > 1024) ? 12 : 9
+      }
     },
     series: [
       {
@@ -64,13 +92,13 @@ export function ProspectiveRealEstate({ userID }: any) {
         }),
         type: 'line',
         smooth: true,
-        name: 'Stocks (8%)'
+        name: 'Stocks (8%)',
       },
       {
         data: reAnalyzer.cashFlowCumulative,
         type: 'line',
         smooth: true,
-        name: 'RE Cumulative Cashflow'
+        name: 'RE Cumulative',
       },
       {
         data: [...[0], ...reAnalyzer.cashFlow],
@@ -131,12 +159,12 @@ export function ProspectiveRealEstate({ userID }: any) {
 
             <header className="flex items-center">
               <Tooltip content={"Back"} className="capitalize bg-gray-900 p-2">
-                <div className="z-[51] fixed lg:z-auto mx-2 hover:bg-gray-700 hover:scale-105 bg-zinc-800 rounded-full cursor-pointer w-12 h-12 flex justify-center items-center"
+                <div className="z-[51] fixed flex lg:static lg:z-auto mx-2 hover:bg-gray-700 hover:scale-105 bg-zinc-800 rounded-full cursor-pointer w-12 h-12 justify-center items-center"
                   onClick={() => { /* Go Back to list view */ setAssetID(null); setCurrentAsset(null); }} >
                   <span className="material-icons lg:text-4xl">arrow_back</span>
                 </div>
               </Tooltip>
-              <h1>Property Analysis</h1>
+              <h1 className="lg:ml-14">Property Analysis</h1>
               <div className="grow"></div>
               <Tooltip content={"Delete"} className="capitalize bg-gray-900 p-2">
                 <div className="transition-all mr-5 hover:bg-gradient-to-tr hover:from-pink-800 hover:to-pink-500 hover:bg-red-700 hover:shadow-pink-300/20 hover:scale-105 rounded-full cursor-pointer w-12 h-12 flex justify-center items-center"
@@ -149,8 +177,8 @@ export function ProspectiveRealEstate({ userID }: any) {
               </Tooltip>
             </header>
 
-            <div className='grid grid-cols-3'>
-              <Carousel className="col-span-1 row-span-3 bg-zinc-900 mx-5 rounded-xl p-2 h-96">
+            <div className='grow lg:grow-0 grid grid-cols-3 grid-rows-4 lg:grid-rows-none'>
+              <Carousel className="lg:order-1 hidden lg:block col-span-1 row-span-3 bg-zinc-900 mx-5 rounded-xl p-2 h-96">
                 {
                   currentAsset?.picture_links.map((link: string, index: number) => {
                     return (<Carousel.Item key={index} imgSrc={`${REACT_APP_MEDIA_HOST}/media/${link}`}>
@@ -158,13 +186,19 @@ export function ProspectiveRealEstate({ userID }: any) {
                   })
                 }
               </Carousel>
-              <div className="col-span-2 row-span-4 bg-zinc-900 mr-5 mb-5 rounded-xl drop-shadow-strong">
-                <div className="flex flex-col justify-between h-full">
-                  <h4 className='font-bold m-2'>Projection</h4>
+
+              {/* Projection Chart */}
+              <div className="order-2 col-span-3 lg:col-span-2 row-span-4 bg-zinc-900 m-2 lg:mr-5 lg:mb-5 rounded-xl drop-shadow-strong">
+                <div className="flex flex-col lg:justify-between h-full">
+                  <div className="flex justify-start">
+                    <h4 className='font-bold m-2'>Projection</h4>
+                    <div className="grow"></div>
+                    <button className="lg:hidden"><span className="material-icons p-2">edit</span></button>
+                  </div>
                   {currentAsset?.re_assumptions &&
                     <>
-                      <ReactECharts theme="my_theme" style={{ height: "65%" }} option={projectionOptions} />
-                      <div id='quickstats' className="m-4 flex flex-wrap justify-between">
+                      <ReactECharts theme="my_theme" style={{ height: "90%" }} option={projectionOptions} />
+                      <div id='quickstats' className="hidden m-4 lg:flex flex-wrap justify-between">
                         <Tooltip content={"Total Out of Pocket"} className="capitalize bg-gray-900 p-2">
                           <div className="p-2 flex flex-col justify-center items-center h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-800 to-pink-500 text-gray-200">
                             <div><span className="material-icons material-symbols-outlined">point_of_sale</span></div>
@@ -213,14 +247,14 @@ export function ProspectiveRealEstate({ userID }: any) {
                 </div>
               </div>
               <REListItem
-                className="col-span-1 row-span-1 items-center"
+                className="order-1 lg:order-3 col-span-3 lg:col-span-1 row-span-1 items-center"
                 REInfo={currentAsset} disabled
               />
             </div>
 
 
             {currentAsset?.re_assumptions ?
-              <div className="rounded-xl grow mx-5 mb-5 bg-zinc-900 drop-shadow-strong">
+              <div className="hidden lg:block rounded-xl grow mx-5 mb-5 bg-zinc-900 drop-shadow-strong">
                 <AddREAssumptionsForm currentAsset={currentAsset} setCurrentAsset={setCurrentAsset} assumptions={currentAsset.re_assumptions}></AddREAssumptionsForm>
               </div>
               :

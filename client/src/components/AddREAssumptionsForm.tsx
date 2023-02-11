@@ -11,7 +11,7 @@ import { CREATE_REASSET, UPDATE_REASSUMPTION } from '@/mutations';
 import { GET_USER_BY_ID } from '@/queries';
 
 
-export function AddREAssumptionsForm({ currentAsset, setCurrentAsset, assumptions }: any) {
+export function AddREAssumptionsForm({ currentAsset, setCurrentAsset, assumptions, className }: any) {
 
   const [newAssumptions, setNewAssumptions] = useState(JSON.parse(JSON.stringify(assumptions))); // create a state so that we can directly update assumptions.
   const otherExpensePlaceholder = JSON.parse(JSON.stringify(newAssumptions.other_expenses));
@@ -22,7 +22,7 @@ export function AddREAssumptionsForm({ currentAsset, setCurrentAsset, assumption
   }, [newAssumptions])
 
   return (
-    <div className="flex flex-col">
+    <div className={(className ? className : "") + " flex flex-col"}>
       <div className="flex justify-between">
         <h4 className='font-bold m-2'>Assumptions</h4>
         <Tooltip content={"Save to Database"} className="capitalize bg-gray-900 p-2">
