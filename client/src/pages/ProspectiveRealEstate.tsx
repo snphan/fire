@@ -161,7 +161,7 @@ export function ProspectiveRealEstate({ userID }: any) {
 
             <header className="flex items-center">
               <Tooltip content={"Back"} className="capitalize bg-gray-900 p-2">
-                <div className="z-[51] fixed flex lg:static lg:z-auto mx-2 hover:bg-gray-700 hover:scale-105 bg-zinc-800 rounded-full cursor-pointer w-12 h-12 justify-center items-center"
+                <div className="z-[11] fixed flex lg:static lg:z-auto mx-2 hover:bg-gray-700 hover:scale-105 bg-zinc-800 rounded-full cursor-pointer w-12 h-12 justify-center items-center"
                   onClick={() => { /* Go Back to list view */ setAssetID(null); setCurrentAsset(null); }} >
                   <span className="material-icons lg:text-4xl">arrow_back</span>
                 </div>

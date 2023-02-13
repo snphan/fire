@@ -9,7 +9,7 @@ export function NavBar({ setAppState, endSession, currState }: any) {
 
   return (
     <>
-      <button className="fixed top-0 left-0 m-3 lg:hidden text-lg z-50 transition-all flex justify-center items-center p-2 rounded-full bg-zinc-800" onClick={() => setHideNavBar(!hideNavBar)}>
+      <button className={(hideNavBar ? "z-10 " : "z-50 ") + " fixed top-0 left-0 m-3 lg:hidden text-lg transition-all flex justify-center items-center p-2 rounded-full bg-zinc-800"} onClick={() => setHideNavBar(!hideNavBar)}>
         <span className={"material-icons fixed transition-all " + (hideNavBar ? "opacity-100" : "opacity-0")}>menu</span>
         <span className={"material-icons " + (hideNavBar ? "opacity-0" : "opacity-100")} >close</span>
       </button>
