@@ -46,7 +46,9 @@ export function TransactionsTable({ className, allTransactions, allInvestTransac
     <>
       <div className={className}>
         <div className="lg:hidden relative">
-          <button className={(hideTxnTable ? "top-0 " : "-top-7 ") + "animate-bounceMiddle absolute rounded-full p-2  bg-gradient-to-tr from-sky-400 to-sky-700 w-10 h-10 left-1/2 -translate-x-1/2 drop-shadow-strong"} onClick={() => closeTxnTable()}><span className="material-icons">arrow_downward</span></button>
+          <button className={(hideTxnTable ? "top-0 " : "-top-7 ") + "animate-bounceMiddle absolute rounded-full p-2  bg-gradient-to-tr from-sky-400 to-sky-700 w-10 h-10 left-1/2 -translate-x-1/2 drop-shadow-strong"} onClick={() => closeTxnTable()}>
+            <span className="material-icons">arrow_downward</span>
+          </button>
         </div>
         <div className="flex flex-col h-full items-between">
           <div className="flex justify-between">

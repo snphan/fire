@@ -32,6 +32,7 @@ export function ProspectiveRealEstate({ userID }: any) {
   const [openConfirmDelete, setOpenConfirmDelete] = useState<boolean>(false);
   const [assetID, setAssetID] = useState<number | null>(null);
   const [currentAsset, setCurrentAsset] = useState<any>(null);
+  const [openEditAssumptions, setOpenEditAssumptions] = useState<boolean>(false)
 
   const handleOpenAddREAsset = () => setOpenAddREAsset(!openAddREAsset);
   const handleOpenConfirmDelete = () => setOpenConfirmDelete(!openConfirmDelete);
@@ -194,7 +195,7 @@ export function ProspectiveRealEstate({ userID }: any) {
                   <div className="flex justify-start">
                     <h4 className='font-bold m-2'>Projection</h4>
                     <div className="grow"></div>
-                    <button className="lg:hidden"><span className="material-icons p-2">edit</span></button>
+                    <button onClick={() => setOpenEditAssumptions(true)} className="lg:hidden"><span className="material-icons p-2">edit</span></button>
                   </div>
                   {currentAsset?.re_assumptions &&
                     <>
@@ -257,9 +258,14 @@ export function ProspectiveRealEstate({ userID }: any) {
 
 
             {currentAsset?.re_assumptions ?
-              <div className="hidden lg:block rounded-xl grow mx-5 mb-5 bg-zinc-900 drop-shadow-strong">
-                <AddREAssumptionsForm currentAsset={currentAsset} setCurrentAsset={setCurrentAsset} assumptions={currentAsset.re_assumptions}></AddREAssumptionsForm>
-              </div>
+              <AddREAssumptionsForm
+                className={(openEditAssumptions ? "z-[100] top-1/4 " : "top-full -z-10 ") + " fixed transition-all lg:z-auto lg:static duration-300 rounded-xl lg:grow lg:mx-5 lg:mb-5 bg-zinc-900 drop-shadow-strong"}
+                currentAsset={currentAsset}
+                setCurrentAsset={setCurrentAsset}
+                assumptions={currentAsset.re_assumptions}
+                openEditAssumptions={openEditAssumptions}
+                setOpenEditAssumptions={setOpenEditAssumptions}
+              />
               :
               // If server crashes when asset is being created, this is a fall back
               <div className="rounded-xl grow mx-5 mb-5 flex justify-center items-center bg-gray-800 drop-shadow-strong">
