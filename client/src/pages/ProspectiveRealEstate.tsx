@@ -259,7 +259,7 @@ export function ProspectiveRealEstate({ userID }: any) {
 
             {currentAsset?.re_assumptions ?
               <AddREAssumptionsForm
-                className={(openEditAssumptions ? "z-[100] top-1/4 " : "top-full -z-10 ") + " fixed transition-all lg:z-auto lg:static duration-300 rounded-xl lg:grow lg:mx-5 lg:mb-5 bg-zinc-900 drop-shadow-strong"}
+                className={(openEditAssumptions ? "z-[100] top-1/4 " : "top-full -z-10 ") + " fixed transition-all bottom-0 lg:z-auto lg:static duration-300 rounded-t-3xl p-4 lg:rounded-xl lg:grow lg:mx-5 lg:mb-5 bg-zinc-900 drop-shadow-strong"}
                 currentAsset={currentAsset}
                 setCurrentAsset={setCurrentAsset}
                 assumptions={currentAsset.re_assumptions}
