@@ -23,17 +23,16 @@ export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExp
       const today = new Date();
       const dates = allExpenses().map((item: any) => new Date(item.date))
       const minDate = new Date(Math.min.apply(null, dates))
-      const begin = new Date(`${minDate.getUTCFullYear()}/${minDate.getUTCMonth() + 1}`)
+      const begin = new Date(`${minDate.getUTCFullYear()}-${minDate.getUTCMonth() + 1}`)
+
       const newExpensesData: IExpenses = {};
-      for (let now = begin; now < today; now = new Date(now.setMonth(now.getUTCMonth() + 1))) {
+      for (let now = begin; now < today; now = new Date(now.setUTCMonth(now.getUTCMonth() + 1))) {
         const YYYYMM = `${now.getUTCFullYear()}/${now.getUTCMonth() + 1}`;
         newExpensesData[YYYYMM] = { expense: 0 };
       }
       // Expense
-      let total = 0;
-      let txn = [];
       for (const expense of allExpenses()) {
-        const date = new Date(expense.date);
+        const date = new Date(expense.date.replace(/\//g, '-'));
         const YYYYMM = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}`;
         newExpensesData[YYYYMM].expense += Math.abs(parseFloat(expense.amount));
         newExpensesData[YYYYMM].expense = Math.round(newExpensesData[YYYYMM].expense * 100) / 100;
