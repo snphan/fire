@@ -64,6 +64,7 @@ export function Dashboard({ }: any) {
     { query: PLAID_GET_BANK_NAMES },
   ]
 
+  const [hideTxnTable, setHideTxnTable] = useState<boolean>(true);
   const { data: isBankLinked } = useQuery<any>(IS_BANKACCOUNT_LINKED);
   const [openPlaidPrompt, setOpenPlaidPrompt] = useState<boolean>(false);
   const [openPlaidUnlink, setOpenPlaidUnlink] = useState<boolean>(false);
@@ -103,6 +104,9 @@ export function Dashboard({ }: any) {
     defaultPeriod: defaultPeriod,
   }), []);
 
+  const openTxnTable = useCallback(() => setHideTxnTable(false), [])
+  const closeTxnTable = useCallback(() => setHideTxnTable(true), [])
+
   // DEBUG
   useEffect(() => {
   }, [balanceData, transactionsData, investmentTransactionsData, allInvestTxnData]);
@@ -115,7 +119,7 @@ export function Dashboard({ }: any) {
 
   return (
     <DashboardContext.Provider value={getDashboardStore}>
-      <div className="ml-24 flex flex-col min-h-screen min-w-0 max-w-full overflow-hidden">
+      <div className="lg:ml-24 flex flex-col min-h-screen min-w-0 max-w-full lg:overflow-hidden">
         {(isBankLinked?.bankAccountLinked === false) ?
           <div className='grow flex justify-center items-center'>
             <Button onClick={() => setOpenPlaidPrompt(!openPlaidPrompt)} variant="gradient" size="lg">
@@ -128,54 +132,58 @@ export function Dashboard({ }: any) {
           :
           <>
             <div className="flex justify-between">
-              <h1>Dashboard</h1>
+              <h1 className="text-base ml-14 lg:ml-5 lg:text-5xl ">Dashboard</h1>
               <div>
                 <Tooltip content={"Sync Transactions"} className="capitalize bg-gray-900 p-2">
                   {syncLoading ?
-
-                    <span className="m-4 text-gray-800 text-3xl material-icons">pending</span>
+                    <span className="m-4 text-gray-800 lg:text-3xl material-icons">pending</span>
                     :
-                    <span onClick={() => syncUserTransactions()} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer text-3xl material-icons">sync</span>
+                    <span onClick={() => syncUserTransactions()} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer lg:text-3xl material-icons">sync</span>
                   }
                 </Tooltip>
                 <Tooltip content={"Link/Update Account"} className="capitalize bg-gray-900 p-2">
-                  <span onClick={() => setOpenPlaidPrompt(!openPlaidPrompt)} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer text-3xl material-icons">account_balance</span>
+                  <span onClick={() => setOpenPlaidPrompt(!openPlaidPrompt)} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer lg:text-3xl material-icons">account_balance</span>
                 </Tooltip>
                 <Tooltip content={"Unlink"} className="capitalize bg-gray-900 p-2">
-                  <span onClick={() => setOpenPlaidUnlink(!openPlaidUnlink)} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer text-3xl material-icons">link_off</span>
+                  <span onClick={() => setOpenPlaidUnlink(!openPlaidUnlink)} className="m-4 text-gray-600 hover:text-gray-200 cursor-pointer lg:text-3xl material-icons">link_off</span>
                 </Tooltip>
               </div>
             </div>
 
             {/* Dashboard Viz Components */}
-            <div className="grow w-full grid xl:grid-cols-6 xl:grid-rows-6">
-              <TotalBalance className="row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
+            <div className="lg:h-auto lg:grow w-full grid grid-cols-2 lg:grid-cols-6 lg:grid-rows-6">
+              <TotalBalance className="h-24 lg:h-auto lg:row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 m-2 p-2 rounded-xl shadow-xl"
                 loading={loadingBalance}
                 balanceData={balanceData}
               />
-              <TotalIncome className="row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
+              <TotalIncome className="h-24 lg:h-auto lg:row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 m-2 p-2 rounded-xl shadow-xl"
                 loading={loadingTransactions}
                 transactions={transactionsData}
               />
-              <IncomeByMonth className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
+              <ExpensesBreakdown className="h-60 lg:h-auto lg:row-span-5 lg:order-5 col-span-2 flex flex-col bg-zinc-900 lg:p-3 lg:m-4 m-2 p-2 rounded-xl shadow-xl"
+                loading={loadingTransactions}
+                transactions={getCurrentMonthTransactions}
+                setTxnTableFiltersCallback={setTxnTableFiltersCallback}
+                openTxnTable={openTxnTable}
+              />
+              <IncomeByMonth className="h-60 lg:h-auto lg:order-3 col-span-2 lg:row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 m-2 p-2 rounded-xl shadow-xl"
                 allIncome={getAllIncome}
                 allDividends={getAllDividend}
                 setTxnTableFiltersCallback={setTxnTableFiltersCallback}
+                openTxnTable={openTxnTable}
               />
-              <TransactionsTable className="max-h-full col-span-2 row-span-6 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
+              <ExpensesByMonth className="h-60 lg:h-auto lg:order-6 col-span-2 lg:row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 m-2 p-2 rounded-xl shadow-xl"
+                allExpenses={getAllExpenses}
+                setTxnTableFiltersCallback={setTxnTableFiltersCallback}
+                openTxnTable={openTxnTable}
+              />
+              <TransactionsTable className={(hideTxnTable ? "top-full " : "top-1/4 z-[1000] lg:z-auto ") + "h-3/4 w-full duration-500 lg:w-auto fixed lg:top-auto lg:h-auto lg:static lg:block lg:order-4 max-h-full col-span-2 row-span-6 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 p-4 lg:rounded-xl rounded-t-3xl shadow-xl"}
                 loading={loadingAllTransactions}
                 allTransactions={allTransactionsData?.getTransactions}
                 allInvestTransactions={allInvestTxnData?.getInvestTransactions}
                 filters={TxnTableFilters}
-              />
-              <ExpensesBreakdown className="row-span-4 col-span-2 flex flex-col bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
-                loading={loadingTransactions}
-                transactions={getCurrentMonthTransactions}
-                setTxnTableFiltersCallback={setTxnTableFiltersCallback}
-              />
-              <ExpensesByMonth className="col-span-2 row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 p-3 m-4 rounded-xl shadow-xl"
-                allExpenses={getAllExpenses}
-                setTxnTableFiltersCallback={setTxnTableFiltersCallback}
+                closeTxnTable={closeTxnTable}
+                hideTxnTable={hideTxnTable}
               />
             </div>
           </>

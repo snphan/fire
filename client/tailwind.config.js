@@ -45,6 +45,15 @@ module.exports = withMT({
           900: "rgb(26 26 29)"
         }
       },
+      animation: {
+        bounceMiddle: 'bounceMiddle 1s infinite'
+      },
+      keyframes: {
+        bounceMiddle: {
+          '0%, 100%': { transform: 'translateY(-25%) translateX(-50%)', 'animation-timing-function': 'cubic-bezier(0.8,0,1,1)' },
+          '50%': { transform: 'translateX(-50%)', 'animation-timing-function': 'cubic-bezier(0,0,0.2,1)' },
+        }
+      }
     }
   },
   plugins: [

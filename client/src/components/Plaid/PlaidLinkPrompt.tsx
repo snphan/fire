@@ -19,9 +19,7 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
   });
   const [linkToken, setLinkToken] = useState<string | null>(null);
 
-  const [exchangeLinkToken, { data: itemId }] = useMutation<any>(PLAID_EXCHANGE_TOKEN, {
-    refetchQueries: dashboardContext()?.refetchQueries
-  });
+  const [exchangeLinkToken, { data: itemId }] = useMutation<any>(PLAID_EXCHANGE_TOKEN);
 
   const handleClickProduct = (product: string) => {
     if (selectedProducts.includes(product)) {
@@ -36,7 +34,7 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
     /* Exchange the PublicToken for a Permanent Access token */
     exchangeLinkToken({
       variables: { publicToken: publicToken, products: selectedProducts },
-      onCompleted: () => { setSelectedProducts([]); dashboardContext()?.sync() }
+      onCompleted: () => { setSelectedProducts([]); dashboardContext()?.sync(); }
     });
     setLinkToken(null);
     setOpenPlaidPrompt(false);
@@ -55,10 +53,10 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
   const { open, ready } = usePlaidLink(plaidConfig)
   return (
     <>
-      <Dialog size="lg" open={true} handler={() => setOpenProductSelection(!openProductSelection)} className="bg-zinc-800 max-h-screen overflow-auto">
+      <Dialog size={(window.screen.width > 1024) ? "md" : "xl"} open={true} handler={() => setOpenProductSelection(!openProductSelection)} className="bg-zinc-800 max-h-screen overflow-auto">
         <DialogHeader className="text-gray-100">Select Products</DialogHeader>
         <DialogBody className="text-gray-200 flex flex-col">
-          <div className="grid grid-cols-3 gap-1">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-1">
             {
               [
                 "assets",
@@ -81,7 +79,7 @@ export function PlaidLinkPrompt({ setOpenPlaidPrompt }: any) {
           </div>
 
         </DialogBody>
-        <DialogFooter>
+        <DialogFooter className="flex justify-center items-center">
           <Button
             variant="text"
             color="red"

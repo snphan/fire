@@ -16,7 +16,7 @@ interface IIncome {
   }
 }
 
-export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome, allDividends, setTxnTableFiltersCallback }: any) {
+export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome, allDividends, setTxnTableFiltersCallback, openTxnTable }: any) {
 
   const [incomeData, setIncomeData] = useState<IIncome>({ "1993/01": { income: 0, dividend: 0 } })
 
@@ -42,16 +42,14 @@ export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome,
       for (const dividend of allDividends()) {
         const date = new Date(dividend.date);
         const YYYYMM = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}`;
-        newIncomeData[YYYYMM].dividend += Math.abs(parseFloat(dividend.amount));
-        newIncomeData[YYYYMM].dividend = Math.round(newIncomeData[YYYYMM].dividend * 100) / 100;
-      }
-      setIncomeData(newIncomeData);
+        newIncomeData[YYYYMM].dividend += Math.abs(parseFloat(dividend.amount)); newIncomeData[YYYYMM].dividend = Math.round(newIncomeData[YYYYMM].dividend * 100) / 100;
+      } setIncomeData(newIncomeData);
     }
   }, [allIncome, allDividends])
 
 
   const option = {
-    tooltip: {
+    tooltip: (window.screen.width > 1024) ? { // lg screen breakpoint, tooltip was increasing width
       trigger: 'axis',
       position: function (pt: any) {
         return [pt[0], '10%'];
@@ -62,17 +60,22 @@ export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome,
           show: true
         }
       }
-    },
+    } : undefined,
     title: {
       left: 'left',
       text: 'Income History',
       textStyle: {
-        fontSize: '0.875rem'
+        fontSize: (window.screen.width > 1024) ? '0.875rem' : '0.75rem'
       }
     },
+    textStyle: {
+      fontSize: (window.screen.width > 1024) ? '0.875rem' : '0.75rem'
+    },
     legend: {
-      top: '0%',
-      left: 'center'
+      top: (window.screen.width > 1024) ? '0%' : '10%',
+      left: (window.screen.width > 1024) ? 'center' : 'left',
+      itemWidth: (window.screen.width > 1024) ? 25 : 18,
+      itemHeight: (window.screen.width > 1024) ? 14 : 10
     },
     toolbox: {
       feature: {
@@ -81,26 +84,36 @@ export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome,
         },
         restore: {},
         saveAsImage: {}
-      }
+      },
+      itemSize: (window.screen.width > 1024) ? 15 : 12
     },
     xAxis: {
       type: 'category',
       boundaryGap: ['10%', '10%'],
-      data: Object.keys(incomeData)
+      data: Object.keys(incomeData),
+      axisLabel: {
+        fontSize: (window.screen.width > 1024) ? 12 : 9
+      }
     },
     yAxis: {
       type: 'value',
-      boundaryGap: [0, '20%']
+      boundaryGap: [0, '20%'],
+      axisLabel: {
+        fontSize: (window.screen.width > 1024) ? 12 : 9
+      }
     },
     dataZoom: [
       {
         type: 'inside',
-        start: 90,
+        start: 80,
         end: 100
       },
       {
-        start: 90,
-        end: 100
+        start: 80,
+        end: 100,
+        textStyle: {
+          fontSize: (window.screen.width > 1024) ? 12 : 9
+        },
       }
     ],
     series: [
@@ -155,12 +168,14 @@ export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome,
       categories: ['INCOME', 'DIVIDENDS'],
       notCategories: null
     })
+    openTxnTable();
   }
 
   return (
     <Tooltip content={"Income from Accounts + Dividends"} className="capitalize bg-zinc-900 p-2">
       <button className={className}>
         <ReactECharts
+          className=""
           onEvents={{ click: handleChartClick }}
           theme="my_theme" style={{ height: "100%" }}
           option={option}

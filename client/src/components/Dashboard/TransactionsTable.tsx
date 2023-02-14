@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { CurrencyContext } from '@/Context';
 import { Tooltip } from '@material-tailwind/react';
 
-export function TransactionsTable({ className, allTransactions, allInvestTransactions, filters }: any) {
+export function TransactionsTable({ className, allTransactions, allInvestTransactions, filters, closeTxnTable, hideTxnTable }: any) {
 
   const currencyFormatter = useContext(CurrencyContext);
 
@@ -43,48 +43,61 @@ export function TransactionsTable({ className, allTransactions, allInvestTransac
   }
 
   return (
-    <button className={className}>
-      <div className="flex flex-col h-full items-between">
-        <div className="flex justify-between">
-          <div className="mb-5 text-sm font-bold">Transactions Table</div>
-          {getTotal() &&
-            <div className="mb-5 text-md font-bold text-sky-500">{currencyFormatter.format(getTotal())}</div>
-          }
+    <>
+      <div className={className}>
+        <div className="lg:hidden relative">
+          <button className={(hideTxnTable ? "top-0 " : "-top-7 ") + "animate-bounceMiddle absolute rounded-full p-2  bg-gradient-to-tr from-sky-400 to-sky-700 w-10 h-10 left-1/2 -translate-x-1/2 drop-shadow-strong"} onClick={() => closeTxnTable()}>
+            <span className="material-icons">arrow_downward</span>
+          </button>
         </div>
-        <div className="p-4 flex flex-col grow h-10 w-full">
-          <div className="grow w-full ">
-            <table className="w-full h-full flex flex-col">
-              <thead className="rounded-tl-xl rounded-tr-xl sticky top-0 bg-zinc-800 w-full">
-                <tr className="table text-zinc-500 text-left w-full">
-                  <th className="w-5/12 p-3 py-4">Name</th>
-                  <th className="w-3/12 p-3 py-4">Date</th>
-                  <th className="w-4/12 p-3 py-4">Amount</th>
-                </tr>
-              </thead>
-              <tbody className="block overflow-y-auto h-96 grow text-zinc-400 text-left scrollbar-thumb-zinc-700 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-rounded-xl">
-                {filteredTxn?.map((txn: any) => {
-                  return (
-                    <tr key={txn.transaction_id || txn.investment_transaction_id} className="transition-all duration-300 hover:bg-sky-200 hover:bg-opacity-10">
-                      <td className="w-5/12 border-b border-zinc-700 p-3">
-                        <Tooltip
-                          content={
-                            txn.category?.split('_').map((substring: string) => substring[0].toUpperCase() + substring.slice(1).toLowerCase()).join(" ")
-                            || txn.type?.split('_').map((substring: string) => substring[0].toUpperCase() + substring.slice(1).toLowerCase()).join(" ")
-                          }
-                          className="capitalize bg-gray-900 p-2">
-                          {txn.name}
-                        </Tooltip>
-                      </td>
-                      <td className="w-3/12 border-b border-zinc-700 p-3">{txn.date.split("T")[0]}</td>
-                      <td className="w-4/12 border-b border-zinc-700 p-3">{currencyFormatter.format(Math.abs(txn.amount))}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+        <div className="flex flex-col h-full items-between">
+          <div className="flex justify-between">
+            <div className="mb-5 text-sm font-bold">Transactions Table</div>
+            {getTotal() &&
+              <div className="mb-5 text-md font-bold text-sky-500">{currencyFormatter.format(getTotal())}</div>
+            }
+          </div>
+          <div className="p-4 flex flex-col grow h-10 w-full">
+            <div className="grow w-full ">
+              <table className="w-full h-full flex flex-col">
+                <thead id="txn-header" className="rounded-tl-xl rounded-tr-xl sticky top-0 bg-zinc-800 w-full">
+                  <tr className="table text-zinc-500 text-left w-full">
+                    <th className="w-5/12 p-3 py-4">Name</th>
+                    <th className="w-3/12 p-3 py-4">Date</th>
+                    <th className="w-4/12 p-3 py-4">Amount</th>
+                  </tr>
+                </thead>
+                <tbody className="block overflow-y-auto h-96 grow text-zinc-400 text-left scrollbar-thumb-zinc-700 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-rounded-xl">
+                  {filteredTxn?.map((txn: any) => {
+                    return (
+                      <tr key={txn.transaction_id || txn.investment_transaction_id} className="transition-all duration-300 hover:bg-sky-200 hover:bg-opacity-10">
+                        <td className="border-b border-zinc-700 p-3"
+                          style={{
+                            width: `${document.getElementById("txn-header") && document.getElementById("txn-header")!.offsetWidth * 5 / 12
+                              }px`
+                          }}
+                        >
+                          <Tooltip
+                            content={
+                              txn.category?.split('_').map((substring: string) => substring[0].toUpperCase() + substring.slice(1).toLowerCase()).join(" ")
+                              || txn.type?.split('_').map((substring: string) => substring[0].toUpperCase() + substring.slice(1).toLowerCase()).join(" ")
+                            }
+                            className="capitalize bg-gray-900 p-2">
+                            {txn.name}
+                          </Tooltip>
+                        </td>
+                        <td className="w-3/12 border-b border-zinc-700 p-3">{txn.date.split("T")[0]}</td>
+                        <td className="w-4/12 border-b border-zinc-700 p-3">{currencyFormatter.format(Math.abs(txn.amount))}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
-    </button>
+      </div >
+      <div className={(hideTxnTable ? "-z-10 bg-opacity-0 " : "z-10 bg-opacity-25 ") + "lg:hidden bg-white top-0 w-screen h-screen fixed transition-all duration-700 backdrop-blur-sm"}></div>
+    </>
   )
 }
