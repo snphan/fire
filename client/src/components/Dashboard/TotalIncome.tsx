@@ -1,8 +1,9 @@
 import { CurrencyContext, MonthYearFormatContext } from '@/Context';
+import dayjs from 'dayjs';
 import React, { useContext, useEffect, useState } from 'react';
 import { Loading } from '../Loading';
 
-export function TotalIncome({ loading, transactions, className }: any) {
+export function TotalIncome({ loading, transactions, investTransactions, className }: any) {
 
   const [income, setIncome] = useState<number>(0);
 
@@ -11,12 +12,25 @@ export function TotalIncome({ loading, transactions, className }: any) {
 
 
   useEffect(() => {
+    let newIncome = 0;
     if (transactions?.getTransactions.length) {
       const incomeTransactions = transactions.getTransactions.filter((item: any) => item.category === "INCOME");
       const incomeAmounts = incomeTransactions.map((item: any) => item.amount);
-      setIncome(incomeAmounts.reduce((a: number, b: string) => a + Math.abs(parseFloat(b)), 0));
+      newIncome += incomeAmounts.reduce((a: number, b: string) => a + Math.abs(parseFloat(b)), 0);
     }
-  }, [transactions]);
+
+    if (investTransactions?.getInvestTransactions.length) {
+      const investTxnDateFormatted = investTransactions.getInvestTransactions.map((item: any) => ({ ...item, date: dayjs(item.date).format('YYYY/MM') }));
+      const investTxnInCurrentMonth = investTxnDateFormatted.filter((item: any) =>
+        item.date === dayjs().format("YYYY/MM")
+        && item.type === "cash"
+        && !item.name.match(/CONTRIBUTION/)
+      );
+      newIncome += investTxnInCurrentMonth.reduce((a: number, b: any) => a + Math.abs(parseFloat(b.amount)), 0);
+    }
+
+    setIncome(newIncome);
+  }, [transactions, investTransactions]);
 
   //DEBUG 
   useEffect(() => {

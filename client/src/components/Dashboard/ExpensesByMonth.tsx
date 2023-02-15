@@ -20,20 +20,20 @@ export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExp
 
   useEffect(() => {
     if (allExpenses()) {
-      const today = new Date();
+      const today = dayjs(dayjs().format("YYYY/MM")).add(1, 'month');
       const dates = allExpenses().map((item: any) => new Date(item.date))
-      const minDate = new Date(Math.min.apply(null, dates))
-      const begin = new Date(`${minDate.getUTCFullYear()}-${minDate.getUTCMonth() + 1}`)
+      const minDate = dayjs(dayjs(Math.min.apply(null, dates)).format('YYYY/MM'));
 
       const newExpensesData: IExpenses = {};
-      for (let now = begin; now < today; now = new Date(now.setUTCMonth(now.getUTCMonth() + 1))) {
-        const YYYYMM = `${now.getUTCFullYear()}/${now.getUTCMonth() + 1}`;
+      for (let now = minDate; now.isBefore(today); now = now.add(1, 'month')) {
+        const YYYYMM = now.format("YYYY/MM");
         newExpensesData[YYYYMM] = { expense: 0 };
       }
+
       // Expense
       for (const expense of allExpenses()) {
-        const date = new Date(expense.date.replace(/\//g, '-'));
-        const YYYYMM = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}`;
+        const { date } = expense;
+        const YYYYMM = dayjs(date).format('YYYY/MM');
         newExpensesData[YYYYMM].expense += Math.abs(parseFloat(expense.amount));
         newExpensesData[YYYYMM].expense = Math.round(newExpensesData[YYYYMM].expense * 100) / 100;
       }
