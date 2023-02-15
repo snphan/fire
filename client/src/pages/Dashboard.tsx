@@ -159,6 +159,7 @@ export function Dashboard({ }: any) {
               <TotalIncome className="h-24 lg:h-auto lg:row-span-2 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 m-2 p-2 rounded-xl shadow-xl"
                 loading={loadingTransactions}
                 transactions={transactionsData}
+                investTransactions={allInvestTxnData}
               />
               <ExpensesBreakdown className="h-60 lg:h-auto lg:row-span-5 lg:order-5 col-span-2 flex flex-col bg-zinc-900 lg:p-3 lg:m-4 m-2 p-2 rounded-xl shadow-xl"
                 loading={loadingTransactions}
