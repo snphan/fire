@@ -22,26 +22,26 @@ export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome,
 
   useEffect(() => {
     if (allIncome() && allDividends()) {
-      const today = new Date();
+      const today = dayjs(dayjs().format("YYYY/MM")).add(1, 'month');
       const dates = allIncome().concat(allDividends()).map((item: any) => new Date(item.date))
-      const minDate = new Date(Math.min.apply(null, dates))
-      const begin = new Date(`${minDate.getUTCFullYear()}-${minDate.getUTCMonth() + 1}`)
+      const minDate = dayjs(dayjs(Math.min.apply(null, dates)).format('YYYY/MM'));
+
       const newIncomeData: IIncome = {};
-      for (let now = begin; now < today; now = new Date(now.setUTCMonth(now.getUTCMonth() + 1))) {
-        const YYYYMM = `${now.getUTCFullYear()}/${now.getUTCMonth() + 1}`;
+      for (let now = minDate; now.isBefore(today); now = now.add(1, 'month')) {
+        const YYYYMM = now.format("YYYY/MM");
         newIncomeData[YYYYMM] = { income: 0, dividend: 0 };
       }
       // Income
       for (const income of allIncome()) {
-        const date = new Date(income.date.replace(/\//g, '-'));
-        const YYYYMM = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}`;
+        const { date } = income;
+        const YYYYMM = dayjs(date).format('YYYY/MM');
         newIncomeData[YYYYMM].income += Math.abs(parseFloat(income.amount));
         newIncomeData[YYYYMM].income = Math.round(newIncomeData[YYYYMM].income * 100) / 100;
       }
       // Dividends
       for (const dividend of allDividends()) {
-        const date = new Date(dividend.date.replace(/\//g, '-'));
-        const YYYYMM = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}`;
+        const { date } = dividend;
+        const YYYYMM = dayjs(date).format('YYYY/MM');
         newIncomeData[YYYYMM].dividend += Math.abs(parseFloat(dividend.amount)); newIncomeData[YYYYMM].dividend = Math.round(newIncomeData[YYYYMM].dividend * 100) / 100;
       } setIncomeData(newIncomeData);
     }
