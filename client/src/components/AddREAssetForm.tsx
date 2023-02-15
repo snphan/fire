@@ -183,7 +183,7 @@ export function AddREAssetForm({ open, handleOpen, userID }: any) {
         </div>
 
       </DialogBody>
-      {/* Pad the bottom because browsers have seearch bar on the bottom... */}
+      {/* Pad the bottom because mobile browsers have seearch bar on the bottom... */}
       <DialogFooter className="pb-36">
         <Button
           variant="text"
