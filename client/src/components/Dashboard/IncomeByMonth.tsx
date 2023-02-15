@@ -75,7 +75,8 @@ export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome,
       top: (window.screen.width > 1024) ? '0%' : '10%',
       left: (window.screen.width > 1024) ? 'center' : 'left',
       itemWidth: (window.screen.width > 1024) ? 25 : 18,
-      itemHeight: (window.screen.width > 1024) ? 14 : 10
+      itemHeight: (window.screen.width > 1024) ? 14 : 10,
+      itemGap: 20
     },
     toolbox: {
       feature: {
