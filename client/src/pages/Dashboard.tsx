@@ -21,6 +21,7 @@ import dayjs from 'dayjs';
 import { IncomeByMonth } from '@/components/Dashboard/IncomeByMonth';
 import { ExpensesByMonth } from '@/components/Dashboard/ExpensesByMonth';
 import { TransactionsTable } from '@/components/Dashboard/TransactionsTable';
+import { PlaidLinkUpdate } from '@/components/Plaid/PlaidLinkUpdate';
 
 export interface IDashboardContext {
   sync(): any;
@@ -65,10 +66,11 @@ export function Dashboard({ }: any) {
   ]
 
   const [hideTxnTable, setHideTxnTable] = useState<boolean>(true);
+  const [updateLinkTokens, setUpdateLinkTokens] = useState<string[]>([]);
   const { data: isBankLinked } = useQuery<any>(IS_BANKACCOUNT_LINKED);
   const [openPlaidPrompt, setOpenPlaidPrompt] = useState<boolean>(false);
   const [openPlaidUnlink, setOpenPlaidUnlink] = useState<boolean>(false);
-  const { data: balanceData, loading: loadingBalance } = useQuery<any>(PLAID_GET_ACCOUNTS);
+  const { data: balanceData, loading: loadingBalance, refetch: refetchBalance } = useQuery<any>(PLAID_GET_ACCOUNTS);
   const { data: transactionsData, loading: loadingTransactions } = useQuery<any>(PLAID_GET_TRANSACTIONS,
     {
       variables: defaultPeriod
@@ -109,6 +111,10 @@ export function Dashboard({ }: any) {
 
   // DEBUG
   useEffect(() => {
+    if (balanceData?.getAccounts.link_tokens.length) {
+      /* Update Link Tokens for ITEM_LOGIN_REQUIRED error */
+      setUpdateLinkTokens(balanceData.getAccounts.link_tokens);
+    }
   }, [balanceData, transactionsData, investmentTransactionsData, allInvestTxnData]);
 
 
@@ -189,9 +195,16 @@ export function Dashboard({ }: any) {
             </div>
           </>
         }
+
         {/* Rerender everytime so we can access Plaid Link */}
         {openPlaidPrompt &&
           <PlaidLinkPrompt setOpenPlaidPrompt={setOpenPlaidPrompt} />
+        }
+
+        {
+          updateLinkTokens.length ?
+            <PlaidLinkUpdate link_tokens={updateLinkTokens} setUpdateLinkTokens={setUpdateLinkTokens} refetchBalance={refetchBalance} />
+            : null
         }
         <PlaidUnlinkPrompt openPlaidUnlink={openPlaidUnlink} setOpenPlaidUnlink={setOpenPlaidUnlink} />
       </div>
