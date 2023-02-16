@@ -111,20 +111,40 @@ export class PlaidResolver extends PlaidRepository {
     const findPlaidInfo = await this.getPlaidInfoByUser(user);
     if (!findPlaidInfo.length) throw new HttpException(409, "User has not connected to an Account through Plaid");
 
-    try {
-      let accounts = [];
+    let accounts = [];
+    let link_tokens = [];
 
-      for (const plaidInfo of findPlaidInfo) {
+    for (const plaidInfo of findPlaidInfo) {
+      try {
         const accountsResponse = await plaidClient.accountsGet({
           access_token: this.decryptAccessToken(plaidInfo.access_token)
         })
         accounts = accounts.concat(accountsResponse.data.accounts);
-      }
+      } catch (error) {
+        const { error_code } = error.response.data;
+        if (error_code === "ITEM_LOGIN_REQUIRED") {
+          // Send a link token back for update mode
+          const configs: LinkTokenCreateRequest = {
+            user: {
+              // This should correspond to a unique id for the current user.
+              client_user_id: String(user.id),
+            },
+            client_name: 'Fire Cash',
+            country_codes: PLAID_COUNTRY_CODES,
+            language: 'en',
+            access_token: this.decryptAccessToken(plaidInfo.access_token)
+          };
 
-      return { accounts: accounts };
-    } catch (error) {
-      return error.response;
+          const createTokenResponse = await plaidClient.linkTokenCreate(configs);
+          link_tokens.push(createTokenResponse.data.link_token);
+        } else {
+          return error.response;
+        }
+
+      }
     }
+
+    return { accounts: accounts, link_tokens: link_tokens };
   }
 
   @Authorized()
