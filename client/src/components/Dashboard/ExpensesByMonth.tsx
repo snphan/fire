@@ -57,7 +57,7 @@ export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExp
     } : undefined,
     title: {
       left: 'left',
-      text: 'Income History',
+      text: 'Expense History',
       textStyle: {
         fontSize: (window.screen.width > 1024) ? '0.875rem' : '0.75rem'
       }
