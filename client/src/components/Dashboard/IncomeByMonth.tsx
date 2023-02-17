@@ -13,35 +13,45 @@ interface IIncome {
   [key: string]: {
     income: number;
     dividend: number;
+    transfer: number;
   }
 }
 
-export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome, allDividends, setTxnTableFiltersCallback, openTxnTable }: any) {
+export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome, allTransferIn, allDividends, setTxnTableFiltersCallback, openTxnTable }: any) {
 
-  const [incomeData, setIncomeData] = useState<IIncome>({ "1993/01": { income: 0, dividend: 0 } })
+  const [incomeData, setIncomeData] = useState<IIncome>({ "1993/01": { income: 0, dividend: 0, transfer: 0 } })
 
   useEffect(() => {
-    if (allIncome() && allDividends()) {
+    if (allIncome() && allDividends() && allTransferIn()) {
+
       const today = dayjs(dayjs().format("YYYY/MM")).add(1, 'month');
-      const dates = allIncome().concat(allDividends()).map((item: any) => new Date(item.date))
+      const dates = allIncome().concat(allDividends()).concat(allTransferIn()).map((item: any) => new Date(item.date))
       const minDate = dayjs(dayjs(Math.min.apply(null, dates)).format('YYYY/MM'));
 
       const newIncomeData: IIncome = {};
       for (let now = minDate; now.isBefore(today); now = now.add(1, 'month')) {
         const YYYYMM = now.format("YYYY/MM");
-        newIncomeData[YYYYMM] = { income: 0, dividend: 0 };
+        newIncomeData[YYYYMM] = { income: 0, dividend: 0, transfer: 0 };
       }
       // Income
       for (const income of allIncome()) {
         const { date } = income;
-        const YYYYMM = dayjs(date).format('YYYY/MM');
+        const YYYYMM = dayjs(date.split("T")[0]).format('YYYY/MM');
         newIncomeData[YYYYMM].income += Math.abs(parseFloat(income.amount));
         newIncomeData[YYYYMM].income = Math.round(newIncomeData[YYYYMM].income * 100) / 100;
       }
+      // Transfer In
+      for (const transfer of allTransferIn()) {
+        const { date } = transfer;
+        const YYYYMM = dayjs(date.split("T")[0]).format('YYYY/MM');
+        newIncomeData[YYYYMM].transfer += Math.abs(parseFloat(transfer.amount));
+        newIncomeData[YYYYMM].transfer = Math.round(newIncomeData[YYYYMM].transfer * 100) / 100;
+      }
+
       // Dividends
       for (const dividend of allDividends()) {
         const { date } = dividend;
-        const YYYYMM = dayjs(date).format('YYYY/MM');
+        const YYYYMM = dayjs(date.split("T")[0]).format('YYYY/MM');
         newIncomeData[YYYYMM].dividend += Math.abs(parseFloat(dividend.amount)); newIncomeData[YYYYMM].dividend = Math.round(newIncomeData[YYYYMM].dividend * 100) / 100;
       } setIncomeData(newIncomeData);
     }
@@ -121,6 +131,7 @@ export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome,
       {
         name: 'Income',
         type: 'bar',
+        stack: 'x',
         symbol: 'none',
         sampling: 'lttb',
         itemStyle: {
@@ -139,8 +150,30 @@ export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome,
         data: Object.values(incomeData).map((item: any) => item.income)
       },
       {
+        name: 'Transfer In',
+        type: 'bar',
+        stack: 'x',
+        symbol: 'none',
+        sampling: 'lttb',
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            {
+              offset: 0,
+              color: '#80cbc4'
+            },
+            {
+              offset: 1,
+              color: '#009688'
+            },
+          ]),
+          borderRadius: 5
+        },
+        data: Object.values(incomeData).map((item: any) => item.transfer)
+      },
+      {
         name: 'Dividends',
         type: 'bar',
+        stack: 'x',
         symbol: 'none',
         sampling: 'lttb',
         itemStyle: {
@@ -166,7 +199,7 @@ export const IncomeByMonth = memo(function IncomeByMonth({ className, allIncome,
     setTxnTableFiltersCallback({
       startDate: dayjs(e.name).format('YYYY-MM-DD'),
       endDate: dayjs(e.name).add(1, 'month').format('YYYY-MM-DD'),
-      categories: ['INCOME', 'DIVIDENDS'],
+      categories: ['INCOME', 'DIVIDENDS', 'TRANSFER_IN'],
       notCategories: null
     })
     openTxnTable();
