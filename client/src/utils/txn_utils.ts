@@ -6,8 +6,8 @@ import dayjs from "dayjs";
 import { Set } from "typescript";
 
 export const reconcileTransactions = (transactions: any) => {
-  let reconciledTransactions = transactions;
-  // Assume Txn are sorted by date
+  // Sort Txn by date
+  let reconciledTransactions = transactions.slice().sort((a: any, b: any) => (new Date(b.date)).getTime() - (new Date(a.date)).getTime());
 
   reconciledTransactions = reconcilePreAuth(reconciledTransactions);
   reconciledTransactions = reconcileCreditCardPayments(reconciledTransactions);
