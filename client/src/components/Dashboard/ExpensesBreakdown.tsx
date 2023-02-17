@@ -16,13 +16,13 @@ interface Expenses {
   entertainment: number;
   general_merchandise: number;
   general_services: number;
-  government: number;
+  government_and_non_profit: number;
   home_improvement: number;
   medical: number;
   personal_care: number;
   rent_and_utilities: number;
   transportation: number;
-
+  transfer_out: number;
 }
 
 export const ExpensesBreakdown = memo(function ExpensesBreakdown({ loading, transactions, className, setTxnTableFiltersCallback, openTxnTable }: any) {
@@ -36,17 +36,18 @@ export const ExpensesBreakdown = memo(function ExpensesBreakdown({ loading, tran
     entertainment: 0,
     general_merchandise: 0,
     general_services: 0,
-    government: 0,
+    government_and_non_profit: 0,
     home_improvement: 0,
     medical: 0,
     personal_care: 0,
     rent_and_utilities: 0,
-    transportation: 0
+    transportation: 0,
+    transfer_out: 0
   });
 
   const totalExpenseForCategory = (CATEGORY: string) => {
     const filteredTransactions = transactions().filter((item: any) => item.category === CATEGORY);
-    return filteredTransactions.reduce((a: number, b: any) => a + Math.abs(parseFloat(b.amount)), 0)
+    return filteredTransactions.reduce((a: number, b: any) => a + parseFloat(b.amount), 0)
   }
   const currencyFormatter = useContext(CurrencyContext);
 
@@ -59,12 +60,13 @@ export const ExpensesBreakdown = memo(function ExpensesBreakdown({ loading, tran
         entertainment: totalExpenseForCategory("ENTERTAINMENT"),
         general_merchandise: totalExpenseForCategory("GENERAL_MERCHANDISE"),
         general_services: totalExpenseForCategory("GENERAL_SERVICES"),
-        government: totalExpenseForCategory("GOVERNMENT_AND_NON_PROFIT"),
+        government_and_non_profit: totalExpenseForCategory("GOVERNMENT_AND_NON_PROFIT"),
         home_improvement: totalExpenseForCategory("HOME_IMPROVEMENT"),
         medical: totalExpenseForCategory("MEDICAL"),
         personal_care: totalExpenseForCategory("PERSONAL_CARE"),
         rent_and_utilities: totalExpenseForCategory("RENT_AND_UTILITIES"),
-        transportation: totalExpenseForCategory("TRANSPORTATION")
+        transportation: totalExpenseForCategory("TRANSPORTATION"),
+        transfer_out: totalExpenseForCategory("TRANSFER_OUT")
       }
 
       setExpenses(calculateExpenses);
@@ -145,7 +147,7 @@ export const ExpensesBreakdown = memo(function ExpensesBreakdown({ loading, tran
       <div className="lg:w-full flex justify-between">
         <div className="text-xs lg:text-sm font-bold">Total {monthYearFormatter.format(new Date())} Expenses</div>
         <div className="lg:hidden text-lg lg:text-4xl font-bold text-pink-400 lg:my-5">
-          {currencyFormatter.format(Object.entries(expenses).reduce((a: number, keyValue: any) => a - Math.abs(keyValue[1]), 0))}
+          {currencyFormatter.format(Object.entries(expenses).reduce((a: number, keyValue: any) => a - keyValue[1], 0))}
         </div>
       </div>
       {loading ?
@@ -154,7 +156,7 @@ export const ExpensesBreakdown = memo(function ExpensesBreakdown({ loading, tran
         <>
           <div className="flex justify-center">
             <div className="hidden lg:block text-lg lg:text-4xl font-bold text-pink-400 lg:my-5">
-              {currencyFormatter.format(Object.entries(expenses).reduce((a: number, keyValue: any) => a - Math.abs(keyValue[1]), 0))}
+              {currencyFormatter.format(Object.entries(expenses).reduce((a: number, keyValue: any) => a - keyValue[1], 0))}
             </div>
           </div>
           <ReactECharts onEvents={{ click: handleChartClick }} theme="my_theme" style={{ height: "100%" }} option={expensesOptions} />
