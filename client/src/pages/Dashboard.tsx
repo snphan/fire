@@ -101,13 +101,16 @@ export function Dashboard({ }: any) {
 
   const getAllExpenses = useCallback(() => reconciledTransactions.filter((item: any) =>
     !["INCOME", "TRANSFER_IN"].includes(item.category)
-  ), [reconciledTransactions])
+  ), [reconciledTransactions]);
 
-  const getAllIncome = useCallback(() => allTransactionsData?.getTransactions.filter((item: any) => item.category === "INCOME"
-  ), [allTransactionsData])
+  const getAllIncome = useCallback(() => reconciledTransactions.filter((item: any) => "INCOME" === item.category
+  ), [reconciledTransactions]);
+
+  const getAllTransferIn = useCallback(() => reconciledTransactions.filter((item: any) => "TRANSFER_IN" === item.category
+  ), [reconciledTransactions]);
 
   const getAllDividend = useCallback(() => allInvestTxnData?.getInvestTransactions.filter((item: any) => item.type === "cash" && !item.name.match(/CONTRIBUTION/)
-  ), [allInvestTxnData])
+  ), [allInvestTxnData]);
 
   const setTxnTableFiltersCallback = useCallback((filters: any) => setTxnTableFilters(filters), []);
 
@@ -191,6 +194,7 @@ export function Dashboard({ }: any) {
               />
               <IncomeByMonth className="h-60 lg:h-auto lg:order-3 col-span-2 lg:row-span-3 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 m-2 p-2 rounded-xl shadow-xl"
                 allIncome={getAllIncome}
+                allTransferIn={getAllTransferIn}
                 allDividends={getAllDividend}
                 setTxnTableFiltersCallback={setTxnTableFiltersCallback}
                 openTxnTable={openTxnTable}
