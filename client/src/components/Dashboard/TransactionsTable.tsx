@@ -39,7 +39,7 @@ export function TransactionsTable({ className, allTransactions, allInvestTransac
   }, [filters, allTransactions, allInvestTransactions])
 
   const getTotal = () => {
-    return filteredTxn?.reduce((a: number, b: any) => a + Math.abs(parseFloat(b.amount)), 0)
+    return filteredTxn?.reduce((a: number, b: any) => a + parseFloat(b.amount), 0)
   }
 
   return (
@@ -87,7 +87,7 @@ export function TransactionsTable({ className, allTransactions, allInvestTransac
                           </Tooltip>
                         </td>
                         <td className="w-3/12 border-b border-zinc-700 p-3">{txn.date.split("T")[0]}</td>
-                        <td className="w-4/12 border-b border-zinc-700 p-3">{currencyFormatter.format(Math.abs(txn.amount))}</td>
+                        <td className="w-4/12 border-b border-zinc-700 p-3">{currencyFormatter.format(txn.amount)}</td>
                       </tr>
                     )
                   })}

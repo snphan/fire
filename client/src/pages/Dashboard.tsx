@@ -22,6 +22,7 @@ import { IncomeByMonth } from '@/components/Dashboard/IncomeByMonth';
 import { ExpensesByMonth } from '@/components/Dashboard/ExpensesByMonth';
 import { TransactionsTable } from '@/components/Dashboard/TransactionsTable';
 import { PlaidLinkUpdate } from '@/components/Plaid/PlaidLinkUpdate';
+import { reconcileTransactions } from '@/utils/txn_utils';
 
 export interface IDashboardContext {
   sync(): any;
@@ -76,6 +77,7 @@ export function Dashboard({ }: any) {
       variables: defaultPeriod
     });
   const { data: allTransactionsData, loading: loadingAllTransactions } = useQuery<any>(PLAID_GET_ALL_TRANSACTIONS);
+  const [reconciledTransactions, setReconciledTransactions] = useState<Array<Object>>([]);
   const { data: investmentTransactionsData } = useQuery<any>(PLAID_GET_INVESTMENT_TRANSACTIONS,
     {
       variables: defaultPeriod
@@ -86,11 +88,20 @@ export function Dashboard({ }: any) {
   });
 
   /* Use Callbacks so that the eCharts do not need to rerender (DataZoom position gets reset) */
-  const getCurrentMonthTransactions = useCallback(() => transactionsData?.getTransactions, [transactionsData]);
+  const getCurrentMonthTransactions = useCallback(() => {
+    const startDate = dayjs(dayjs().format("YYYY/MM")).subtract(1, 'day');
+    const endDate = startDate.add(1, 'month').add(1, 'day');
+    return reconciledTransactions.filter((item: any) =>
+      !["INCOME", "TRANSFER_IN"].includes(item.category)
+      && dayjs(item.date.split("T")[0]).isAfter(startDate)
+      && dayjs(item.date.split("T")[0]).isBefore(endDate)
+    )
+  }
+    , [reconciledTransactions]);
 
-  const getAllExpenses = useCallback(() => allTransactionsData?.getTransactions.filter((item: any) =>
-    !["INCOME", "TRANSFER_IN", "TRANSFER_OUT", "LOAN_PAYMENTS"].includes(item.category)
-  ), [allTransactionsData])
+  const getAllExpenses = useCallback(() => reconciledTransactions.filter((item: any) =>
+    !["INCOME", "TRANSFER_IN"].includes(item.category)
+  ), [reconciledTransactions])
 
   const getAllIncome = useCallback(() => allTransactionsData?.getTransactions.filter((item: any) => item.category === "INCOME"
   ), [allTransactionsData])
@@ -109,13 +120,18 @@ export function Dashboard({ }: any) {
   const openTxnTable = useCallback(() => setHideTxnTable(false), [])
   const closeTxnTable = useCallback(() => setHideTxnTable(true), [])
 
-  // DEBUG
   useEffect(() => {
     if (balanceData?.getAccounts.link_tokens.length) {
       /* Update Link Tokens for ITEM_LOGIN_REQUIRED error */
       setUpdateLinkTokens(balanceData.getAccounts.link_tokens);
     }
   }, [balanceData, transactionsData, investmentTransactionsData, allInvestTxnData]);
+
+  useEffect(() => {
+    if (allTransactionsData) {
+      setReconciledTransactions(reconcileTransactions(allTransactionsData.getTransactions));
+    }
+  }, [allTransactionsData])
 
 
   /* Sync data on login */
@@ -186,7 +202,7 @@ export function Dashboard({ }: any) {
               />
               <TransactionsTable className={(hideTxnTable ? "top-full " : "top-1/4 z-[1000] lg:z-auto ") + "h-3/4 w-full duration-500 lg:w-auto fixed lg:top-auto lg:h-auto lg:static lg:block lg:order-4 max-h-full col-span-2 row-span-6 focus:ring focus:ring-blue-300 transition-all bg-zinc-900 lg:p-3 lg:m-4 p-4 lg:rounded-xl rounded-t-3xl shadow-xl"}
                 loading={loadingAllTransactions}
-                allTransactions={allTransactionsData?.getTransactions}
+                allTransactions={reconciledTransactions}
                 allInvestTransactions={allInvestTxnData?.getInvestTransactions}
                 filters={TxnTableFilters}
                 closeTxnTable={closeTxnTable}

@@ -33,8 +33,8 @@ export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExp
       // Expense
       for (const expense of allExpenses()) {
         const { date } = expense;
-        const YYYYMM = dayjs(date).format('YYYY/MM');
-        newExpensesData[YYYYMM].expense += Math.abs(parseFloat(expense.amount));
+        const YYYYMM = dayjs(date.split("T")[0]).format('YYYY/MM');
+        newExpensesData[YYYYMM].expense += parseFloat(expense.amount);
         newExpensesData[YYYYMM].expense = Math.round(newExpensesData[YYYYMM].expense * 100) / 100;
       }
       setExpenseData(newExpensesData);
@@ -140,7 +140,7 @@ export const ExpensesByMonth = memo(function ExpensesByMonth({ className, allExp
       startDate: dayjs(e.name).format('YYYY-MM-DD'),
       endDate: dayjs(e.name).add(1, 'month').format('YYYY-MM-DD'),
       categories: null,
-      notCategories: ['INCOME', 'TRANSFER_IN', 'TRANSFER_OUT', 'LOAN_PAYMENTS']
+      notCategories: ['INCOME', 'TRANSFER_IN']
     })
     openTxnTable();
   }
