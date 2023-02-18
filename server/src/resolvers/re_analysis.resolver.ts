@@ -17,8 +17,8 @@ export class REAssetResolver extends REAssetRepository {
   @Mutation(() => REAsset, {
     description: 'Create REAsset',
   })
-  async createREAsset(@Arg('REAssetData') REAssetData: CreateREAssetDto): Promise<REAsset> {
-    const reAsset: REAsset = await this.REAssetCreate(REAssetData);
+  async upsertREAsset(@Arg('REAssetData') REAssetData: CreateREAssetDto): Promise<REAsset> {
+    const reAsset: REAsset = await this.REAssetCreateOrUpdate(REAssetData);
     return reAsset;
   }
 

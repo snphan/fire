@@ -15,14 +15,21 @@ export default class REAssetRepository {
 
   /* REAssets */
 
-  public async REAssetCreate(REAssetData: CreateREAssetDto): Promise<REAsset> {
-    const { userId, ...REAssetInfo } = REAssetData;
+  public async REAssetCreateOrUpdate(REAssetData: CreateREAssetDto): Promise<REAsset> {
+    const { id, userId, ...REAssetInfo } = REAssetData;
     const findUser: User = await User.findOne({ where: { id: userId } });
-    const createREAssetData: REAsset = await REAsset.create({ user: findUser, ...REAssetInfo }).save();
-    /* Initialize assumptions with default values */
-    await this.REAssumptionsCreate({ reAssetId: createREAssetData.id });
-    const findREAsset: REAsset = await REAsset.findOne({ where: { id: createREAssetData.id } })
-    return findREAsset;
+    if (!id) {
+      const createREAssetData: REAsset = await REAsset.create({ user: findUser, ...REAssetInfo }).save();
+      /* Initialize assumptions with default values */
+      await this.REAssumptionsCreate({ reAssetId: createREAssetData.id });
+      const findREAsset: REAsset = await REAsset.findOne({ where: { id: createREAssetData.id } })
+      return findREAsset;
+    } else {
+      // Update
+      await REAsset.update(id, REAssetInfo);
+      const findREAsset: REAsset = await REAsset.findOne({ where: { id: id } })
+      return findREAsset;
+    }
   }
 
   public async REAssetDelete(reAssetId: number): Promise<REAsset> {
