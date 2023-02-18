@@ -25,9 +25,9 @@ mutation userLogout {
 }
 `
 
-export const CREATE_REASSET = gql`
-mutation createREAsset($reAssetData: CreateREAssetDto!) {
-  createREAsset(REAssetData: $reAssetData) {
+export const UPSERT_REASSET = gql`
+mutation upsertREAsset($reAssetData: CreateREAssetDto!) {
+  upsertREAsset(REAssetData: $reAssetData) {
     id
   }
 }

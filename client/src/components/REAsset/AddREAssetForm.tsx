@@ -9,11 +9,12 @@ import {
 import { REACT_APP_MEDIA_HOST } from '@/config';
 import axios from 'axios';
 import { useMutation } from '@apollo/client';
-import { CREATE_REASSET } from '@/mutations';
+import { UPSERT_REASSET } from '@/mutations';
 import { GET_USER_BY_ID } from '@/queries';
 
 interface REAsset {
-  userId: number;
+  id: number | null;
+  userId: number | null;
   purchase_price: number;
   address: string;
   postal_code: string;
@@ -28,30 +29,31 @@ interface REAsset {
   bathrooms: number;
 }
 
+const defaultREAsset: REAsset = {
+  id: null,
+  userId: null,
+  purchase_price: 0,
+  address: "",
+  postal_code: "",
+  city: "",
+  province: "",
+  country: "",
+  picture_links: [],
+  purchase_date: new Date(),
+  favorite: false,
+  tracking: false,
+  bedrooms: 0,
+  bathrooms: 0
+}
 
-export function AddREAssetForm({ open, handleOpen, userID }: any) {
 
-  const [createREAsset, { loading: createREAssetLoading }] = useMutation(CREATE_REASSET, {
+export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) {
+
+  const [createREAsset, { loading: createREAssetLoading }] = useMutation(UPSERT_REASSET, {
     refetchQueries: [
       { query: GET_USER_BY_ID, variables: { userID: userID } }
     ]
   });
-
-  const defaultREAsset: REAsset = {
-    userId: userID,
-    purchase_price: 0,
-    address: "",
-    postal_code: "",
-    city: "",
-    province: "",
-    country: "",
-    picture_links: [],
-    purchase_date: new Date(),
-    favorite: false,
-    tracking: false,
-    bedrooms: 0,
-    bathrooms: 0
-  }
 
   const uploadFiles = (files: FileList) => {
     console.log("Sending Files");
@@ -67,7 +69,29 @@ export function AddREAssetForm({ open, handleOpen, userID }: any) {
     })
   }
 
-  const [REAssetInfo, setREAssetInfo] = useState<REAsset>(JSON.parse(JSON.stringify(defaultREAsset)));
+  const [REAssetInfo, setREAssetInfo] = useState<REAsset>(defaultREAsset);
+
+  useEffect(() => {
+    const formattedREAsset: REAsset = {
+      id: currentAsset ? currentAsset.id : null,
+      userId: userID,
+      purchase_price: currentAsset ? currentAsset.purchase_price : 0,
+      address: currentAsset ? currentAsset.address : "",
+      postal_code: currentAsset ? currentAsset.postal_code : "",
+      city: currentAsset ? currentAsset.city : "",
+      province: currentAsset ? currentAsset.province : "",
+      country: currentAsset ? currentAsset.country : "",
+      picture_links: currentAsset ? currentAsset.picture_links : [],
+      purchase_date: currentAsset ? new Date(currentAsset.purchase_date) : new Date(),
+      favorite: currentAsset ? currentAsset.favorite : false,
+      tracking: currentAsset ? currentAsset.tracking : false,
+      bedrooms: currentAsset ? currentAsset.bedrooms : 0,
+      bathrooms: currentAsset ? currentAsset.bathrooms : 0
+    }
+
+    setREAssetInfo(formattedREAsset);
+
+  }, [open, currentAsset])
 
   return (
     <Dialog size="lg" open={open} handler={handleOpen} className="bg-zinc-800 max-h-screen overflow-auto lg:w-auto w-full m-0 max-w-full">
@@ -160,7 +184,7 @@ export function AddREAssetForm({ open, handleOpen, userID }: any) {
             <label className="block uppercase tracking-wide text-zinc-500 text-xs font-bold mb-2"
               htmlFor="purchase_date">Purchase Date</label>
             <input className="appearance-none block w-full text-lg bg-zinc-200 text-zinc-700 border border-zinc-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-zinc-500"
-              type="date" name="" defaultValue={REAssetInfo.purchase_date.toString().substring(0, 10)} id="purchase_date" onChange={(e) => {
+              type="date" name="" defaultValue={(new Date()).toISOString().substring(0, 10)} id="purchase_date" onChange={(e) => {
                 setREAssetInfo({ ...REAssetInfo, purchase_date: new Date(e.target.value) });
               }} />
           </div>

@@ -22,6 +22,11 @@ export const GET_USER_BY_ID = gql`
         picture_links
         city
         province
+        purchase_date
+        country
+        favorite
+        tracking
+        postal_code
         re_assumptions {
           id
           rent_inc

@@ -252,7 +252,9 @@ export function ProspectiveRealEstate({ userID }: any) {
               </div>
               <REListItem
                 className="order-1 lg:order-3 col-span-3 lg:col-span-1 row-span-1 items-center"
-                REInfo={currentAsset} disabled
+                REInfo={currentAsset}
+                handleOpenAddREAsset={handleOpenAddREAsset}
+                disabled
               />
             </div>
 
@@ -280,7 +282,12 @@ export function ProspectiveRealEstate({ userID }: any) {
           </div>
         }
       </div>
-      <AddREAssetForm open={openAddREAsset} handleOpen={handleOpenAddREAsset} userID={userID} />
+      <AddREAssetForm
+        open={openAddREAsset}
+        handleOpen={handleOpenAddREAsset}
+        userID={userID}
+        currentAsset={currentAsset}
+      />
       <DeleteREAssetDialog
         userID={userID}
         assetID={assetID}
