@@ -4,11 +4,8 @@ import {
   Input,
   Tooltip
 } from "@material-tailwind/react";
-import { REACT_APP_MEDIA_HOST } from '@/config';
-import axios from 'axios';
 import { useMutation } from '@apollo/client';
-import { CREATE_REASSET, UPDATE_REASSUMPTION } from '@/mutations';
-import { GET_USER_BY_ID } from '@/queries';
+import { UPDATE_REASSUMPTION } from '@/mutations';
 
 
 export function AddREAssumptionsForm({ currentAsset, setCurrentAsset, assumptions, className, openEditAssumptions, setOpenEditAssumptions }: any) {

@@ -8,7 +8,7 @@ import {
   DialogFooter,
   Button
 } from '@material-tailwind/react';
-import { Loading } from './Loading';
+import { Loading } from '@/components/Loading';
 
 export function DeleteREAssetDialog({ userID, assetID, setAssetID, setCurrentAsset, open, handleOpen }: any) {
 

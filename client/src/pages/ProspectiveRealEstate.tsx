@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { GET_USER_BY_ID } from '@/queries';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { REListItem } from '@/components/REListItem';
 import {
   Button,
   Tooltip,
 } from '@material-tailwind/react';
-import { AddREAssetForm } from '@/components/AddREAssetForm';
-import { AddREAssumptionsForm } from '@/components/AddREAssumptionsForm';
-import { DeleteREAssetDialog } from '@/components/DeleteREAssetDialog';
+import { REListItem } from '@/components/REAsset/REListItem';
+import { AddREAssetForm } from '@/components/REAsset/AddREAssetForm';
+import { AddREAssumptionsForm } from '@/components/REAsset/AddREAssumptionsForm';
+import { DeleteREAssetDialog } from '@/components/REAsset/DeleteREAssetDialog';
 import { Loading } from '@/components/Loading';
 import Carousel from '@/components/Carousel';
 import { REACT_APP_MEDIA_HOST } from '@/config';
