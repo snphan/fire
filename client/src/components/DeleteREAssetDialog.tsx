@@ -19,7 +19,7 @@ export function DeleteREAssetDialog({ userID, assetID, setAssetID, setCurrentAss
   });
 
   return (
-    <Dialog size="xs" className="bg-zinc-900" open={open} handler={handleOpen}>
+    <Dialog size={window.screen.width > 1024 ? 'xs' : 'xl'} className="bg-zinc-900" open={open} handler={handleOpen}>
       {loading ?
         <Loading />
         :
