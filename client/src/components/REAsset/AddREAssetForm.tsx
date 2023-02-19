@@ -54,6 +54,8 @@ export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) 
       { query: GET_USER_BY_ID, variables: { userID: userID } }
     ]
   });
+  const [deletePhoto, setDeletePhoto] = useState<boolean>(false);
+  const [REAssetInfo, setREAssetInfo] = useState<REAsset>(defaultREAsset);
 
   const uploadFiles = (files: FileList) => {
     console.log("Sending Files");
@@ -61,7 +63,6 @@ export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) 
     Array.from(files).forEach((file) => {
       formData.append("file", file);
     })
-    console.log(formData);
     return axios.post(`${REACT_APP_MEDIA_HOST}/upload`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -69,7 +70,22 @@ export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) 
     })
   }
 
-  const [REAssetInfo, setREAssetInfo] = useState<REAsset>(defaultREAsset);
+  const deleteFile = (fileName: string) => {
+    axios.post(`${REACT_APP_MEDIA_HOST}/media/delete`, { fileName: fileName }).then((res: any) => {
+      const { deleteFileName } = res.data;
+
+      // Save immediately with useEffect in case user cancels and DB not updated.
+      setREAssetInfo({ ...REAssetInfo, picture_links: REAssetInfo.picture_links.filter((item: any) => item !== deleteFileName) })
+      setDeletePhoto(true);
+    });
+  }
+
+  useEffect(() => {
+    if (deletePhoto) {
+      createREAsset({ variables: { reAssetData: REAssetInfo } });
+      setDeletePhoto(false);
+    }
+  }, [deletePhoto])
 
   useEffect(() => {
     const formattedREAsset: REAsset = {
@@ -104,7 +120,12 @@ export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) 
           <div className="flex flex-wrap">
             <label htmlFor="Pictures" className="m-1 cursor-pointer hover:scale-105 hover:bg-zinc-400 w-24 h-24 bg-zinc-600 flex items-center justify-center rounded-xl"><span className="material-icons">photo_camera</span></label>
             {REAssetInfo.picture_links.map((link: string) => {
-              return <img key={link} className='m-1 rounded-xl w-24 h-24' src={`${REACT_APP_MEDIA_HOST}/media/${link}`} alt="" />
+              return (
+                <div key={link} className="relative">
+                  <img className='m-1 rounded-xl w-24 h-24' src={`${REACT_APP_MEDIA_HOST}/media/${link}`} alt="" />
+                  <button onClick={() => { deleteFile(link) }} className="absolute top-0 right-0 p-2 flex items-center justify-center"><span className="material-icons rounded-full w-5 h-5 bg-zinc-400 hover:bg-red-300 hover:drop-shadow-md text-sm">close</span></button>
+                </div>
+              )
             })}
           </div>
           <input className="hidden"
