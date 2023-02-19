@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Checkbox,
   Button,
   Dialog,
   DialogHeader,
@@ -10,11 +9,12 @@ import {
 import { REACT_APP_MEDIA_HOST } from '@/config';
 import axios from 'axios';
 import { useMutation } from '@apollo/client';
-import { CREATE_REASSET } from '@/mutations';
+import { UPSERT_REASSET } from '@/mutations';
 import { GET_USER_BY_ID } from '@/queries';
 
 interface REAsset {
-  userId: number;
+  id: number | null;
+  userId: number | null;
   purchase_price: number;
   address: string;
   postal_code: string;
@@ -29,30 +29,33 @@ interface REAsset {
   bathrooms: number;
 }
 
+const defaultREAsset: REAsset = {
+  id: null,
+  userId: null,
+  purchase_price: 0,
+  address: "",
+  postal_code: "",
+  city: "",
+  province: "",
+  country: "",
+  picture_links: [],
+  purchase_date: new Date(),
+  favorite: false,
+  tracking: false,
+  bedrooms: 0,
+  bathrooms: 0
+}
 
-export function AddREAssetForm({ open, handleOpen, userID }: any) {
 
-  const [createREAsset, { loading: createREAssetLoading }] = useMutation(CREATE_REASSET, {
+export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) {
+
+  const [createREAsset, { loading: createREAssetLoading }] = useMutation(UPSERT_REASSET, {
     refetchQueries: [
       { query: GET_USER_BY_ID, variables: { userID: userID } }
     ]
   });
-
-  const defaultREAsset: REAsset = {
-    userId: userID,
-    purchase_price: 0,
-    address: "",
-    postal_code: "",
-    city: "",
-    province: "",
-    country: "",
-    picture_links: [],
-    purchase_date: new Date(),
-    favorite: false,
-    tracking: false,
-    bedrooms: 0,
-    bathrooms: 0
-  }
+  const [deletePhoto, setDeletePhoto] = useState<boolean>(false);
+  const [REAssetInfo, setREAssetInfo] = useState<REAsset>(defaultREAsset);
 
   const uploadFiles = (files: FileList) => {
     console.log("Sending Files");
@@ -60,7 +63,6 @@ export function AddREAssetForm({ open, handleOpen, userID }: any) {
     Array.from(files).forEach((file) => {
       formData.append("file", file);
     })
-    console.log(formData);
     return axios.post(`${REACT_APP_MEDIA_HOST}/upload`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -68,10 +70,74 @@ export function AddREAssetForm({ open, handleOpen, userID }: any) {
     })
   }
 
-  const [REAssetInfo, setREAssetInfo] = useState<REAsset>(JSON.parse(JSON.stringify(defaultREAsset)));
+  const swap = (ind1: number, ind2: number, items: Array<any>) => {
+    let temp = items[ind1];
+    items[ind1] = items[ind2];
+    items[ind2] = temp;
+  }
+
+  const swapWithLeftPhoto = (currentImgName: string) => {
+    const picture_links = REAssetInfo.picture_links.slice();
+    const picIndex = picture_links.indexOf(currentImgName);
+    const leftPicIndex = picIndex - 1;
+    if (leftPicIndex >= 0) {
+      swap(picIndex, leftPicIndex, picture_links);
+      setREAssetInfo({ ...REAssetInfo, picture_links: picture_links });
+    }
+
+  }
+
+  const swapWithRightPhoto = (currentImgName: string) => {
+    const picture_links = REAssetInfo.picture_links.slice();
+    const picIndex = picture_links.indexOf(currentImgName);
+    const rightPicIndex = picIndex + 1;
+    if (rightPicIndex < picture_links.length) {
+      swap(picIndex, rightPicIndex, picture_links);
+      setREAssetInfo({ ...REAssetInfo, picture_links: picture_links });
+    }
+
+  }
+  const deleteFile = (fileName: string) => {
+    axios.post(`${REACT_APP_MEDIA_HOST}/media/delete`, { fileName: fileName }).then((res: any) => {
+      const { deleteFileName } = res.data;
+
+      // Save immediately with useEffect in case user cancels and DB not updated.
+      setREAssetInfo({ ...REAssetInfo, picture_links: REAssetInfo.picture_links.filter((item: any) => item !== deleteFileName) })
+      setDeletePhoto(true);
+    });
+  }
+
+  useEffect(() => {
+    if (deletePhoto) {
+      createREAsset({ variables: { reAssetData: REAssetInfo } });
+      setDeletePhoto(false);
+    }
+  }, [deletePhoto])
+
+  useEffect(() => {
+    const formattedREAsset: REAsset = {
+      id: currentAsset ? currentAsset.id : null,
+      userId: userID,
+      purchase_price: currentAsset ? currentAsset.purchase_price : 0,
+      address: currentAsset ? currentAsset.address : "",
+      postal_code: currentAsset ? currentAsset.postal_code : "",
+      city: currentAsset ? currentAsset.city : "",
+      province: currentAsset ? currentAsset.province : "",
+      country: currentAsset ? currentAsset.country : "",
+      picture_links: currentAsset ? currentAsset.picture_links : [],
+      purchase_date: currentAsset ? new Date(currentAsset.purchase_date) : new Date(),
+      favorite: currentAsset ? currentAsset.favorite : false,
+      tracking: currentAsset ? currentAsset.tracking : false,
+      bedrooms: currentAsset ? currentAsset.bedrooms : 0,
+      bathrooms: currentAsset ? currentAsset.bathrooms : 0
+    }
+
+    setREAssetInfo(formattedREAsset);
+
+  }, [open, currentAsset])
 
   return (
-    <Dialog size="lg" open={open} handler={handleOpen} className="bg-zinc-800 max-h-screen overflow-auto lg:w-auto w-full m-0 max-w-full">
+    <Dialog size="lg" open={open} handler={handleOpen} className="bg-zinc-800 max-h-screen overflow-auto lg:w-auto w-full m-0 lg:max-w-[60%] max-w-full">
       <DialogHeader className="text-zinc-100">Add a Property</DialogHeader>
       <DialogBody className="text-zinc-200 flex flex-col">
 
@@ -81,7 +147,14 @@ export function AddREAssetForm({ open, handleOpen, userID }: any) {
           <div className="flex flex-wrap">
             <label htmlFor="Pictures" className="m-1 cursor-pointer hover:scale-105 hover:bg-zinc-400 w-24 h-24 bg-zinc-600 flex items-center justify-center rounded-xl"><span className="material-icons">photo_camera</span></label>
             {REAssetInfo.picture_links.map((link: string) => {
-              return <img key={link} className='m-1 rounded-xl w-24 h-24' src={`${REACT_APP_MEDIA_HOST}/media/${link}`} alt="" />
+              return (
+                <div key={link} className="relative transition-all duration-500">
+                  <img className='m-1 rounded-xl w-24 h-24' src={`${REACT_APP_MEDIA_HOST}/media/${link}`} alt="" />
+                  <button onClick={() => { deleteFile(link) }} className="absolute top-0 right-0 p-2 flex items-center justify-center"><span className="material-icons rounded-full w-5 h-5 bg-zinc-400 hover:bg-red-300 hover:drop-shadow-strong text-sm">close</span></button>
+                  <button onClick={() => { swapWithLeftPhoto(link) }} className="absolute bottom-0 left-0 p-2 flex items-center justify-center"><span className="material-icons rounded-full w-5 h-5 hover:bg-sky-300 hover:drop-shadow-strong text-sm">chevron_left</span></button>
+                  <button onClick={() => { swapWithRightPhoto(link) }} className="absolute bottom-0 right-0 p-2 flex items-center justify-center"><span className="material-icons rounded-full w-5 h-5 hover:bg-sky-300 hover:drop-shadow-strong text-sm">chevron_right</span></button>
+                </div>
+              )
             })}
           </div>
           <input className="hidden"
@@ -161,7 +234,7 @@ export function AddREAssetForm({ open, handleOpen, userID }: any) {
             <label className="block uppercase tracking-wide text-zinc-500 text-xs font-bold mb-2"
               htmlFor="purchase_date">Purchase Date</label>
             <input className="appearance-none block w-full text-lg bg-zinc-200 text-zinc-700 border border-zinc-200 rounded-lg py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-zinc-500"
-              type="date" name="" defaultValue={REAssetInfo.purchase_date.toString().substring(0, 10)} id="purchase_date" onChange={(e) => {
+              type="date" name="" defaultValue={(new Date()).toISOString().substring(0, 10)} id="purchase_date" onChange={(e) => {
                 setREAssetInfo({ ...REAssetInfo, purchase_date: new Date(e.target.value) });
               }} />
           </div>

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { GET_USER_BY_ID } from '@/queries';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { REListItem } from '@/components/REListItem';
 import {
   Button,
   Tooltip,
 } from '@material-tailwind/react';
-import { AddREAssetForm } from '@/components/AddREAssetForm';
-import { AddREAssumptionsForm } from '@/components/AddREAssumptionsForm';
-import { DeleteREAssetDialog } from '@/components/DeleteREAssetDialog';
+import { REListItem } from '@/components/REAsset/REListItem';
+import { AddREAssetForm } from '@/components/REAsset/AddREAssetForm';
+import { AddREAssumptionsForm } from '@/components/REAsset/AddREAssumptionsForm';
+import { DeleteREAssetDialog } from '@/components/REAsset/DeleteREAssetDialog';
 import { Loading } from '@/components/Loading';
 import Carousel from '@/components/Carousel';
 import { REACT_APP_MEDIA_HOST } from '@/config';
@@ -169,7 +169,7 @@ export function ProspectiveRealEstate({ userID }: any) {
               <h1 className="lg:ml-14">Property Analysis</h1>
               <div className="grow"></div>
               <Tooltip content={"Delete"} className="capitalize bg-gray-900 p-2">
-                <div className="transition-all mr-5 hover:bg-gradient-to-tr hover:from-pink-800 hover:to-pink-500 hover:bg-red-700 hover:shadow-pink-300/20 hover:scale-105 rounded-full cursor-pointer w-12 h-12 flex justify-center items-center"
+                <div className="transition-all lg:mr-5 hover:bg-gradient-to-tr hover:from-pink-800 hover:to-pink-500 hover:bg-red-700 hover:shadow-pink-300/20 hover:scale-105 rounded-full cursor-pointer w-12 h-12 flex justify-center items-center"
                   onClick={() => {
                     handleOpenConfirmDelete();
                     /* Go Back to list view */
@@ -252,7 +252,9 @@ export function ProspectiveRealEstate({ userID }: any) {
               </div>
               <REListItem
                 className="order-1 lg:order-3 col-span-3 lg:col-span-1 row-span-1 items-center"
-                REInfo={currentAsset} disabled
+                REInfo={currentAsset}
+                handleOpenAddREAsset={handleOpenAddREAsset}
+                disabled
               />
             </div>
 
@@ -280,7 +282,12 @@ export function ProspectiveRealEstate({ userID }: any) {
           </div>
         }
       </div>
-      <AddREAssetForm open={openAddREAsset} handleOpen={handleOpenAddREAsset} userID={userID} />
+      <AddREAssetForm
+        open={openAddREAsset}
+        handleOpen={handleOpenAddREAsset}
+        userID={userID}
+        currentAsset={currentAsset}
+      />
       <DeleteREAssetDialog
         userID={userID}
         assetID={assetID}

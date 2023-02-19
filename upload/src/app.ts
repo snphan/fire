@@ -5,9 +5,11 @@ import cors from 'cors';
 import https from 'https';
 import fs from 'fs';
 import { NODE_ENV } from './config';
+import bodyParser from 'body-parser';
 
 const app = express();
 
+app.use(bodyParser.json());
 
 app.use("/media", express.static("./media"));
 app.use(cors({ origin: ['http://localhost:8000'], credentials: true }));
@@ -29,6 +31,20 @@ app.post("/upload", upload.array('file'), (req: any, res) => {
   let names = [];
   req.files.forEach(file => names.push(file.filename));
   res.json({ status: "success", filenames: names });
+})
+
+app.post("/media/delete", (req: any, res) => {
+  const data = req.body;
+  const { fileName } = data;
+  const filePath = `./media/${fileName}`;
+  console.log("Received a request to delete file", data);
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      res.json({ status: "error", message: err, deleteFileName: fileName });
+    } else {
+      res.json({ status: "success", deleteFileName: fileName })
+    }
+  });
 })
 
 if (NODE_ENV === "production") {

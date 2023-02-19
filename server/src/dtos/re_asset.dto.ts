@@ -5,6 +5,9 @@ import { REAsset } from '@entities/re_asset.entity';
 
 @InputType()
 export class CreateREAssetDto implements Partial<REAsset> {
+  @Field({ nullable: true })
+  id?: number;
+
   @IsNumber()
   @Field()
   userId: number; /* Send the userId in the request and repository will look for user and save object */
