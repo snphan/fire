@@ -22,6 +22,10 @@ const storage = multer.diskStorage({
     /* Custom UUID file name */
     const { originalname } = file;
     callback(null, `${uuidv4()}-${originalname}`);
+  },
+  limits: {
+    fieldSize: 8 * 1024 * 1024,
+    fileSize: 8 * 1024 * 1024
   }
 })
 
