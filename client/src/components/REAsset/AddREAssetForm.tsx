@@ -70,6 +70,33 @@ export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) 
     })
   }
 
+  const swap = (ind1: number, ind2: number, items: Array<any>) => {
+    let temp = items[ind1];
+    items[ind1] = items[ind2];
+    items[ind2] = temp;
+  }
+
+  const swapWithLeftPhoto = (currentImgName: string) => {
+    const picture_links = REAssetInfo.picture_links.slice();
+    const picIndex = picture_links.indexOf(currentImgName);
+    const leftPicIndex = picIndex - 1;
+    if (leftPicIndex >= 0) {
+      swap(picIndex, leftPicIndex, picture_links);
+      setREAssetInfo({ ...REAssetInfo, picture_links: picture_links });
+    }
+
+  }
+
+  const swapWithRightPhoto = (currentImgName: string) => {
+    const picture_links = REAssetInfo.picture_links.slice();
+    const picIndex = picture_links.indexOf(currentImgName);
+    const rightPicIndex = picIndex + 1;
+    if (rightPicIndex < picture_links.length) {
+      swap(picIndex, rightPicIndex, picture_links);
+      setREAssetInfo({ ...REAssetInfo, picture_links: picture_links });
+    }
+
+  }
   const deleteFile = (fileName: string) => {
     axios.post(`${REACT_APP_MEDIA_HOST}/media/delete`, { fileName: fileName }).then((res: any) => {
       const { deleteFileName } = res.data;
@@ -110,7 +137,7 @@ export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) 
   }, [open, currentAsset])
 
   return (
-    <Dialog size="lg" open={open} handler={handleOpen} className="bg-zinc-800 max-h-screen overflow-auto lg:w-auto w-full m-0 max-w-full">
+    <Dialog size="lg" open={open} handler={handleOpen} className="bg-zinc-800 max-h-screen overflow-auto lg:w-auto w-full m-0 lg:max-w-[60%] max-w-full">
       <DialogHeader className="text-zinc-100">Add a Property</DialogHeader>
       <DialogBody className="text-zinc-200 flex flex-col">
 
@@ -121,9 +148,11 @@ export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) 
             <label htmlFor="Pictures" className="m-1 cursor-pointer hover:scale-105 hover:bg-zinc-400 w-24 h-24 bg-zinc-600 flex items-center justify-center rounded-xl"><span className="material-icons">photo_camera</span></label>
             {REAssetInfo.picture_links.map((link: string) => {
               return (
-                <div key={link} className="relative">
+                <div key={link} className="relative transition-all duration-500">
                   <img className='m-1 rounded-xl w-24 h-24' src={`${REACT_APP_MEDIA_HOST}/media/${link}`} alt="" />
-                  <button onClick={() => { deleteFile(link) }} className="absolute top-0 right-0 p-2 flex items-center justify-center"><span className="material-icons rounded-full w-5 h-5 bg-zinc-400 hover:bg-red-300 hover:drop-shadow-md text-sm">close</span></button>
+                  <button onClick={() => { deleteFile(link) }} className="absolute top-0 right-0 p-2 flex items-center justify-center"><span className="material-icons rounded-full w-5 h-5 bg-zinc-400 hover:bg-red-300 hover:drop-shadow-strong text-sm">close</span></button>
+                  <button onClick={() => { swapWithLeftPhoto(link) }} className="absolute bottom-0 left-0 p-2 flex items-center justify-center"><span className="material-icons rounded-full w-5 h-5 hover:bg-sky-300 hover:drop-shadow-strong text-sm">chevron_left</span></button>
+                  <button onClick={() => { swapWithRightPhoto(link) }} className="absolute bottom-0 right-0 p-2 flex items-center justify-center"><span className="material-icons rounded-full w-5 h-5 hover:bg-sky-300 hover:drop-shadow-strong text-sm">chevron_right</span></button>
                 </div>
               )
             })}
