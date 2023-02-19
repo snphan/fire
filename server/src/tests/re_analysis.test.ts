@@ -110,8 +110,8 @@ describe('Testing Real Estate Asset Analysis', () => {
       };
 
       const createREAssetMutation = {
-        query: `mutation createREAsset($REAssetData: CreateREAssetDto!) {
-                  createREAsset(REAssetData: $REAssetData) {
+        query: `mutation upsertREAsset($REAssetData: CreateREAssetDto!) {
+                  upsertREAsset(REAssetData: $REAssetData) {
                     id
                     user {
                       id
@@ -129,12 +129,12 @@ describe('Testing Real Estate Asset Analysis', () => {
 
       const response = await request(app.getServer()).post('/api/graphql').set("Cookie", authCookie).send(createREAssetMutation);
       expect(response.error).toBeFalsy();
-      expect(response.body.data.createREAsset.user.id).toBe(REAssetData.userId);
-      expect(response.body.data.createREAsset.address).toBe(REAssetData.address);
-      expect(response.body.data.createREAsset.purchase_price).toBe(REAssetData.purchase_price);
-      expect(response.body.data.createREAsset.re_assumptions.id).not.toBeNull();
-      reAssetId = response.body.data.createREAsset.id;
-      reAssumptionsId = response.body.data.createREAsset.re_assumptions.id;
+      expect(response.body.data.upsertREAsset.user.id).toBe(REAssetData.userId);
+      expect(response.body.data.upsertREAsset.address).toBe(REAssetData.address);
+      expect(response.body.data.upsertREAsset.purchase_price).toBe(REAssetData.purchase_price);
+      expect(response.body.data.upsertREAsset.re_assumptions.id).not.toBeNull();
+      reAssetId = response.body.data.upsertREAsset.id;
+      reAssumptionsId = response.body.data.upsertREAsset.re_assumptions.id;
     });
   });
 
