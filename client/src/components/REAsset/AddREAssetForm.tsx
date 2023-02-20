@@ -61,6 +61,8 @@ export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) 
     console.log("Sending Files");
     let formData = new FormData();
     Array.from(files).forEach((file) => {
+      if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) { alert('One or more of the files is not an image'); return }
+      if (!file.name.toLowerCase().match(/(.jpg)$|(.jpeg)$|(.png)$/)) { alert('One or more of the files is not an image'); return }
       formData.append("file", file);
     })
     return axios.post(`${REACT_APP_MEDIA_HOST}/upload`, formData, {
