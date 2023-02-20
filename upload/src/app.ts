@@ -6,11 +6,12 @@ import https from 'https';
 import fs from 'fs';
 import { NODE_ENV } from './config';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
 app.use(bodyParser.json());
-
+app.use(cookieParser());
 app.use("/media", express.static("./media"));
 app.use(cors({ origin: ['http://localhost:8000'], credentials: true }));
 /* Multer Settings */
@@ -33,8 +34,16 @@ const upload = multer({ storage });
 
 app.post("/upload", upload.array('file'), (req: any, res) => {
   let names = [];
-  req.files.forEach(file => names.push(file.filename));
-  res.json({ status: "success", filenames: names });
+  const Authorization = req.cookies['Authorization'] || (req.header('Authorization') ? req.header('Authorization').split('Bearer ')[1] : null);
+
+  if (Authorization) {
+    req.files.forEach(file => {
+      names.push(file.filename);
+    });
+    res.json({ status: "success", filenames: names });
+  } else {
+    res.json({ status: "error", message: "no authorization", filenames: [] });
+  }
 })
 
 app.post("/media/delete", (req: any, res) => {
