@@ -2,7 +2,7 @@ import { CreateGoalDto } from "@/dtos/goal.dto";
 import { Goal } from "@/entities/goal.entity";
 import { User } from "@/entities/users.entity";
 import GoalRepository from "@/repositories/goal.repository";
-import { Arg, Authorized, Ctx, Mutation, Resolver } from "type-graphql";
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 
 @Resolver()
 export class GoalResolver extends GoalRepository {
@@ -22,6 +22,16 @@ export class GoalResolver extends GoalRepository {
   })
   async deleteGoal(@Arg('goalId') goalId: number) {
     const goal: Goal = await this.goalDelete(goalId);
+    return goal;
+  }
+
+  @Authorized()
+  @Query(() => [Goal], {
+    description: 'Get all of the goals by user'
+  })
+  async getGoals(@Ctx('user') user: User) {
+    const goal: Goal[] = await Goal.find({ where: { user: { id: user.id } } });
+    console.log(goal);
     return goal;
   }
 }
