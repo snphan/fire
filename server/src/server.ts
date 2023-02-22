@@ -6,7 +6,7 @@ import { userResolver } from '@resolvers/users.resolver';
 import { REAssetResolver } from './resolvers/re_analysis.resolver';
 import { PlaidResolver } from './resolvers/plaid.resolver';
 import { TransactionResolver } from './resolvers/transactions.resolver';
-import { dbConnection } from './databases';
+import { GoalResolver } from './resolvers/goal.resolver';
 
 validateEnv();
 
@@ -16,7 +16,7 @@ async function main() {
     '0 1 * * *' // Everday at 1 am
   );
 
-  await app.init([authResolver, userResolver, REAssetResolver, PlaidResolver, TransactionResolver]);
+  await app.init([authResolver, userResolver, REAssetResolver, PlaidResolver, TransactionResolver, GoalResolver]);
 
   app.listen();
 }

@@ -3,6 +3,7 @@ import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateC
 import { Ctx, Field, ObjectType } from 'type-graphql';
 import { REAsset } from './re_asset.entity';
 import { PlaidInfo } from './plaid_info.entity';
+import { Goal } from './goal.entity';
 
 @ObjectType()
 @Entity()
@@ -59,4 +60,11 @@ export class User extends BaseEntity {
     cascade: true
   })
   plaidInfoConnection: Promise<Relation<PlaidInfo[]>>;
+
+  @OneToMany((type) => Goal, goal => goal.user, {
+    onDelete: "SET NULL",
+    eager: true,
+    cascade: true
+  })
+  goalConnection: Promise<Relation<Goal[]>>;
 }
