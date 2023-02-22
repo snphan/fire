@@ -21,4 +21,12 @@ export default class GoalRepository {
       return findGoal;
     }
   }
+
+  public async goalDelete(goalId: number): Promise<Goal> {
+    const findGoal: Goal = await Goal.findOne({ where: { id: goalId } });
+    if (!findGoal) throw new HttpException(409, "Goal doesn't exist");
+    await Goal.delete({ id: goalId });
+
+    return findGoal;
+  }
 }

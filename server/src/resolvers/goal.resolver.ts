@@ -12,8 +12,16 @@ export class GoalResolver extends GoalRepository {
     description: 'Create/Update Goal'
   })
   async upsertGoal(@Arg('goalData') goalData: CreateGoalDto, @Ctx('user') user: User): Promise<Goal> {
-    console.log(goalData);
     const goal: Goal = await this.goalUpsert(goalData, user);
+    return goal;
+  }
+
+  @Authorized()
+  @Mutation(() => Goal, {
+    description: 'Delete a goal by its id'
+  })
+  async deleteGoal(@Arg('goalId') goalId: number) {
+    const goal: Goal = await this.goalDelete(goalId);
     return goal;
   }
 }
