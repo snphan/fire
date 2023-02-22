@@ -22,6 +22,7 @@ export function NavBar({ setAppState, endSession, currState }: any) {
         }>
           <li className="h-14 lg:hidden"></li>
           {([
+            { name: "flag", state: "goals" },
             { name: "space_dashboard", state: "dashboard" },
             { name: "real_estate_agent", state: "prospective-real-estate" }
           ]).map((icon) => (

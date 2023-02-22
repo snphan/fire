@@ -9,6 +9,7 @@ import { Dashboard } from '@/pages/Dashboard';
 import { NavBar } from './components/NavBar';
 import { ThemeProvider } from '@material-tailwind/react';
 import { apolloClient } from '.';
+import { Goals } from './pages/Goals';
 
 declare global {
   /* google variable is loaded from script in public/index.html */
@@ -53,6 +54,13 @@ function App() {
           setAppState("auth");
           setUserInfo(undefined);
         }} />);
+      case "goals":
+        return (
+          <>
+            <NavBar setAppState={setAppState} endSession={endSession} currState={appState} />
+            <Goals setAppState={setAppState} />
+          </>
+        );
       case "dashboard":
         return (
           <>
