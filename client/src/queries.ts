@@ -134,3 +134,13 @@ export const PLAID_GET_BANK_NAMES = gql`
     getBankNames
   }
 `
+
+export const GET_GOALS = gql`
+  query getGoals {
+    getGoals {
+      track_accounts
+      due_date
+      goal_amount
+    }
+  }
+`
