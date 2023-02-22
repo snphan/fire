@@ -42,14 +42,14 @@ export function Goals({ }: any) {
           </>
         }
       </div>
-      <Dialog size={window.screen.width > 1024 ? 'xs' : 'xl'} className="bg-zinc-900 h-3/4 flex flex-col" open={openAddGoal} handler={handleOpenAddGoal}>
+      <Dialog size={window.screen.width > 1024 ? 'xs' : 'xl'} className="absolute top-2 right-2 left-2 bg-zinc-900 w-auto max-w-full lg:max-w-[25%] lg:right-auto lg:left-auto lg:top-auto h-3/4 flex flex-col" open={openAddGoal} handler={handleOpenAddGoal}>
         {isBankLinkedLoading ?
           <Loading />
           :
           <>
             <DialogHeader className="text-zinc-300 font-ubuntu">Add a goal!</DialogHeader>
             <DialogBody className="text-zinc-400 font-ubuntu grow">
-              <Carousel className="w-full">
+              <Carousel className="w-full" noLoop arrowPos="bottom">
                 <Carousel.Item>Hi world</Carousel.Item>
                 <Carousel.Item>Hi world 2</Carousel.Item>
                 <Carousel.Item>Hi world 3</Carousel.Item>
@@ -66,7 +66,7 @@ export function Goals({ }: any) {
                 <span>Back</span>
               </Button>
               <Button variant="gradient" color="green" onClick={() => { }}>
-                <span>Confirm</span>
+                <span>Add</span>
               </Button>
             </DialogFooter>
           </>
