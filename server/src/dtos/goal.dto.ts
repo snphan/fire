@@ -8,6 +8,10 @@ export class CreateGoalDto implements Partial<Goal> {
   @Field({ nullable: true })
   id?: number;
 
+  @IsString()
+  @Field()
+  name: string;
+
   @IsString({ each: true })
   @Field((type) => [String])
   track_accounts: string[];
@@ -19,4 +23,8 @@ export class CreateGoalDto implements Partial<Goal> {
   @IsNumber()
   @Field()
   goal_amount: number;
+
+  @IsNumber()
+  @Field()
+  start_save_from: number;
 }

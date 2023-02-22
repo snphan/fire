@@ -23,10 +23,18 @@ export class Goal extends BaseEntity {
   createAt: Date;
 
   @Field()
-  @Column()
+  @Column({ default: new Date() })
   due_date: Date;
 
   @Field()
-  @Column()
+  @Column({ default: 1 })
   goal_amount: number;
+
+  @Field()
+  @Column({ default: '' })
+  name: string;
+
+  @Field()
+  @Column({ default: 0 })
+  start_save_from: number;
 }
