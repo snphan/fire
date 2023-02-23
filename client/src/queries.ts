@@ -141,6 +141,8 @@ export const GET_GOALS = gql`
       track_accounts
       due_date
       goal_amount
+      name
+      start_save_from
     }
   }
 `

@@ -90,3 +90,14 @@ export const SYNC_TRANSACTIONS = gql`
     syncUserTransactions
   }
 `
+
+export const UPSERT_GOAL = gql`
+mutation UpsertGoal($goalData: CreateGoalDto!) {
+  upsertGoal(goalData: $goalData) {
+    id
+    goal_amount
+    due_date
+    track_accounts
+  }
+}
+`

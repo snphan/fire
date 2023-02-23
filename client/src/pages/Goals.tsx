@@ -1,26 +1,40 @@
 import { GET_GOALS, IS_BANKACCOUNT_LINKED, PLAID_GET_ACCOUNTS } from '@/queries';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, Checkbox, Dialog, DialogBody, DialogFooter, DialogHeader, Input } from '@material-tailwind/react';
 import { Loading } from '@/components/Loading';
 import Carousel from '@/components/Carousel';
 import { CurrencyContext } from '@/Context';
+import { UPSERT_GOAL } from '@/mutations';
+import ReactECharts from 'echarts-for-react';
+import { fireTheme } from '@/config/echart.config';
+import * as echarts from "echarts";
+
+echarts.registerTheme('my_theme', fireTheme);
+
+const emptyGoal = {
+  id: undefined,
+  name: '',
+  track_accounts: [],
+  due_date: '',
+  goal_amount: '',
+  amount_saved: ''
+};
 
 export function Goals({ }: any) {
 
   const currencyFormatter = useContext(CurrencyContext);
   const { data: goals } = useQuery(GET_GOALS);
+  const [upsertGoal, { loading: upsertGoalLoading }] = useMutation(UPSERT_GOAL, {
+    refetchQueries: [
+      { query: GET_GOALS }
+    ]
+  })
+
   const { data: isBankLinked, loading: isBankLinkedLoading } = useQuery<any>(IS_BANKACCOUNT_LINKED);
   const { data: balanceData, loading: loadingBalance, refetch: refetchBalance } = useQuery<any>(PLAID_GET_ACCOUNTS);
   const [openAddGoal, setOpenAddGoal] = useState<boolean>(false);
-  const [createGoalData, setCreateGoalData] = useState<any>({
-    id: undefined,
-    name: '',
-    track_accounts: [],
-    due_date: '',
-    goal_amount: '',
-    start_save_from: ''
-  });
+  const [createGoalData, setCreateGoalData] = useState<any>(JSON.parse(JSON.stringify(emptyGoal)));
 
   const handleOpenAddGoal = () => {
     setOpenAddGoal(!openAddGoal);
@@ -28,7 +42,7 @@ export function Goals({ }: any) {
 
   const calculateSavingsRate = () => {
     const goalAmount = parseFloat(createGoalData.goal_amount);
-    const startCash = parseFloat(createGoalData.start_save_from);
+    const startCash = parseFloat(createGoalData.amount_saved);
     const dueDate = new Date(createGoalData.due_date);
     const today = new Date();
 
@@ -39,10 +53,70 @@ export function Goals({ }: any) {
     return totalMonths <= 0 ? "Invalid Due Date" : currencyFormatter.format((goalAmount - startCash) / (totalMonths)) + "/mo.";
   }
 
+  const handleClickCreateGoal = () => {
+    const { id, name, track_accounts, due_date, goal_amount, amount_saved } = createGoalData;
+    const currentBalance = balanceData?.getAccounts.accounts.filter((account: any) => createGoalData.track_accounts.includes(account.name)).reduce((a: number, b: any) => a + b.balances.current, 0);
+    const startSaveFrom = parseFloat(amount_saved) - currentBalance;
+
+
+    const prepGoalData = {
+      id: id,
+      name: name,
+      track_accounts: track_accounts,
+      due_date: due_date,
+      goal_amount: parseFloat(goal_amount),
+      start_save_from: Math.trunc(startSaveFrom > currentBalance ? 0 : startSaveFrom * 100) / 100
+    }
+
+    upsertGoal({ variables: { goalData: prepGoalData } })
+    setCreateGoalData(JSON.parse(JSON.stringify(emptyGoal)));
+    handleOpenAddGoal();
+  }
+
+  const getCurrentSaved = (goalData: any) => {
+
+    const currentBalance = balanceData?.getAccounts.accounts.filter((account: any) => goalData?.track_accounts.includes(account.name)).reduce((a: number, b: any) => a + b.balances.current, 0);
+    return goalData && goalData.start_save_from + currentBalance;
+  }
+
   useEffect(() => {
     console.log(goals);
     console.log(isBankLinked);
   }, [goals])
+
+  const option = {
+    grid: {
+      containLabel: true
+    },
+    xAxis: {
+      type: 'category',
+      data: [goals?.getGoals[0].name]
+    },
+    yAxis: {
+      type: 'value',
+      min: 0,
+      max: goals?.getGoals[0].goal_amount
+    },
+    series: [{
+      itemStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {
+            offset: 0,
+            color: '#dce775'
+          },
+          {
+            offset: 1,
+            color: '#2e7d32'
+          },
+        ]),
+        borderRadius: 5
+      },
+
+      data: [getCurrentSaved(goals?.getGoals[0])],
+      type: 'bar'
+    }]
+  };
+
 
   return (
     <>
@@ -50,9 +124,17 @@ export function Goals({ }: any) {
         <h1>
           My Goals
         </h1>
-        {goals?.length ?
-          <div>
-            Some Chart!
+        {goals?.getGoals.length ?
+          <div className="grow flex-col flex">
+            <div className={`text-zinc-300 font-ubuntu h-36 items-start bg-cover m-5 rounded-3xl`}
+              style={{ backgroundImage: `url('${goals?.getGoals[0].name.toLowerCase()}.png')` }}
+            >
+              <div className='text-zinc-300 font-ubuntu h-36 items-start font-bold text-lg bg-cover m-5 rounded-3xl'>
+                {goals?.getGoals[0].name ? goals?.getGoals[0].name : "Add a goal!"}
+              </div>
+            </div>
+            <ReactECharts className="grow" style={{ height: "100%" }} theme="my_theme" option={option} />
+
           </div>
           :
           <>
@@ -67,6 +149,7 @@ export function Goals({ }: any) {
           </>
         }
       </div>
+
       <Dialog size={window.screen.width > 1024 ? 'xs' : 'xl'} className="rounded-3xl absolute top-2 right-2 left-2 bg-zinc-900 w-auto max-w-full lg:max-w-[25%] lg:right-auto lg:left-auto lg:top-auto h-3/4 flex flex-col" open={openAddGoal} handler={handleOpenAddGoal}>
         {isBankLinkedLoading ?
           <Loading />
@@ -132,7 +215,7 @@ export function Goals({ }: any) {
 
                 <Carousel.Item className="!justify-start flex-col">
                   <div className="flex flex-col m-4">
-                    <h4 className="text-lg text-center font-thin leading-loose mt-4 mb-2">What amount do you want to start saving from?</h4>
+                    <h4 className="text-lg text-center font-thin leading-loose mt-4 mb-2">How much do you have saved for this goal already?</h4>
                     <div className="text-xs text-center font-thin leading-loose mb-8">
                       (Max Amount {
                         currencyFormatter.format(
@@ -141,8 +224,8 @@ export function Goals({ }: any) {
                       } from all <span className="material-icons text-sm">check_box</span> accounts)
                     </div>
                     <Input
-                      value={createGoalData.start_save_from}
-                      onChange={(e: any) => setCreateGoalData({ ...createGoalData, start_save_from: e.target.value })}
+                      value={createGoalData.amount_saved}
+                      onChange={(e: any) => setCreateGoalData({ ...createGoalData, amount_saved: e.target.value })}
                       size="lg" variant="standard" labelProps={{ className: "!text-zinc-500" }} icon={<span className="material-icons text-zinc-300">attach_money</span>} className="!text-zinc-300 font-[Ubuntu] font-thin text-2xl" />
                   </div>
                 </Carousel.Item>
@@ -155,7 +238,7 @@ export function Goals({ }: any) {
                 </Carousel.Item>
                 <Carousel.Item className="flex-col">
                   <h4 className="text-lg text-center font-thin leading-loose mb-10">Tap the check to start saving!</h4>
-                  <button className="animate-bounce font-bold w-14 h-14 rounded-full drop-shadow-strong bg-gradient-to-tr from-sky-400 to-sky-700 text-zinc-200 flex justify-center items-center"><span className="material-icons">check</span></button>
+                  <button onClick={handleClickCreateGoal} className="animate-bounce font-bold w-14 h-14 rounded-full drop-shadow-strong bg-gradient-to-tr from-sky-400 to-sky-700 text-zinc-200 flex justify-center items-center"><span className="material-icons">check</span></button>
                 </Carousel.Item>
               </Carousel>
             </DialogBody>
