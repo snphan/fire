@@ -85,6 +85,7 @@ export function Goals({ }: any) {
   }, [goals])
 
   const option = {
+    height: "80%",
     grid: {
       containLabel: true
     },
@@ -133,8 +134,8 @@ export function Goals({ }: any) {
                 {goals?.getGoals[0].name ? goals?.getGoals[0].name : "Add a goal!"}
               </div>
             </div>
+            <div className="text-xl my-5 text-center lg:text-4xl font-bold text-green-500">{currencyFormatter.format(getCurrentSaved(goals?.getGoals[0]))}/{currencyFormatter.format(goals?.getGoals[0].goal_amount)}</div>
             <ReactECharts className="grow" style={{ height: "100%" }} theme="my_theme" option={option} />
-
           </div>
           :
           <>
