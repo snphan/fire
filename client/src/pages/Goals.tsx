@@ -171,7 +171,7 @@ export function Goals({ }: any) {
               style={{ backgroundImage: `url('${createGoalData.name.toLowerCase()}.png')` }}
             >{createGoalData.name ? createGoalData.name : "Add a goal!"}</DialogHeader>
             <DialogBody className="text-zinc-400 font-ubuntu grow">
-              {isBankLinked ?
+              {isBankLinked?.bankAccountLinked ?
                 <Carousel className="w-full" noLoop arrowPos="bottom">
                   <Carousel.Item className="!justify-start flex-col">
                     <h4 className="text-lg text-center font-thin leading-loose mt-5 mb-14">Please name your goal:</h4>
