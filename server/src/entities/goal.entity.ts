@@ -27,14 +27,16 @@ export class Goal extends BaseEntity {
   due_date: Date;
 
   @Field()
-  @Column({ default: 1 })
+  @Column("float", { default: 1.0 })
   goal_amount: number;
 
   @Field()
   @Column({ default: '' })
   name: string;
 
+
+  /* Amount that we include in our goal */
   @Field()
-  @Column({ default: 0 })
+  @Column("float", { default: 0.0 })
   start_save_from: number;
 }
