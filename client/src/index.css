@@ -27,3 +27,8 @@ code {
         @apply text-sm lg:text-xl m-1;
     }
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    -webkit-appearance: none;
+}
