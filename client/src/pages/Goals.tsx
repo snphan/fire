@@ -5,7 +5,7 @@ import { Button, Checkbox, Dialog, DialogBody, DialogFooter, DialogHeader, Input
 import { Loading } from '@/components/Loading';
 import Carousel from '@/components/Carousel';
 import { CurrencyContext } from '@/Context';
-import { UPSERT_GOAL } from '@/mutations';
+import { DELETE_GOAL, UPSERT_GOAL } from '@/mutations';
 import ReactECharts from 'echarts-for-react';
 import { fireTheme } from '@/config/echart.config';
 import * as echarts from "echarts";
@@ -26,6 +26,11 @@ export function Goals({ }: any) {
   const currencyFormatter = useContext(CurrencyContext);
   const { data: goals } = useQuery(GET_GOALS);
   const [upsertGoal, { loading: upsertGoalLoading }] = useMutation(UPSERT_GOAL, {
+    refetchQueries: [
+      { query: GET_GOALS }
+    ]
+  })
+  const [deleteGoal, { loading: deleteGoalLoading }] = useMutation(DELETE_GOAL, {
     refetchQueries: [
       { query: GET_GOALS }
     ]
@@ -91,12 +96,12 @@ export function Goals({ }: any) {
     },
     xAxis: {
       type: 'category',
-      data: [goals?.getGoals[0].name]
+      data: [goals?.getGoals[0]?.name]
     },
     yAxis: {
       type: 'value',
       min: 0,
-      max: goals?.getGoals[0].goal_amount
+      max: goals?.getGoals[0]?.goal_amount
     },
     series: [{
       itemStyle: {
@@ -127,11 +132,17 @@ export function Goals({ }: any) {
         </h1>
         {goals?.getGoals.length ?
           <div className="grow flex-col flex">
-            <div className={`text-zinc-300 font-ubuntu h-36 items-start bg-cover m-5 rounded-3xl`}
+            <div className={`text-zinc-300 font-ubuntu h-36 flex items-start justify-between bg-cover m-5 rounded-3xl`}
               style={{ backgroundImage: `url('${goals?.getGoals[0].name.toLowerCase()}.png')` }}
             >
               <div className='text-zinc-300 font-ubuntu h-36 items-start font-bold text-lg bg-cover m-5 rounded-3xl'>
                 {goals?.getGoals[0].name ? goals?.getGoals[0].name : "Add a goal!"}
+              </div>
+              <div className="transition-all m-3 lg:mr-5 hover:bg-gradient-to-tr hover:from-pink-800 hover:to-pink-500 hover:bg-red-700 hover:shadow-pink-300/20 hover:scale-105 rounded-full cursor-pointer w-10 h-10 flex justify-center items-center"
+                onClick={() => {
+                  deleteGoal({ variables: { goalId: goals.getGoals[0].id } });
+                }} >
+                <span className="material-icons lg:text-4xl">delete</span>
               </div>
             </div>
             <div className="text-xl my-5 text-center lg:text-4xl font-bold text-green-500">{currencyFormatter.format(getCurrentSaved(goals?.getGoals[0]))}/{currencyFormatter.format(goals?.getGoals[0].goal_amount)}</div>

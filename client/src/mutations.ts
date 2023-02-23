@@ -101,3 +101,11 @@ mutation UpsertGoal($goalData: CreateGoalDto!) {
   }
 }
 `
+
+export const DELETE_GOAL = gql`
+mutation DeleteGoal($goalId: Float!) {
+  deleteGoal(goalId: $goalId) {
+    id
+  }
+}
+`
