@@ -7,6 +7,8 @@ import fs from 'fs';
 import { NODE_ENV } from './config';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import convert from 'heic-convert';
+import { promisify } from 'util';
 
 const app = express();
 
@@ -32,14 +34,29 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.post("/upload", upload.array('file'), (req: any, res) => {
+app.post("/upload", upload.array('file'), async (req: any, res) => {
   let names = [];
   const Authorization = req.cookies['Authorization'] || (req.header('Authorization') ? req.header('Authorization').split('Bearer ')[1] : null);
 
   if (Authorization) {
-    req.files.forEach(file => {
-      names.push(file.filename);
-    });
+    for (const file of req.files) {
+      if (file.filename.toLowerCase().match(/(.heic)$/)) {
+        // Convert .heic file
+        const inputBuffer = await promisify(fs.readFile)(`media/${file.filename}`);
+        const outputBuffer = await convert({
+          buffer: inputBuffer,
+          format: 'JPEG',
+          quality: 0.5
+        })
+        const newFilename = file.filename.replace(/.heic/i, '.jpeg');
+        fs.createWriteStream(`media/${newFilename}`).write(Buffer.from(outputBuffer));
+        // Cleanup the .heic file
+        await promisify(fs.unlink)(`media/${file.filename}`);
+        names.push(newFilename);
+      } else {
+        names.push(file.filename);
+      }
+    };
     res.json({ status: "success", filenames: names });
   } else {
     res.json({ status: "error", message: "no authorization", filenames: [] });

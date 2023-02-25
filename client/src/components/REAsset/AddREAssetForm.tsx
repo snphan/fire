@@ -11,6 +11,7 @@ import axios from 'axios';
 import { useMutation } from '@apollo/client';
 import { UPSERT_REASSET } from '@/mutations';
 import { GET_USER_BY_ID } from '@/queries';
+import { Loading } from '../Loading';
 
 interface REAsset {
   id: number | null;
@@ -55,14 +56,16 @@ export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) 
     ]
   });
   const [deletePhoto, setDeletePhoto] = useState<boolean>(false);
+  const [uploadDone, setUploadDone] = useState<boolean>(false);
   const [REAssetInfo, setREAssetInfo] = useState<REAsset>(defaultREAsset);
+  const [loadingUpload, setLoadingUpload] = useState<boolean>(false);
 
-  const uploadFiles = (files: FileList) => {
+  const uploadFiles = async (files: FileList) => {
     console.log("Sending Files");
     let formData = new FormData();
-    Array.from(files).forEach((file) => {
-      if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) { alert('One or more of the files is not an image'); return }
-      if (!file.name.toLowerCase().match(/(.jpg)$|(.jpeg)$|(.png)$/)) { alert('One or more of the files is not an image'); return }
+    Array.from(files).forEach(async (file) => {
+      if (!['image/jpeg', 'image/jpg', 'image/png', 'image/heif'].includes(file.type)) { alert('One or more of the files is not an image'); return }
+      if (!file.name.toLowerCase().match(/(.jpg)$|(.jpeg)$|(.png)$|(.heic)$/)) { alert('One or more of the files is not an image'); return }
       formData.append("file", file);
     })
     return axios.post(`${REACT_APP_MEDIA_HOST}/upload`, formData, {
@@ -110,11 +113,16 @@ export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) 
   }
 
   useEffect(() => {
+    /* Update changes to the photos immediately */
+    if (uploadDone) {
+      createREAsset({ variables: { reAssetData: REAssetInfo } });
+      setUploadDone(false);
+    }
     if (deletePhoto) {
       createREAsset({ variables: { reAssetData: REAssetInfo } });
       setDeletePhoto(false);
     }
-  }, [deletePhoto])
+  }, [REAssetInfo])
 
   useEffect(() => {
     const formattedREAsset: REAsset = {
@@ -144,8 +152,7 @@ export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) 
       <DialogBody className="text-zinc-200 flex flex-col">
 
         <div className="flex flex-wrap flex-col mx-3 mb-6">
-          <div className="block uppercase tracking-wide text-zinc-500 text-xs font-bold mb-2"
-          >Pictures</div>
+          <div className="block uppercase tracking-wide text-zinc-500 text-xs font-bold mb-2">Pictures</div>
           <div className="flex flex-wrap">
             <label htmlFor="Pictures" className="m-1 cursor-pointer hover:scale-105 hover:bg-zinc-400 w-24 h-24 bg-zinc-600 flex items-center justify-center rounded-xl"><span className="material-icons">photo_camera</span></label>
             {REAssetInfo.picture_links.map((link: string) => {
@@ -158,13 +165,21 @@ export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) 
                 </div>
               )
             })}
+            {loadingUpload &&
+              <div className="w-24 h-24 flex justify-center items-center">
+                <Loading className="w-12 h-12" />
+              </div>
+            }
           </div>
           <input className="hidden"
             type="file" multiple name="" id="Pictures" onChange={async (e) => {
               if (e.target.files) {
                 const { picture_links } = REAssetInfo;
+                setLoadingUpload(true);
                 uploadFiles(e.target.files!).then((res) => {
                   setREAssetInfo({ ...REAssetInfo, picture_links: [...picture_links, ...res.data.filenames] });
+                  setUploadDone(true);
+                  setLoadingUpload(false);
                 }
                 );
               }
