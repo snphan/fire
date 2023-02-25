@@ -29,10 +29,11 @@ export function ProspectiveRealEstate({ userID }: any) {
   const { data: REAssetData, loading, error, refetch: refetchData } = useQuery(GET_USER_BY_ID);
   const [createREAssumption, { loading: REAssumptionLoading }] = useMutation(CREATE_REASSUMPTION);
   const [openAddREAsset, setOpenAddREAsset] = useState<boolean>(false);
+  const [openEditAssumptions, setOpenEditAssumptions] = useState<boolean>(false)
+  const [openPictures, setOpenPictures] = useState<boolean>(false); // Show picture carousel in mobile when true
   const [openConfirmDelete, setOpenConfirmDelete] = useState<boolean>(false);
   const [assetID, setAssetID] = useState<number | null>(null);
   const [currentAsset, setCurrentAsset] = useState<any>(null);
-  const [openEditAssumptions, setOpenEditAssumptions] = useState<boolean>(false)
 
   const handleOpenAddREAsset = () => setOpenAddREAsset(!openAddREAsset);
   const handleOpenConfirmDelete = () => setOpenConfirmDelete(!openConfirmDelete);
@@ -180,14 +181,22 @@ export function ProspectiveRealEstate({ userID }: any) {
             </header>
 
             <div className='grow lg:grow-0 grid grid-cols-3 grid-rows-4 lg:grid-rows-none'>
-              <Carousel className="lg:order-1 hidden lg:block col-span-1 row-span-3 bg-zinc-900 mx-5 rounded-xl p-2 h-96">
-                {
-                  currentAsset?.picture_links.map((link: string, index: number) => {
-                    return (<Carousel.Item key={index} imgSrc={`${REACT_APP_MEDIA_HOST}/media/${link}`}>
-                    </Carousel.Item>)
-                  })
-                }
-              </Carousel>
+              <div className={(openPictures ? 'absolute ' : 'hidden ') + `lg:order-1 z-[53] top-1/2 -translate-y-1/2 left-0 lg:translate-y-0 lg:static lg:block col-span-1 row-span-3 bg-zinc-900 mx-5 rounded-xl h-96`}>
+                <Carousel className={`bg-zinc-900 rounded-xl p-2 h-96`}>
+                  {
+                    currentAsset?.picture_links.map((link: string, index: number) => {
+                      return (<Carousel.Item key={index} imgSrc={`${REACT_APP_MEDIA_HOST}/media/${link}`}>
+                      </Carousel.Item>)
+                    })
+                  }
+                </Carousel>
+              </div>
+              {/* Backdrop for Carousel */}
+              {window.screen.width < 1024 && // Display this only in mobile
+                <div className={(openPictures ? "z-[52] bg-opacity-25 " : "-z-10 bg-opacity-0 ") + "lg:hidden bg-white top-0 w-screen h-screen fixed transition-all duration-700 backdrop-blur-sm"}>
+                  <button onClick={() => setOpenPictures(false)} className="absolute right-2 top-2 m-2 bg-zinc-600 drop-shadow-strong rounded-full w-12 h-12 flex justify-center items-center"><span className="material-icons">close</span></button>
+                </div>
+              }
 
               {/* Projection Chart */}
               <div className="order-2 col-span-3 lg:col-span-2 row-span-4 bg-zinc-900 m-2 lg:mr-5 lg:mb-5 rounded-xl drop-shadow-strong">
@@ -210,7 +219,7 @@ export function ProspectiveRealEstate({ userID }: any) {
                           </div>
                         </Tooltip>
                         <Tooltip content={"Mortgage Payment (Month)"} className="capitalize bg-gray-900 p-2">
-                          <div className="hidden lg:flex text-xs lg:text-base h-14 m-2 p-2 flex-col justify-center items-center lg:h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-800 to-pink-500 text-gray-200">
+                          <div className="text-xs lg:text-base h-14 m-2 p-2 flex flex-col justify-center items-center lg:h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-800 to-pink-500 text-gray-200">
                             <div><span className="material-icons material-symbols-outlined">house</span></div>
                             <div className="font-bold">{"-" + CADFormatter.format(reAnalyzer.mortgagePayment)}</div>
                           </div>
@@ -229,17 +238,17 @@ export function ProspectiveRealEstate({ userID }: any) {
                           </div>
                         </Tooltip>
                         <div className="hidden lg:block w-1 bg-zinc-400 rounded-xl"></div>
-                        {(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + reAnalyzer.mortgagePayment) >= 0) ?
 
+                        {(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + 12 * reAnalyzer.mortgagePayment) >= 0) ?
                           <Tooltip content={"Profit (Avg. Yearly)"} className="capitalize bg-gray-900 p-2">
-                            <div className="text-xs lg:text-base h-14 m-2 col-span-2 p-2 flex flex-col justify-center items-center lg:h-20 rounded-xl shadow-light-green-300/20 shadow-md hover:shadow-lg hover:shadow-light-green-300/20 bg-gradient-to-tr from-light-green-800 to-light-green-500 text-gray-200">
+                            <div className="text-xs lg:text-base h-14 m-2 p-2 flex flex-col justify-center items-center lg:h-20 rounded-xl shadow-light-green-300/20 shadow-md hover:shadow-lg hover:shadow-light-green-300/20 bg-gradient-to-tr from-light-green-800 to-light-green-500 text-gray-200">
                               <div><span className="material-icons material-symbols-outlined">payment</span></div>
                               <div className="font-bold">{"+" + CADFormatter.format(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + 12 * reAnalyzer.mortgagePayment))}</div>
                             </div>
                           </Tooltip>
                           :
                           <Tooltip content={"Loss (Avg. Yearly)"} className="capitalize bg-gray-900 p-2">
-                            <div className="text-xs lg:text-base h-14 m-2 col-span-2 p-2 flex flex-col justify-center items-center lg:h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-800 to-pink-500 text-gray-200">
+                            <div className="text-xs lg:text-base h-14 m-2 p-2 flex flex-col justify-center items-center lg:h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-800 to-pink-500 text-gray-200">
                               <div><span className="material-icons material-symbols-outlined">payment</span></div>
                               <div className="font-bold">{CADFormatter.format(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + (12 * reAnalyzer.mortgagePayment)))}</div>
                             </div>
@@ -250,10 +259,12 @@ export function ProspectiveRealEstate({ userID }: any) {
                   }
                 </div>
               </div>
+              {/* Ordering for Desktop */}
               <REListItem
                 className="order-1 lg:order-3 col-span-3 lg:col-span-1 row-span-1 items-center"
                 REInfo={currentAsset}
                 handleOpenAddREAsset={handleOpenAddREAsset}
+                handleOpenPictures={() => setOpenPictures(!openPictures)}
                 disabled
               />
             </div>
