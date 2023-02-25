@@ -10,6 +10,9 @@ module.exports = withMT({
       ubuntu: ["Ubuntu"]
     },
     extend: {
+      fontSize: {
+        '2xs': '0.5rem'
+      },
       dropShadow: {
         'strong': '0 4px 4px rgba(0, 0, 0, 0.5)',
         '4xl': [

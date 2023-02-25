@@ -50,6 +50,7 @@ const defaultREAsset: REAsset = {
 
 export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) {
 
+  const MAX_FILE_SIZE = 500 * 1024; // 500 kb
   const [createREAsset, { loading: createREAssetLoading }] = useMutation(UPSERT_REASSET, {
     refetchQueries: [
       { query: GET_USER_BY_ID, variables: { userID: userID } }
@@ -64,6 +65,7 @@ export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) 
     console.log("Sending Files");
     let formData = new FormData();
     Array.from(files).forEach(async (file) => {
+      if (file.size > MAX_FILE_SIZE) { alert('One or more of the files is larger than 500kb'); return }
       if (!['image/jpeg', 'image/jpg', 'image/png', 'image/heif'].includes(file.type)) { alert('One or more of the files is not an image'); return }
       if (!file.name.toLowerCase().match(/(.jpg)$|(.jpeg)$|(.png)$|(.heic)$/)) { alert('One or more of the files is not an image'); return }
       formData.append("file", file);
@@ -157,6 +159,7 @@ export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) 
 
         <div className="flex flex-wrap flex-col mx-3 mb-6">
           <div className="block uppercase tracking-wide text-zinc-500 text-xs font-bold mb-2">Pictures</div>
+          <div className="block uppercase tracking-wide text-zinc-500 text-2xs font-bold mb-2">(Max 500 kb Each)</div>
           <div className="flex flex-wrap">
             <label htmlFor="Pictures" className="m-1 cursor-pointer hover:scale-105 hover:bg-zinc-400 w-24 h-24 bg-zinc-600 flex items-center justify-center rounded-xl"><span className="material-icons">photo_camera</span></label>
             {REAssetInfo.picture_links.map((link: string) => {
