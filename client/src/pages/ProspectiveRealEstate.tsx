@@ -229,8 +229,8 @@ export function ProspectiveRealEstate({ userID }: any) {
                           </div>
                         </Tooltip>
                         <div className="hidden lg:block w-1 bg-zinc-400 rounded-xl"></div>
-                        {(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + reAnalyzer.mortgagePayment) >= 0) ?
 
+                        {(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + 12 * reAnalyzer.mortgagePayment) >= 0) ?
                           <Tooltip content={"Profit (Avg. Yearly)"} className="capitalize bg-gray-900 p-2">
                             <div className="text-xs lg:text-base h-14 m-2 col-span-2 p-2 flex flex-col justify-center items-center lg:h-20 rounded-xl shadow-light-green-300/20 shadow-md hover:shadow-lg hover:shadow-light-green-300/20 bg-gradient-to-tr from-light-green-800 to-light-green-500 text-gray-200">
                               <div><span className="material-icons material-symbols-outlined">payment</span></div>
