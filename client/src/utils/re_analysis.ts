@@ -24,11 +24,14 @@ interface REAssumptions {
   insurance: number;
   management_fee: number;
   other_expenses: number[];
+  other_upfront: number[];
+  rennovations: number;
   closing_cost: number;
   down_percent: number;
   interest_rate: number;
   hold_length: number;
   mortgage_length: number;
+  vacancy_months: number;
 }
 
 export class REAnalyzer {
@@ -43,12 +46,6 @@ export class REAnalyzer {
   public cashFlow: number[];
 
   constructor(reAsset: REAsset) {
-    this.assumptions = reAsset.re_assumptions;
-    this.purchasePrice = reAsset.purchase_price;
-    this.totalOutOfPocket = this.purchasePrice * this.assumptions.down_percent / 100 + this.assumptions.closing_cost;
-    this.rent = this.assumptions.rent;
-
-
     const {
       hold_length,
       down_percent,
@@ -62,11 +59,28 @@ export class REAnalyzer {
       property_tax,
       repairs,
       inflation,
-      property_inc
-    } = this.assumptions;
+      property_inc,
+      vacancy_months,
+      other_upfront,
+      rennovations,
+      closing_cost,
+      rent
+    } = reAsset.re_assumptions;
+
+    this.assumptions = reAsset.re_assumptions;
+    this.purchasePrice = reAsset.purchase_price;
+
+    this.totalOutOfPocket = (
+      this.purchasePrice * down_percent / 100
+      + closing_cost
+      + rennovations
+      + other_upfront.reduce((a: number, b: number) => a + b, 0)
+    );
+    this.rent = rent;
+
     /* Mortgage Payments */
     let monthlyRate = interest_rate / 12 / 100;
-    let mortgageAmount = this.purchasePrice * (1 - down_percent / 100);
+    let mortgageAmount = this.purchasePrice * (1 - down_percent / 100); // After talking to the banks, they only look at the purchase price.
     this.mortgagePayment = Math.round(mortgageAmount * monthlyRate / (1 - (1 / Math.pow(1 + monthlyRate, mortgage_length * 12))));
 
     /* Equity */
@@ -77,23 +91,25 @@ export class REAnalyzer {
     }
 
     /* Rent */
-    let rents = [...Array(hold_length).keys()].map((year: number) => (this.rent * Math.pow(1 + rent_inc / 100, year)));
+    let rents = [...Array(hold_length).keys()].map((year: number) => (this.rent * 12 * Math.pow(1 + rent_inc / 100, year)));
     this.avgRent = rents.reduce((pv, cv) => pv + cv, 0) / rents.length;
 
     /* Operation Expenses */
-    let totalOpExpense = (insurance / 12
+    let totalOpExpense = (
+      insurance
       + maintenance_fee
       + utilities
       + other_expenses.reduce((pv, cv) => pv + cv, 0)
       + property_tax / 12
       + repairs / 100 * this.purchasePrice / 12
+      + vacancy_months * this.rent / 12
     );
 
-    let totalOpExpenses = [...Array(hold_length).keys()].map((year: number) => (totalOpExpense * Math.pow(1 + inflation / 100, year)));
+    let totalOpExpenses = [...Array(hold_length).keys()].map((year: number) => (totalOpExpense * 12 * Math.pow(1 + inflation / 100, year)));
     this.avgTotalOpExpense = totalOpExpenses.reduce((pv, cv) => pv + cv, 0) / totalOpExpenses.length;
 
     /* Cash Flow */
-    this.cashFlow = rents.map((rent, i) => Math.round((rent - totalOpExpenses[i] - ((i >= mortgage_length) ? 0 : this.mortgagePayment)) * 100) / 100);
+    this.cashFlow = rents.map((rent, i) => Math.round((rent - totalOpExpenses[i] - ((i >= mortgage_length) ? 0 : this.mortgagePayment * 12)) * 100) / 100);
     let cumulativeCash = 0;
     this.cashFlowCumulative = [0]
     this.cashFlow.forEach((cash, i) => {
@@ -103,10 +119,8 @@ export class REAnalyzer {
     /* Sell the property at the final year */
     this.cashFlowCumulative[this.cashFlowCumulative.length - 1] = Math.round((
       this.cashFlowCumulative[this.cashFlowCumulative.length - 1]
-      + this.purchasePrice * Math.pow((1 + property_inc / 100), hold_length) * 0.925 // 7.5% commision for realtor
+      + this.purchasePrice * Math.pow((1 + property_inc / 100), hold_length) * (1 - 0.075) // 7.5% commision for realtor
       - remainingMortgage
     ) * 100) / 100;
-
   }
-
 }

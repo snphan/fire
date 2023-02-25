@@ -61,7 +61,7 @@ const reconcilePreAuth = (transactions: any): Array<any> => {
 }
 
 /**
- * Look back 3 days assuming it takes 1 business day to process (payment on Friday will take 3 business days)
+ * Look back 4 days assuming it takes 1 business day to process (payment on Friday will take 3 business days)
  * If Txn with the same amount is found, add both Txn Ids to the remove Txn ids.
  * 
  * @param transactions 
@@ -73,9 +73,9 @@ const reconcileCreditCardPayments = (transactions: any) => {
   transactions.forEach((txn: any, ind: number) => {
     const { category, transaction_id } = txn;
     const amount = parseFloat(txn.amount);
-    const maxLookBackdate = dayjs(txn.date).subtract(4, 'days');
+    const maxLookBackdate = dayjs(txn.date).subtract(5, 'days');
 
-    if (category === "LOAN_PAYMENTS") {
+    if (["LOAN_PAYMENTS", "TRANSFER_IN"].includes(category)) {
       let i = ind + 1;
       while (i < transactions.length && dayjs(transactions[i].date).isAfter(maxLookBackdate)) {
         const prevTxn = transactions[i];

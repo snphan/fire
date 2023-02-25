@@ -56,7 +56,11 @@ export class REAssumptions extends BaseEntity {
 
   @Field((type) => [Float])
   @Column("float", { array: true, default: [] })
-  other_expenses: number[]; /* per year: like a special levy */
+  other_expenses: number[]; /* per month on going: maybe gas to get to the property */
+
+  @Field((type) => [Float])
+  @Column("float", { array: true, default: [] })
+  other_upfront: number[]; /* one-time costs */
 
   @Field()
   @Column("float", { default: 2500 })
@@ -73,6 +77,14 @@ export class REAssumptions extends BaseEntity {
   @Field()
   @Column("float", { default: 25 })
   mortgage_length: number;
+
+  @Field()
+  @Column("float", { default: 1000.0 })
+  rennovations: number;
+
+  @Field()
+  @Column("float", { default: 1 })
+  vacancy_months: number;
 
   @Field()
   @Column("int", { default: 10 })

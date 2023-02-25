@@ -53,6 +53,10 @@ export class CreateREAssumptionsDto implements Partial<REAssumptions> {
   @Field((type) => [Float], { nullable: true })
   other_expenses?: number[]; /* per year: like a special levy */
 
+  @IsNumber({}, { each: true })
+  @Field((type) => [Float], { nullable: true })
+  other_upfront?: number[]; /* one-time costs */
+
   @IsNumber()
   @Field({ nullable: true })
   closing_cost?: number;
@@ -72,4 +76,12 @@ export class CreateREAssumptionsDto implements Partial<REAssumptions> {
   @IsNumber()
   @Field({ nullable: true })
   hold_length?: number;
+
+  @IsNumber()
+  @Field({ nullable: true })
+  rennovations?: number;
+
+  @IsNumber()
+  @Field({ nullable: true })
+  vacancy_months?: number;
 }
