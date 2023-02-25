@@ -47,7 +47,7 @@ export class REAnalyzer {
     this.purchasePrice = reAsset.purchase_price;
     this.totalOutOfPocket = this.purchasePrice * this.assumptions.down_percent / 100 + this.assumptions.closing_cost;
     this.rent = this.assumptions.rent;
-
+    const vacancy = 1 // Assume 1 month;
 
     const {
       hold_length,
@@ -77,23 +77,27 @@ export class REAnalyzer {
     }
 
     /* Rent */
-    let rents = [...Array(hold_length).keys()].map((year: number) => (this.rent * Math.pow(1 + rent_inc / 100, year)));
+    let rents = [...Array(hold_length).keys()].map((year: number) => (this.rent * 12 * Math.pow(1 + rent_inc / 100, year)));
     this.avgRent = rents.reduce((pv, cv) => pv + cv, 0) / rents.length;
 
+    console.log(rents)
     /* Operation Expenses */
-    let totalOpExpense = (insurance / 12
+    let totalOpExpense = (
+      insurance
       + maintenance_fee
       + utilities
       + other_expenses.reduce((pv, cv) => pv + cv, 0)
       + property_tax / 12
       + repairs / 100 * this.purchasePrice / 12
+      + vacancy * this.rent / 12
     );
 
-    let totalOpExpenses = [...Array(hold_length).keys()].map((year: number) => (totalOpExpense * Math.pow(1 + inflation / 100, year)));
+    let totalOpExpenses = [...Array(hold_length).keys()].map((year: number) => (totalOpExpense * 12 * Math.pow(1 + inflation / 100, year)));
+    console.log(totalOpExpenses)
     this.avgTotalOpExpense = totalOpExpenses.reduce((pv, cv) => pv + cv, 0) / totalOpExpenses.length;
 
     /* Cash Flow */
-    this.cashFlow = rents.map((rent, i) => Math.round((rent - totalOpExpenses[i] - ((i >= mortgage_length) ? 0 : this.mortgagePayment)) * 100) / 100);
+    this.cashFlow = rents.map((rent, i) => Math.round((rent - totalOpExpenses[i] - ((i >= mortgage_length) ? 0 : this.mortgagePayment * 12)) * 100) / 100);
     let cumulativeCash = 0;
     this.cashFlowCumulative = [0]
     this.cashFlow.forEach((cash, i) => {
@@ -106,7 +110,5 @@ export class REAnalyzer {
       + this.purchasePrice * Math.pow((1 + property_inc / 100), hold_length) * (1 - 0.075) // 7.5% commision for realtor
       - remainingMortgage
     ) * 100) / 100;
-
   }
-
 }

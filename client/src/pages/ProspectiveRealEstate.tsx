@@ -209,20 +209,20 @@ export function ProspectiveRealEstate({ userID }: any) {
                             <div className="font-bold">{"-" + CADFormatter.format(reAnalyzer.totalOutOfPocket)}</div>
                           </div>
                         </Tooltip>
-                        <div className="hidden lg:block w-1 bg-zinc-400 rounded-xl"></div>
                         <Tooltip content={"Mortgage Payment (Month)"} className="capitalize bg-gray-900 p-2">
                           <div className="hidden lg:flex text-xs lg:text-base h-14 m-2 p-2 flex-col justify-center items-center lg:h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-800 to-pink-500 text-gray-200">
                             <div><span className="material-icons material-symbols-outlined">house</span></div>
                             <div className="font-bold">{"-" + CADFormatter.format(reAnalyzer.mortgagePayment)}</div>
                           </div>
                         </Tooltip>
-                        <Tooltip content={"Average Total Operating Expense (Month)"} className="capitalize bg-gray-900 p-2">
+                        <div className="hidden lg:block w-1 bg-zinc-400 rounded-xl"></div>
+                        <Tooltip content={"Average Total Operating Expense (Yearly)"} className="capitalize bg-gray-900 p-2">
                           <div className="hidden lg:flex text-xs lg:text-base h-14 m-2 p-2  flex-col justify-center items-center lg:h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-800 to-pink-500 text-gray-200">
                             <div><span className="material-icons material-symbols-outlined">lightbulb</span></div>
                             <div className="font-bold">{"-" + CADFormatter.format(reAnalyzer.avgTotalOpExpense)}</div>
                           </div>
                         </Tooltip>
-                        <Tooltip content={"Average Rent (Month)"} className="capitalize bg-gray-900 p-2">
+                        <Tooltip content={"Average Rent (Yearly)"} className="capitalize bg-gray-900 p-2">
                           <div className="hidden lg:flex text-xs lg:text-base h-14 m-2 p-2 flex-col justify-center items-center lg:h-20 rounded-xl shadow-light-green-300/20 shadow-md hover:shadow-lg hover:shadow-light-green-300/20 bg-gradient-to-tr from-light-green-800 to-light-green-500 text-gray-200">
                             <div><span className="material-icons material-symbols-outlined">attach_money</span></div>
                             <div className="font-bold">{"+" + CADFormatter.format(reAnalyzer.avgRent)}</div>
@@ -231,17 +231,17 @@ export function ProspectiveRealEstate({ userID }: any) {
                         <div className="hidden lg:block w-1 bg-zinc-400 rounded-xl"></div>
                         {(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + reAnalyzer.mortgagePayment) >= 0) ?
 
-                          <Tooltip content={"Profit (Avg. Monthly)"} className="capitalize bg-gray-900 p-2">
+                          <Tooltip content={"Profit (Avg. Yearly)"} className="capitalize bg-gray-900 p-2">
                             <div className="text-xs lg:text-base h-14 m-2 col-span-2 p-2 flex flex-col justify-center items-center lg:h-20 rounded-xl shadow-light-green-300/20 shadow-md hover:shadow-lg hover:shadow-light-green-300/20 bg-gradient-to-tr from-light-green-800 to-light-green-500 text-gray-200">
                               <div><span className="material-icons material-symbols-outlined">payment</span></div>
-                              <div className="font-bold">{"+" + CADFormatter.format(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + reAnalyzer.mortgagePayment))}</div>
+                              <div className="font-bold">{"+" + CADFormatter.format(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + 12 * reAnalyzer.mortgagePayment))}</div>
                             </div>
                           </Tooltip>
                           :
-                          <Tooltip content={"Loss (Avg. Monthly)"} className="capitalize bg-gray-900 p-2">
+                          <Tooltip content={"Loss (Avg. Yearly)"} className="capitalize bg-gray-900 p-2">
                             <div className="text-xs lg:text-base h-14 m-2 col-span-2 p-2 flex flex-col justify-center items-center lg:h-20 rounded-xl shadow-pink-300/20 shadow-md hover:shadow-lg hover:shadow-pink-300/20 bg-gradient-to-tr from-pink-800 to-pink-500 text-gray-200">
                               <div><span className="material-icons material-symbols-outlined">payment</span></div>
-                              <div className="font-bold">{CADFormatter.format(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + reAnalyzer.mortgagePayment))}</div>
+                              <div className="font-bold">{CADFormatter.format(reAnalyzer.avgRent - (reAnalyzer.avgTotalOpExpense + (12 * reAnalyzer.mortgagePayment)))}</div>
                             </div>
                           </Tooltip>
                         }

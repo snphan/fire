@@ -56,7 +56,7 @@ export class REAssumptions extends BaseEntity {
 
   @Field((type) => [Float])
   @Column("float", { array: true, default: [] })
-  other_expenses: number[]; /* per year: like a special levy */
+  other_expenses: number[]; /* per month on going: maybe gas to get to the property */
 
   @Field()
   @Column("float", { default: 2500 })

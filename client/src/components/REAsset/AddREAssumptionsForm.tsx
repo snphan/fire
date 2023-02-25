@@ -65,15 +65,15 @@ export function AddREAssumptionsForm({ currentAsset, setCurrentAsset, assumption
           <Input containerProps={{ className: "!min-w-0" }} onChange={(e) => setNewAssumptions({ ...newAssumptions, rent_inc: parseFloat(e.target.value) })} value={newAssumptions.rent_inc} type="number" variant="outlined" label="Rent Increase %" className="!text-gray-300" />
 
           <div className="ml-4 col-span-2 lg:col-span-3">Operation</div>
-          <Input containerProps={{ className: "!min-w-0" }} onChange={(e) => setNewAssumptions({ ...newAssumptions, rent: parseFloat(e.target.value) })} value={newAssumptions.rent} type="number" variant="outlined" label="Rent" className="!text-gray-300" />
-          <Input containerProps={{ className: "!min-w-0" }} onChange={(e) => setNewAssumptions({ ...newAssumptions, insurance: parseFloat(e.target.value) })} value={newAssumptions.insurance} type="number" variant="outlined" label="Insurance" className="!text-gray-300" />
-          <Input containerProps={{ className: "!min-w-0" }} labelProps={{ className: "truncate" }} onChange={(e) => setNewAssumptions({ ...newAssumptions, maintenance_fee: parseFloat(e.target.value) })} value={newAssumptions.maintenance_fee} type="number" variant="outlined" label="Maintenance Fee (Month)" className="!text-gray-300" />
-          <Input containerProps={{ className: "!min-w-0" }} onChange={(e) => setNewAssumptions({ ...newAssumptions, utilities: parseFloat(e.target.value) })} value={newAssumptions.utilities} type="number" variant="outlined" label="Utilities" className="!text-gray-300" />
-          <Tooltip content={"Comma Separated"} className="capitalize bg-gray-900 p-2">
-            <Input containerProps={{ className: "!min-w-0" }} labelProps={{ className: "truncate" }} onChange={(e) => setNewAssumptions({ ...newAssumptions, other_expenses: e.target.value.split(",").map((item: string) => (item ? parseFloat(item) : 0)) })} value={otherExpensePlaceholder.join(",")} variant="outlined" label="Other Expenses (Month)" className="!text-gray-300" />
-          </Tooltip>
+          <Input containerProps={{ className: "!min-w-0" }} onChange={(e) => setNewAssumptions({ ...newAssumptions, rent: parseFloat(e.target.value) })} value={newAssumptions.rent} type="number" variant="outlined" label="Rent (mo.)" className="!text-gray-300" />
+          <Input containerProps={{ className: "!min-w-0" }} onChange={(e) => setNewAssumptions({ ...newAssumptions, insurance: parseFloat(e.target.value) })} value={newAssumptions.insurance} type="number" variant="outlined" label="Insurance (mo.)" className="!text-gray-300" />
+          <Input containerProps={{ className: "!min-w-0" }} labelProps={{ className: "truncate" }} onChange={(e) => setNewAssumptions({ ...newAssumptions, maintenance_fee: parseFloat(e.target.value) })} value={newAssumptions.maintenance_fee} type="number" variant="outlined" label="Maintenance Fee (mo.)" className="!text-gray-300" />
+          <Input containerProps={{ className: "!min-w-0" }} onChange={(e) => setNewAssumptions({ ...newAssumptions, utilities: parseFloat(e.target.value) })} value={newAssumptions.utilities} type="number" variant="outlined" label="Utilities (mo.)" className="!text-gray-300" />
           <Input containerProps={{ className: "!min-w-0" }} onChange={(e) => setNewAssumptions({ ...newAssumptions, property_tax: parseFloat(e.target.value) })} value={newAssumptions.property_tax} type="number" variant="outlined" label="Property Tax (Year)" className="!text-gray-300" />
           <Input containerProps={{ className: "!min-w-0" }} onChange={(e) => setNewAssumptions({ ...newAssumptions, repairs: parseFloat(e.target.value) })} value={newAssumptions.repairs} type="number" variant="outlined" label="Repairs %" className="!text-gray-300" />
+          <Tooltip content={"Comma Separated"} className="capitalize bg-gray-900 p-2">
+            <Input containerProps={{ className: "!min-w-0" }} labelProps={{ className: "truncate" }} onChange={(e) => setNewAssumptions({ ...newAssumptions, other_expenses: e.target.value.split(",").map((item: string) => (item ? parseFloat(item) : 0)) })} value={otherExpensePlaceholder.join(",")} variant="outlined" label="Other Expenses (mo.)" className="!text-gray-300" />
+          </Tooltip>
         </div>
       </div>
 
