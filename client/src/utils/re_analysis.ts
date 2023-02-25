@@ -66,7 +66,7 @@ export class REAnalyzer {
     } = this.assumptions;
     /* Mortgage Payments */
     let monthlyRate = interest_rate / 12 / 100;
-    let mortgageAmount = this.purchasePrice * (1 - down_percent / 100);
+    let mortgageAmount = this.purchasePrice * (1 - down_percent / 100); // After talking to the banks, they only look at the purchase price.
     this.mortgagePayment = Math.round(mortgageAmount * monthlyRate / (1 - (1 / Math.pow(1 + monthlyRate, mortgage_length * 12))));
 
     /* Equity */
@@ -103,7 +103,7 @@ export class REAnalyzer {
     /* Sell the property at the final year */
     this.cashFlowCumulative[this.cashFlowCumulative.length - 1] = Math.round((
       this.cashFlowCumulative[this.cashFlowCumulative.length - 1]
-      + this.purchasePrice * Math.pow((1 + property_inc / 100), hold_length) * 0.925 // 7.5% commision for realtor
+      + this.purchasePrice * Math.pow((1 + property_inc / 100), hold_length) * (1 - 0.075) // 7.5% commision for realtor
       - remainingMortgage
     ) * 100) / 100;
 
