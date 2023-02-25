@@ -113,12 +113,16 @@ export function AddREAssetForm({ open, handleOpen, userID, currentAsset }: any) 
   }
 
   useEffect(() => {
-    /* Update changes to the photos immediately */
-    if (uploadDone) {
+    /* 
+      Update changes to the photos immediately where currentAsset exists.
+      without currentAsset in the if(), 
+      photo upload/delete would create a new empty REAsset
+    */
+    if (uploadDone && currentAsset) {
       createREAsset({ variables: { reAssetData: REAssetInfo } });
       setUploadDone(false);
     }
-    if (deletePhoto) {
+    if (deletePhoto && currentAsset) {
       createREAsset({ variables: { reAssetData: REAssetInfo } });
       setDeletePhoto(false);
     }
