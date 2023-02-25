@@ -61,6 +61,9 @@ mutation updateREAssumptions($updateReAssumptionsData: CreateREAssumptionsDto!, 
     interest_rate
     hold_length
     mortgage_length
+    vacancy_months
+    rennovations
+    other_upfront
   }
 }
 `

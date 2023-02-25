@@ -24,11 +24,14 @@ interface REAssumptions {
   insurance: number;
   management_fee: number;
   other_expenses: number[];
+  other_upfront: number[];
+  rennovations: number;
   closing_cost: number;
   down_percent: number;
   interest_rate: number;
   hold_length: number;
   mortgage_length: number;
+  vacancy_months: number;
 }
 
 export class REAnalyzer {
@@ -43,12 +46,6 @@ export class REAnalyzer {
   public cashFlow: number[];
 
   constructor(reAsset: REAsset) {
-    this.assumptions = reAsset.re_assumptions;
-    this.purchasePrice = reAsset.purchase_price;
-    this.totalOutOfPocket = this.purchasePrice * this.assumptions.down_percent / 100 + this.assumptions.closing_cost;
-    this.rent = this.assumptions.rent;
-    const vacancy = 1 // Assume 1 month;
-
     const {
       hold_length,
       down_percent,
@@ -62,8 +59,25 @@ export class REAnalyzer {
       property_tax,
       repairs,
       inflation,
-      property_inc
-    } = this.assumptions;
+      property_inc,
+      vacancy_months,
+      other_upfront,
+      rennovations,
+      closing_cost,
+      rent
+    } = reAsset.re_assumptions;
+
+    this.assumptions = reAsset.re_assumptions;
+    this.purchasePrice = reAsset.purchase_price;
+
+    this.totalOutOfPocket = (
+      this.purchasePrice * down_percent / 100
+      + closing_cost
+      + rennovations
+      + other_upfront.reduce((a: number, b: number) => a + b, 0)
+    );
+    this.rent = rent;
+
     /* Mortgage Payments */
     let monthlyRate = interest_rate / 12 / 100;
     let mortgageAmount = this.purchasePrice * (1 - down_percent / 100); // After talking to the banks, they only look at the purchase price.
@@ -80,7 +94,6 @@ export class REAnalyzer {
     let rents = [...Array(hold_length).keys()].map((year: number) => (this.rent * 12 * Math.pow(1 + rent_inc / 100, year)));
     this.avgRent = rents.reduce((pv, cv) => pv + cv, 0) / rents.length;
 
-    console.log(rents)
     /* Operation Expenses */
     let totalOpExpense = (
       insurance
@@ -89,11 +102,10 @@ export class REAnalyzer {
       + other_expenses.reduce((pv, cv) => pv + cv, 0)
       + property_tax / 12
       + repairs / 100 * this.purchasePrice / 12
-      + vacancy * this.rent / 12
+      + vacancy_months * this.rent / 12
     );
 
     let totalOpExpenses = [...Array(hold_length).keys()].map((year: number) => (totalOpExpense * 12 * Math.pow(1 + inflation / 100, year)));
-    console.log(totalOpExpenses)
     this.avgTotalOpExpense = totalOpExpenses.reduce((pv, cv) => pv + cv, 0) / totalOpExpenses.length;
 
     /* Cash Flow */
