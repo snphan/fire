@@ -3,6 +3,8 @@ import { useState } from "react";
 import "@/App.css";
 import { useMutation } from '@apollo/client';
 import { CREATE_USER } from "@/mutations";
+import CryptoJS from 'crypto-js';
+import { REACT_APP_SECRET_KEY } from "@/config";
 
 interface UserInfo {
   email: string,
@@ -36,14 +38,14 @@ export function SignUpForm({ user, goToDashboard, goToSignIn, loginUser, setUser
     createUser({
       variables: { userData: userInfo }, onCompleted: () => {
         loginUser({
-          variables: { userData: { email: user.email, password: user.sub } },
+          variables: { userData: { email: user.email, password: CryptoJS.AES.encrypt(user.sub, REACT_APP_SECRET_KEY!).toString()! } },
           onCompleted: (res: any) => {
             setUserID(res.login.id);
+            goToDashboard();
           }
         });
       }
     });
-    goToDashboard();
   }
 
   return (
