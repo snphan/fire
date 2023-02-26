@@ -7,12 +7,14 @@ import { REAssetResolver } from '@/resolvers/re_analysis.resolver';
 import { PlaidResolver } from '@/resolvers/plaid.resolver';
 import { TransactionResolver } from '@/resolvers/transactions.resolver';
 import { dataSource } from '@/databases';
+import CryptoJS from 'crypto-js';
+import { SECRET_KEY } from '@/config';
 
 let app: App;
 let userId: number;
 const userData: CreateUserDto = {
   email: 'test@email.com',
-  password: 'q1w2e3r4',
+  password: CryptoJS.AES.encrypt('q1w2e3r4', SECRET_KEY).toString(),
   last_name: 'test',
   first_name: 'test'
 }

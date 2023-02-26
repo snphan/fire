@@ -2,8 +2,9 @@ import { GET_USER_BY_EMAIL } from '../queries';
 import { useLazyQuery } from '@apollo/client';
 import React, { useEffect } from 'react';
 import jwt_decode from 'jwt-decode';
-import { REACT_APP_GOOGLE_CREDS_APPID } from '@/config';
+import { REACT_APP_GOOGLE_CREDS_APPID, REACT_APP_SECRET_KEY } from '@/config';
 import fire_logo from "../fire_logo.png";
+import CryptoJS from 'crypto-js';
 
 export function Auth({ setAppState, loginUser, setUserInfo, setUserID }: any) {
 
@@ -17,7 +18,8 @@ export function Auth({ setAppState, loginUser, setUserInfo, setUserID }: any) {
 
     getUserByEmail({
       variables: { email: userObject.email }, onCompleted: (() => {
-        const userData = { email: userObject.email, password: userObject.sub };
+        const encryptedPass = CryptoJS.AES.encrypt(userObject.sub, REACT_APP_SECRET_KEY!).toString()!;
+        const userData = { email: userObject.email, password: encryptedPass };
         loginUser({
           variables: { userData: userData }, onCompleted: (res: any) => {
             setUserID(res.login.id)

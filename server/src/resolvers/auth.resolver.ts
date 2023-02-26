@@ -2,7 +2,8 @@ import { Authorized, Arg, Ctx, Mutation, Resolver } from 'type-graphql';
 import { CreateUserDto, UserLoginDto } from '@dtos/users.dto';
 import AuthRepository from '@repositories/auth.repository';
 import { User } from '@entities/users.entity';
-import { NODE_ENV } from '@/config';
+import { NODE_ENV, SECRET_KEY } from '@/config';
+import CryptoJS from 'crypto-js';
 
 @Resolver()
 export class authResolver extends AuthRepository {
@@ -10,7 +11,10 @@ export class authResolver extends AuthRepository {
     description: 'User signup',
   })
   async signup(@Arg('userData') userData: CreateUserDto): Promise<User> {
-    const user: User = await this.userSignUp(userData);
+    const user: User = await this.userSignUp({
+      ...userData,
+      password: CryptoJS.AES.decrypt(userData.password, SECRET_KEY).toString(CryptoJS.enc.Utf8)
+    });
     return user;
   }
 
@@ -18,7 +22,10 @@ export class authResolver extends AuthRepository {
     description: 'User login',
   })
   async login(@Arg('userData') userData: UserLoginDto, @Ctx() ctx: any): Promise<User> {
-    const { tokenData, findUser } = await this.userLogIn(userData);
+    const { tokenData, findUser } = await this.userLogIn({
+      ...userData,
+      password: CryptoJS.AES.decrypt(userData.password, SECRET_KEY).toString(CryptoJS.enc.Utf8)
+    });
 
     /* On login set the cookie */
     ctx.res.cookie("Authorization", tokenData.token, {

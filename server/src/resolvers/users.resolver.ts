@@ -2,6 +2,8 @@ import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 import { CreateUserDto } from '@dtos/users.dto';
 import UserRepository from '@repositories/users.repository';
 import { User } from '@entities/users.entity';
+import CryptoJS from 'crypto-js';
+import { SECRET_KEY } from '@/config';
 
 @Resolver()
 export class userResolver extends UserRepository {
@@ -33,7 +35,10 @@ export class userResolver extends UserRepository {
     description: 'User create',
   })
   async createUser(@Arg('userData') userData: CreateUserDto): Promise<User> {
-    const user: User = await this.userCreate(userData);
+    const user: User = await this.userCreate({
+      ...userData,
+      password: CryptoJS.AES.decrypt(userData.password, SECRET_KEY).toString(CryptoJS.enc.Utf8)
+    });
     return user;
   }
 
