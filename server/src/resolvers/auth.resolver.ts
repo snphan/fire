@@ -22,8 +22,6 @@ export class authResolver extends AuthRepository {
     description: 'User login',
   })
   async login(@Arg('userData') userData: UserLoginDto, @Ctx() ctx: any): Promise<User> {
-
-    console.log(userData);
     const { tokenData, findUser } = await this.userLogIn({
       ...userData,
       password: CryptoJS.AES.decrypt(userData.password, SECRET_KEY).toString(CryptoJS.enc.Utf8)

@@ -10,6 +10,8 @@ import { CreateREAssumptionsDto } from '@/dtos/re_assumptions.dto';
 import { PlaidResolver } from '@/resolvers/plaid.resolver';
 import { TransactionResolver } from '@/resolvers/transactions.resolver';
 import { dataSource } from '@/databases';
+import CryptoJS from 'crypto-js';
+import { SECRET_KEY } from '@/config';
 
 let app: App;
 let userId: number;
@@ -51,7 +53,7 @@ describe('Testing Real Estate Asset Analysis', () => {
     it('response should have the Create userData', async () => {
       const userData: CreateUserDto = {
         email: 'test@email.com',
-        password: 'q1w2e3r4',
+        password: CryptoJS.AES.encrypt('q1w2e3r4', SECRET_KEY).toString(),
         last_name: 'test',
         first_name: 'test'
       };
@@ -74,7 +76,7 @@ describe('Testing Real Estate Asset Analysis', () => {
 
       const userDataLogin: UserLoginDto = {
         email: 'test@email.com',
-        password: 'q1w2e3r4',
+        password: CryptoJS.AES.encrypt('q1w2e3r4', SECRET_KEY).toString(),
       };
       const loginUserQuery = {
         query: `mutation userLogin($userData: UserLoginDto!) {
