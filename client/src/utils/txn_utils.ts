@@ -5,16 +5,21 @@
 import dayjs from "dayjs";
 import { Set } from "typescript";
 
+// https://www.freecodecamp.org/news/pipe-and-compose-in-javascript-5b04004ac937/
+export const pipe = (...fns: any) => (x: any) => fns.reduce((v: any, f: any) => f(v), x);
+
 export const reconcileTransactions = (transactions: any) => {
   // Sort Txn by date
   let reconciledTransactions = transactions.slice().sort((a: any, b: any) => (new Date(b.date)).getTime() - (new Date(a.date)).getTime());
 
-  reconciledTransactions = reconcilePreAuth(reconciledTransactions);
-  reconciledTransactions = reconcileCreditCardPayments(reconciledTransactions);
-  /* Reconcile Transfers Between Accounts That are Not Credit Card Payments */
-  reconciledTransactions = reconciledTransactions.filter((item: any) => !item.name.match(/(TFR-TO)|(TFR-FR)/));
-
-  return reconciledTransactions;
+  return pipe(
+    reconcilePreAuth,
+    reconcileCreditCardPayments,
+    /* AMEX BILL Payments */
+    (txn: any) => txn.filter((item: any) => !item.name.match(/AMEX BILL/)),
+    /* Reconcile Transfers Between Accounts That are Not Credit Card Payments */
+    (txn: any) => txn.filter((item: any) => !item.name.match(/(TFR-TO)|(TFR-FR)/)),
+  )(reconciledTransactions);
 }
 
 /**
