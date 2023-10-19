@@ -11,7 +11,6 @@ export const pipe = (...fns: any) => (x: any) => fns.reduce((v: any, f: any) => 
 export const reconcileTransactions = (transactions: any) => {
   // Sort Txn by date
   let reconciledTransactions = transactions.slice().sort((a: any, b: any) => (new Date(b.date)).getTime() - (new Date(a.date)).getTime());
-
   return pipe(
     reconcilePreAuth,
     reconcileCreditCardPayments,
@@ -19,6 +18,8 @@ export const reconcileTransactions = (transactions: any) => {
     (txn: any) => txn.filter((item: any) => !item.name.match(/AMEX BILL/)),
     /* Reconcile Transfers Between Accounts That are Not Credit Card Payments */
     (txn: any) => txn.filter((item: any) => !item.name.match(/(TFR-TO)|(TFR-FR)/)),
+    /* Reconcile PAYMENT - THANK YOU */
+    (txn: any) => txn.filter((item: any) => !item.name.match(/THANK YOU/))
   )(reconciledTransactions);
 }
 
