@@ -19,7 +19,9 @@ export const reconcileTransactions = (transactions: any) => {
     /* Reconcile Transfers Between Accounts That are Not Credit Card Payments */
     (txn: any) => txn.filter((item: any) => !item.name.match(/(TFR-TO)|(TFR-FR)/)),
     /* Reconcile PAYMENT - THANK YOU */
-    (txn: any) => txn.filter((item: any) => !item.name.match(/THANK YOU/))
+    (txn: any) => txn.filter((item: any) => !item.name.match(/THANK YOU/)),
+    /* Reconcicle Transfers to Mutual Funds*/
+    (txn: any) => txn.filter((item: any) => !item.name.match(/^TO:/)),
   )(reconciledTransactions);
 }
 
