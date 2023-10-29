@@ -5,16 +5,51 @@
 import dayjs from "dayjs";
 import { Set } from "typescript";
 
+// https://www.freecodecamp.org/news/pipe-and-compose-in-javascript-5b04004ac937/
+export const pipe = (...fns: any) => (x: any) => fns.reduce((v: any, f: any) => f(v), x);
+
 export const reconcileTransactions = (transactions: any) => {
   // Sort Txn by date
   let reconciledTransactions = transactions.slice().sort((a: any, b: any) => (new Date(b.date)).getTime() - (new Date(a.date)).getTime());
+  return pipe(
+    reconcilePreAuth,
+    reconcileCreditCardPayments,
+    reconcileCustomPatterns,
+    recategorize
+  )(reconciledTransactions);
+}
 
-  reconciledTransactions = reconcilePreAuth(reconciledTransactions);
-  reconciledTransactions = reconcileCreditCardPayments(reconciledTransactions);
-  /* Reconcile Transfers Between Accounts That are Not Credit Card Payments */
-  reconciledTransactions = reconciledTransactions.filter((item: any) => !item.name.match(/(TFR-TO)|(TFR-FR)/));
+const recategorize = (transactions: any): Array<any> => {
+  const newTransactions = JSON.parse(JSON.stringify(transactions));
+  /* CHEXY RENT PAYMENTS */
+  newTransactions.filter((item: any) => item.name.match(/CHEXY/)).forEach((item: any) => {
+    item.category = "RENT_AND_UTILITIES"
+  })
 
-  return reconciledTransactions;
+  /* HUA SHENG Super Market */
+  newTransactions.filter((item: any) => item.name.match(/HUA SHENG/)).forEach((item: any) => {
+    item.category = "FOOD_AND_DRINK"
+  })
+
+  return newTransactions
+}
+
+/**
+ * Custom rules for removal of transactions that shouldn't belong in the expenses transactions.
+ * @param transactions an array of transactions
+ * @returns 
+ */
+const reconcileCustomPatterns = (transactions: any): Array<any> => {
+  return pipe(
+    /* AMEX BILL Payments */
+    (txn: any) => txn.filter((item: any) => !item.name.match(/AMEX BILL/)),
+    /* Reconcile Transfers Between Accounts That are Not Credit Card Payments */
+    (txn: any) => txn.filter((item: any) => !item.name.match(/(TFR-TO)|(TFR-FR)/)),
+    /* Reconcile PAYMENT - THANK YOU */
+    (txn: any) => txn.filter((item: any) => !item.name.match(/THANK YOU/)),
+    /* Reconcicle Transfers to Mutual Funds*/
+    (txn: any) => txn.filter((item: any) => !item.name.match(/^TO:/)),
+  )(transactions)
 }
 
 /**
