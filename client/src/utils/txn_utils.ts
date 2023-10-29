@@ -14,8 +14,24 @@ export const reconcileTransactions = (transactions: any) => {
   return pipe(
     reconcilePreAuth,
     reconcileCreditCardPayments,
-    reconcileCustomPatterns
+    reconcileCustomPatterns,
+    recategorize
   )(reconciledTransactions);
+}
+
+const recategorize = (transactions: any): Array<any> => {
+  const newTransactions = JSON.parse(JSON.stringify(transactions));
+  /* CHEXY RENT PAYMENTS */
+  newTransactions.filter((item: any) => item.name.match(/CHEXY/)).forEach((item: any) => {
+    item.category = "RENT_AND_UTILITIES"
+  })
+
+  /* HUA SHENG Super Market */
+  newTransactions.filter((item: any) => item.name.match(/HUA SHENG/)).forEach((item: any) => {
+    item.category = "FOOD_AND_DRINK"
+  })
+
+  return newTransactions
 }
 
 /**
