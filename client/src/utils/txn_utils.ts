@@ -14,6 +14,17 @@ export const reconcileTransactions = (transactions: any) => {
   return pipe(
     reconcilePreAuth,
     reconcileCreditCardPayments,
+    reconcileCustomPatterns
+  )(reconciledTransactions);
+}
+
+/**
+ * Custom rules for removal of transactions that shouldn't belong in the expenses transactions.
+ * @param transactions an array of transactions
+ * @returns 
+ */
+const reconcileCustomPatterns = (transactions: any): Array<any> => {
+  return pipe(
     /* AMEX BILL Payments */
     (txn: any) => txn.filter((item: any) => !item.name.match(/AMEX BILL/)),
     /* Reconcile Transfers Between Accounts That are Not Credit Card Payments */
@@ -22,7 +33,7 @@ export const reconcileTransactions = (transactions: any) => {
     (txn: any) => txn.filter((item: any) => !item.name.match(/THANK YOU/)),
     /* Reconcicle Transfers to Mutual Funds*/
     (txn: any) => txn.filter((item: any) => !item.name.match(/^TO:/)),
-  )(reconciledTransactions);
+  )(transactions)
 }
 
 /**
